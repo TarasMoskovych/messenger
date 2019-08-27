@@ -1,11 +1,15 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { AngularFireModule } from 'angularfire2';
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
 
 import { firebaseConfig } from './configs';
 import { AppComponent } from './app.component';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AuthModule } from './auth/auth.module';
 
 @NgModule({
   declarations: [
@@ -14,9 +18,15 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserModule,
     AngularFireModule.initializeApp(firebaseConfig),
-    AngularFirestore
+    AngularFirestoreModule,
+    AuthModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(router: Router) {
+    console.log('Routes: ', JSON.stringify(router.config, undefined, 2));
+  }
+}
