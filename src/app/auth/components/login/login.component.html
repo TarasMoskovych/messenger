@@ -1,1 +1,30 @@
-<p>login works!</p>
+<mat-card>
+  <mat-card-title>
+    Login
+  </mat-card-title>
+  <mat-card-subtitle>
+    Login to Messenger
+  </mat-card-subtitle>
+  <mat-card-content>
+    <mat-form-field class="input-width">
+      <input type="email" matInput placeholder="Email">
+      <mat-error>
+        Please enter valid Email.
+      </mat-error>
+      <mat-error>
+        Please enter Email.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field class="input-width">
+      <input type="password" matInput placeholder="Password">
+      <mat-error>
+        Please enter valid Password.
+      </mat-error>
+      <mat-error>
+        Please enter Password.
+      </mat-error>
+    </mat-form-field>
+  </mat-card-content>
+  <button mat-raised-button color="primary">Login</button>
+  <p>Not yet a member? <a routerLink="/register">Click here</a> to register</p>
+</mat-card>

@@ -1,1 +1,39 @@
-<p>register works!</p>
+<mat-card>
+  <mat-card-title>
+    Signup
+  </mat-card-title>
+  <mat-card-subtitle>
+    Register new User
+  </mat-card-subtitle>
+  <mat-card-content>
+    <mat-form-field class="input-width">
+      <input type="email" matInput placeholder="Email">
+      <mat-error>
+        Please enter valid Email.
+      </mat-error>
+      <mat-error>
+        Please enter Email.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field class="input-width">
+      <input type="password" matInput placeholder="Password">
+      <mat-error>
+        Please enter valid Password.
+      </mat-error>
+      <mat-error>
+        Please enter Password.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field class="input-width">
+      <input type="text" matInput placeholder="Nickname">
+      <mat-error>
+        Please enter valid Nickname.
+      </mat-error>
+      <mat-error>
+        Please enter Nickname.
+      </mat-error>
+    </mat-form-field>
+  </mat-card-content>
+  <button mat-raised-button color="primary">Signup</button>
+  <p>Back to <a routerLink="/login">login</a></p>
+</mat-card>

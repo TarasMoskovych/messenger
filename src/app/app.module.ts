@@ -13,8 +13,6 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthModule } from './auth/auth.module';
 
-import { MaterialModule } from './material/material.module';
-
 @NgModule({
   declarations: [
     AppComponent
@@ -25,7 +23,6 @@ import { MaterialModule } from './material/material.module';
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFirestoreModule,
     AuthModule,
-    MaterialModule,
     AppRoutingModule
   ],
   providers: [],
