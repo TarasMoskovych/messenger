@@ -6,34 +6,50 @@
     Register new User
   </mat-card-subtitle>
   <mat-card-content>
-    <mat-form-field class="input-width">
-      <input type="email" matInput placeholder="Email">
-      <mat-error>
-        Please enter valid Email.
-      </mat-error>
-      <mat-error>
-        Please enter Email.
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field class="input-width">
-      <input type="password" matInput placeholder="Password">
-      <mat-error>
-        Please enter valid Password.
-      </mat-error>
-      <mat-error>
-        Please enter Password.
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field class="input-width">
-      <input type="text" matInput placeholder="Nickname">
-      <mat-error>
-        Please enter valid Nickname.
-      </mat-error>
-      <mat-error>
-        Please enter Nickname.
-      </mat-error>
-    </mat-form-field>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-form-field class="input-width" *ngIf="form.get('email') as email">
+        <input
+          matInput
+          formControlName="email"
+          type="email"
+          placeholder="Email"
+        /><mat-error *ngIf="email.invalid && email.touched">
+          <ng-container *ngIf="email.errors['required']">
+            Please enter Email.
+          </ng-container>
+          <ng-container *ngIf="email.errors['email']">
+            Please enter valid Email.
+          </ng-container>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="input-width" *ngIf="form.get('password') as password">
+        <input
+          matInput
+          formControlName="password"
+          type="password"
+          placeholder="Password"
+        /><mat-error *ngIf="password.invalid && password.touched">
+          <ng-container *ngIf="password.errors['required']">
+            Please enter Password.
+          </ng-container>
+          <ng-container *ngIf="password.errors['minlength'] && password.errors['minlength']['requiredLength']">
+            Password should be greater than {{ password.errors['minlength']['requiredLength'] }} symbols.
+            Now is {{ password.errors['minlength']['actualLength'] }}
+          </ng-container>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="input-width" *ngIf="form.get('nickname') as nickname">
+        <input
+          matInput
+          formControlName="nickname"
+          type="text"
+          placeholder="Nickname"
+        /><mat-error *ngIf="nickname.invalid && nickname.touched">
+          Please enter Nickname.
+        </mat-error>
+      </mat-form-field>
+      <button class="mt-5" mat-raised-button color="primary" [disabled]="form.invalid || form.disabled">Signup</button>
+    </form>
   </mat-card-content>
-  <button mat-raised-button color="primary">Signup</button>
   <p>Back to <a routerLink="/login">login</a></p>
 </mat-card>

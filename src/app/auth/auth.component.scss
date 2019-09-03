@@ -13,12 +13,9 @@
   }
 
   &__content {
-    position: relative;
-    left: 50%;
+    margin: 0 auto;
     padding: 15px;
     text-align: center;
-    top: 50%;
-    transform: translate(-50%, -50%);
     width: 400px;
   }
 }

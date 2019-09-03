@@ -6,12 +6,15 @@ import { Router } from '@angular/router';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
+import { AngularFireAuthModule } from 'angularfire2/auth';
 
 import { firebaseConfig } from './configs';
 import { AppComponent } from './app.component';
 
 import { AppRoutingModule } from './app-routing.module';
+
 import { AuthModule } from './auth/auth.module';
+import { CoreModule } from './core/core.module';
 
 @NgModule({
   declarations: [
@@ -20,8 +23,10 @@ import { AuthModule } from './auth/auth.module';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    CoreModule,
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFirestoreModule,
+    AngularFireAuthModule,
     AuthModule,
     AppRoutingModule
   ],
