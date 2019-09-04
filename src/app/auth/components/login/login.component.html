@@ -24,7 +24,11 @@
 
       <div class="mt-5">
         <app-loader *ngIf="loading"></app-loader>
-        <button class="mt-10" mat-raised-button color="primary" [disabled]="form.invalid || form.disabled">Login</button>
+        <button class="button mt-10 mb-5" mat-raised-button color="primary" [disabled]="form.invalid || form.disabled">Login</button>
+        <div>
+          or
+        </div>
+        <button (click)="onLoginWithGoogle()" type="button" class="mt-5 button button--google" mat-raised-button>Login with Google</button>
       </div>
     </form>
   </mat-card-content>

@@ -24,15 +24,17 @@ export class LoginComponent extends BaseAuth implements OnInit {
     this.disableForm();
     this.authService
       .login(this.form.value)
-      .then(() => {
-        if (this.authService.isAuthorised()) {
-          this.router.navigate(['dashboard']);
-        }
-      })
       .finally(() => {
+        this.onAuthSuccess();
         this.enableForm();
         this.hideLoader();
       });
+  }
+
+  onLoginWithGoogle() {
+    this.authService
+      .loginWithGoogle()
+      .finally(this.onAuthSuccess.bind(this));
   }
 
   private buildForm() {
@@ -40,5 +42,11 @@ export class LoginComponent extends BaseAuth implements OnInit {
       email: new FormControl(this.authService.user.email, [Validators.required, Validators.email]),
       password: new FormControl(this.authService.user.password, [Validators.required, Validators.minLength(6)])
     });
+  }
+
+  private onAuthSuccess() {
+    if (this.authService.authState) {
+      this.router.navigate(['dashboard']);
+    }
   }
 }

@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFirestore } from 'angularfire2/firestore';
+import { auth } from 'firebase/app';
 
 import { CoreModule } from '../core.module';
 import { User } from 'src/app/shared/models';
@@ -9,7 +10,7 @@ import { User } from 'src/app/shared/models';
   providedIn: CoreModule
 })
 export class AuthService {
-  private authState = null;
+  private _authState = null;
   private _user: User = {
     email: null,
     password: null
@@ -17,10 +18,12 @@ export class AuthService {
 
   constructor(
     private afauth: AngularFireAuth,
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private ngZone: NgZone
   ) {
-    this.afauth.authState.subscribe((user) => {
-      this.authState = user;
+    this.afauth.authState.subscribe(user => {
+      this._authState = user;
+      console.log(this._authState);
     });
   }
 
@@ -28,7 +31,7 @@ export class AuthService {
     return this.afauth.auth
       .createUserWithEmailAndPassword(user.email, user.password)
       .then((data) => {
-        this.authState = data;
+        this._authState = data;
         this.afauth.auth.currentUser.updateProfile({
           displayName: user.nickname,
           photoURL: ''
@@ -43,12 +46,34 @@ export class AuthService {
     return this.afauth.auth
       .signInWithEmailAndPassword(user.email, user.password)
       .then(data => {
-        this.authState = data.user;
+        this._authState = data.user;
+        this.saveSessionToken(data.user.providerId);
         this.updateUserStatus('online');
       }).catch(e => console.warn(e));
   }
 
-  setUserData(user: User, photoUrl: string) {
+  loginWithGoogle() {
+    return this.afauth.auth
+      .signInWithPopup(new auth.GoogleAuthProvider())
+      .then(data => {
+        this.ngZone.run(() => {
+          this._authState = data.user;
+          this.saveSessionToken(data.user.providerId);
+          this.setUserData({ email: this._authState.email, nickname: this._authState.displayName }, this._authState.photoURL);
+          this.updateUserStatus('online');
+        });
+      });
+  }
+
+  logout() {
+    return this.updateUserStatus('offline')
+      .then(() => {
+        this.afauth.auth.signOut();
+        this.clearSessionToken();
+      });
+  }
+
+  setUserData(user?: User, photoUrl?: string) {
     const path = `users/${this.getUserId()}`;
     const statusPath = `status/${this.getUserId()}`;
     const userDoc = this.afs.doc(path);
@@ -66,13 +91,13 @@ export class AuthService {
   }
 
   updateUserStatus(status: string) {
-    this.afs.doc(`status/${this.getUserId()}`)
+    return this.afs.doc(`status/${this.getUserId()}`)
       .update({ status })
       .catch(e => console.warn(e));
   }
 
   isAuthorised() {
-    return this.authState;
+    return window.sessionStorage.getItem('authorized');
   }
 
   set user(user: User) {
@@ -83,7 +108,19 @@ export class AuthService {
     return this._user;
   }
 
+  get authState() {
+    return this._authState;
+  }
+
   private getUserId() {
-    return this.authState ? this.authState.uid : '';
+    return this._authState ? this._authState.uid : '';
+  }
+
+  private saveSessionToken(token: string) {
+    window.sessionStorage.setItem('authorized', token);
+  }
+
+  private clearSessionToken() {
+    window.sessionStorage.removeItem('authorized');
   }
 }
