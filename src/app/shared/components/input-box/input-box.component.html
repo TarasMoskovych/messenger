@@ -1,0 +1,35 @@
+<mat-form-field class="input-width" *ngIf="form.get(path) as field" [formGroup]="form">
+
+  <input
+    matInput
+    [formControlName]="path"
+    [type]="type"
+    [placeholder]="placeholder"
+  />
+
+  <mat-error *ngIf="path === 'email' && field.invalid && field.touched">
+    <ng-container *ngIf="field.errors['required']">
+      Please enter Email.
+    </ng-container>
+    <ng-container *ngIf="field.errors['email']">
+      Please enter valid Email.
+    </ng-container>
+  </mat-error>
+
+  <mat-error *ngIf="path === 'password' && field.invalid && field.touched">
+    <ng-container *ngIf="field.errors['required']">
+      Please enter {{ placeholder }}.
+    </ng-container>
+    <ng-container *ngIf="field.errors['minlength'] && field.errors['minlength']['requiredLength']">
+      Password should be greater than {{ field.errors['minlength']['requiredLength'] }} symbols.
+      Now is {{ field.errors['minlength']['actualLength'] }}
+    </ng-container>
+  </mat-error>
+
+  <mat-error *ngIf="path !== 'email' && path !== 'password' && field.invalid && field.touched">
+    <ng-container *ngIf="field.errors['required']">
+      Please enter {{ placeholder }}.
+    </ng-container>
+  </mat-error>
+
+</mat-form-field>

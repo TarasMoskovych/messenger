@@ -1,9 +1,15 @@
+@import './../scss/variables.scss';
+
 .auth {
   background: #f7f8fb;
 
   &__image-wrapper {
     overflow: hidden;
     max-height: 100vh;
+
+    @media screen and (max-width: $screen-xs) {
+      display: none;
+    }
   }
 
   &__image {
@@ -17,5 +23,11 @@
     padding: 15px;
     text-align: center;
     width: 400px;
+
+    @media screen and (max-width: $screen-xs) {
+      align-items: center;
+      display: flex;
+      height: calc(100vh - 30px);
+    }
   }
 }

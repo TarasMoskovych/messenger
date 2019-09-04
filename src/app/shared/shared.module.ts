@@ -5,9 +5,11 @@ import { RouterModule } from '@angular/router';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { MaterialModule } from './../material/material.module';
+import { LoaderComponent } from './components/loader/loader.component';
+import { InputBoxComponent } from './components/input-box/input-box.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [LoaderComponent, InputBoxComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -21,7 +23,9 @@ import { MaterialModule } from './../material/material.module';
     ReactiveFormsModule,
     RouterModule,
     FlexLayoutModule,
-    MaterialModule
+    MaterialModule,
+    LoaderComponent,
+    InputBoxComponent
   ]
 })
 export class SharedModule { }
