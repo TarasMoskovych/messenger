@@ -1,0 +1,26 @@
+<div class="profile" fxLayout="row" fxLayoutAlign="center center" *ngIf="user$ | async as user; else loader">
+  <div fxLayout="column">
+    <div class="profile__img-wrapper">
+      <img class="profile__img" [src]="user.photoURL" alt="">
+    </div>
+    <h3 class="profile__title">{{ user.displayName }}</h3>
+
+    <div fxLayout="row" fxLayoutAlign="center">
+      <span matTooltip="Change Nickname" class="mr-5">
+        <button mat-mini-fab color="primary" (click)="updateName()">
+          <mat-icon aria-hidden="true">edit</mat-icon>
+        </button>
+      </span>
+      <span matTooltip="Change Photo">
+        <button mat-mini-fab color="primary" (click)="updatePhoto()">
+          <mat-icon aria-hidden="true">perm_contact_calendar</mat-icon>
+        </button>
+      </span>
+      <input type="hidden">
+    </div>
+  </div>
+</div>
+
+<ng-template #loader>
+  <app-loader></app-loader>
+</ng-template>

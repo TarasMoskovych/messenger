@@ -1,0 +1,17 @@
+.profile {
+
+  &__img-wrapper {
+    max-height: 200px;
+    max-width: 200px;
+  }
+
+  &__img {
+    border-radius: 50%;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  &__title {
+    text-align: center;
+  }
+}

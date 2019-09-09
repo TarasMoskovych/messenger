@@ -1,10 +1,12 @@
 import { Injectable, NgZone } from '@angular/core';
+import { Router } from '@angular/router';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { auth } from 'firebase/app';
 
 import { CoreModule } from '../core.module';
 import { User } from 'src/app/shared/models';
+import { ErrorHandlerService } from './error-handler.service';
 
 @Injectable({
   providedIn: CoreModule
@@ -19,7 +21,9 @@ export class AuthService {
   constructor(
     private afauth: AngularFireAuth,
     private afs: AngularFirestore,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private router: Router,
+    private errorHandler: ErrorHandlerService
   ) {
     this.afauth.authState.subscribe(user => {
       this._authState = user;
@@ -30,11 +34,12 @@ export class AuthService {
   createUser(user: User) {
     return this.afauth.auth
       .createUserWithEmailAndPassword(user.email, user.password)
+      .catch(e => this.errorHandler.show(e))
       .then((data) => {
         this._authState = data;
         this.afauth.auth.currentUser.updateProfile({
           displayName: user.nickname,
-          photoURL: ''
+          photoURL: 'assets/img/no-photo.jpg'
         })
       .then(() => {
         this.setUserData(user, '');
@@ -49,7 +54,7 @@ export class AuthService {
         this._authState = data.user;
         this.saveSessionToken(data.user.providerId);
         this.updateUserStatus('online');
-      }).catch(e => console.warn(e));
+      }).catch(e => this.errorHandler.show(e));
   }
 
   loginWithGoogle() {
@@ -70,6 +75,7 @@ export class AuthService {
       .then(() => {
         this.afauth.auth.signOut();
         this.clearSessionToken();
+        this.router.navigate(['login']);
       });
   }
 

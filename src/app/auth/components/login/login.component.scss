@@ -12,3 +12,13 @@
     }
   }
 }
+
+a {
+  color: #3F51B5;
+  text-decoration: none;
+
+  &:hover {
+    font-weight: 600;
+    text-decoration: underline;
+  }
+}
