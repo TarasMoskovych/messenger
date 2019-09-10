@@ -79,7 +79,7 @@ export class AuthService {
       });
   }
 
-  setUserData(user?: User, photoUrl?: string) {
+  setUserData(user?: User, photoURL?: string) {
     const path = `users/${this.getUserId()}`;
     const statusPath = `status/${this.getUserId()}`;
     const userDoc = this.afs.doc(path);
@@ -88,7 +88,7 @@ export class AuthService {
     userDoc.set({
       email: user.email,
       nickname: user.nickname,
-      photoUrl
+      photoURL
     });
 
     status.set({

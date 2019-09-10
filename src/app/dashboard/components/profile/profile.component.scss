@@ -1,12 +1,9 @@
 .profile {
 
-  &__img-wrapper {
-    max-height: 200px;
-    max-width: 200px;
-  }
-
   &__img {
     border-radius: 50%;
+    max-height: 200px;
+    max-width: 200px;
     object-fit: cover;
     width: 100%;
   }
@@ -14,4 +11,9 @@
   &__title {
     text-align: center;
   }
+
+  mat-icon {
+    vertical-align: initial;
+  }
+
 }

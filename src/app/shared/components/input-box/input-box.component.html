@@ -1,8 +1,9 @@
-<mat-form-field class="input-width" *ngIf="form.get(path) as field" [formGroup]="form">
+<mat-form-field *ngIf="form.get(path) as field" [formGroup]="form" [style.width]="width" [style.text-align]="position">
 
   <input
     matInput
     [formControlName]="path"
+    [autofocus]="autofocus"
     [type]="type"
     [placeholder]="placeholder"
   />

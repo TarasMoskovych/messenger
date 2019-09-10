@@ -1,22 +1,41 @@
-<div class="profile" fxLayout="row" fxLayoutAlign="center center" *ngIf="user$ | async as user; else loader">
+<div class="profile" fxLayout="row" fxLayoutAlign="center center" *ngIf="!updateProfile && user$ | async as user; else loader">
   <div fxLayout="column">
-    <div class="profile__img-wrapper">
-      <img class="profile__img" [src]="user.photoURL" alt="">
-    </div>
-    <h3 class="profile__title">{{ user.displayName }}</h3>
+    <img class="profile__img" [src]="user.photoURL" alt="">
+    <h3 *ngIf="!editing" class="profile__title">{{ user.displayName }}</h3>
 
-    <div fxLayout="row" fxLayoutAlign="center">
-      <span matTooltip="Change Nickname" class="mr-5">
-        <button mat-mini-fab color="primary" (click)="updateName()">
+    <form class="mt-5 mb-10" [formGroup]="form" *ngIf="editing">
+      <app-input-box
+        [form]="form"
+        [autofocus]="true"
+        position="center"
+        type="text"
+        path="nickname"
+        placeholder="Nickname"
+      ></app-input-box>
+    </form>
+
+    <div *ngIf="!loading; else loader" fxLayout="row" fxLayoutAlign="center">
+      <span *ngIf="!editing" matTooltip="Change Nickname" class="mr-5">
+        <button mat-mini-fab color="primary" (click)="showForm(user.displayName)">
           <mat-icon aria-hidden="true">edit</mat-icon>
         </button>
       </span>
-      <span matTooltip="Change Photo">
-        <button mat-mini-fab color="primary" (click)="updatePhoto()">
+      <span *ngIf="editing" matTooltip="Update Name" class="mr-5">
+        <button [disabled]="form.invalid" mat-mini-fab color="primary" (click)="onUpdateName()">
+          <mat-icon aria-hidden="true">check</mat-icon>
+        </button>
+      </span>
+      <span *ngIf="!editing" matTooltip="Change Photo">
+        <button mat-mini-fab color="primary" (click)="fileInput.click()">
           <mat-icon aria-hidden="true">perm_contact_calendar</mat-icon>
         </button>
       </span>
-      <input type="hidden">
+      <span *ngIf="editing" matTooltip="Cancel">
+        <button mat-mini-fab color="warn" (click)="cancel()">
+          <mat-icon aria-hidden="true">close</mat-icon>
+        </button>
+      </span>
+      <input #fileInput type="file" (change)="onUpdatePhoto(fileInput.files[0])" style="display: none;">
     </div>
   </div>
 </div>

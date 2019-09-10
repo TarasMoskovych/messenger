@@ -8,8 +8,11 @@ import { FormGroup } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InputBoxComponent {
+  @Input() autofocus = false;
   @Input() form: FormGroup;
   @Input() path: string;
   @Input() placeholder: string;
-  @Input() type = 'text'
+  @Input() position = 'left';
+  @Input() type = 'text';
+  @Input() width = '100%';
 }
