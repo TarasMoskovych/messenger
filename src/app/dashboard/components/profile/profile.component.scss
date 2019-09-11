@@ -2,10 +2,17 @@
 
   &__img {
     border-radius: 50%;
+    cursor: pointer;
+    margin: 0 auto;
     max-height: 200px;
     max-width: 200px;
     object-fit: cover;
+    transition: 1s;
     width: 100%;
+
+    &.hidden {
+      opacity: 0;
+    }
   }
 
   &__title {

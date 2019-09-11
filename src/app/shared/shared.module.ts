@@ -2,7 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import { LightboxModule } from 'ngx-lightbox';
 
 import { MaterialModule } from './../material/material.module';
 import { LoaderComponent } from './components/loader/loader.component';
@@ -16,7 +19,9 @@ import { InputBoxComponent } from './components/input-box/input-box.component';
     ReactiveFormsModule,
     RouterModule,
     FlexLayoutModule,
-    MaterialModule
+    MaterialModule,
+    NgxSkeletonLoaderModule,
+    LightboxModule
   ],
   exports: [
     FormsModule,
@@ -24,6 +29,8 @@ import { InputBoxComponent } from './components/input-box/input-box.component';
     RouterModule,
     FlexLayoutModule,
     MaterialModule,
+    NgxSkeletonLoaderModule,
+    LightboxModule,
     LoaderComponent,
     InputBoxComponent
   ]

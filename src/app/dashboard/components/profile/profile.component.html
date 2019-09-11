@@ -1,6 +1,7 @@
 <div class="profile" fxLayout="row" fxLayoutAlign="center center" *ngIf="!updateProfile && user$ | async as user; else loader">
   <div fxLayout="column">
-    <img class="profile__img" [src]="user.photoURL" alt="">
+    <img [class.hidden]="!profileImageLoaded" class="profile__img" [src]="user.photoURL" alt="" (load)="onProfileImgLoaded()" (click)="onImgClick(user.photoURL)">
+    <ngx-skeleton-loader *ngIf="!profileImageLoaded" appearance="circle" [theme]="{'width':'200px', 'height':'200px'}"> </ngx-skeleton-loader>
     <h3 *ngIf="!editing" class="profile__title">{{ user.displayName }}</h3>
 
     <form class="mt-5 mb-10" [formGroup]="form" *ngIf="editing">
