@@ -5,10 +5,12 @@ import { AngularFireStorage } from 'angularfire2/storage';
 import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
 
 import { BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import * as firebase from 'firebase';
 
 import { CoreModule } from './../core.module';
-import { ErrorHandlerService } from './error-handler.service';
+import { NotificationService } from './notification.service';
+import { User } from 'src/app/shared/models';
 
 @Injectable({
   providedIn: CoreModule
@@ -20,7 +22,7 @@ export class UserService {
     private afauth: AngularFireAuth,
     private afs: AngularFirestore,
     private storage: AngularFireStorage,
-    private errorHandler: ErrorHandlerService
+    private notificationService: NotificationService
   ) {
     this.afauth.authState.subscribe((user: firebase.User) => {
       this.user$.next(user);
@@ -33,7 +35,7 @@ export class UserService {
     return this.afs.doc(`users/${user.uid}`)
       .update({ displayName })
       .then(() => user.updateProfile({ displayName, photoURL: user.photoURL}))
-      .catch(e => this.errorHandler.show(e));
+      .catch(e => this.notificationService.showError(e));
   }
 
   updateImage(file: File) {
@@ -50,6 +52,11 @@ export class UserService {
               .then(() => user.updateProfile({ displayName: user.displayName, photoURL }));
       });
     });
+  }
+
+  getUsers() {
+    return this.afs.collection('users').valueChanges()
+      .pipe(map((users: User[]) => users.filter((user: User) => user.email !== this.getCurrentUser().email)));
   }
 
   private getCurrentUser() {

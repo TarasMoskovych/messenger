@@ -38,7 +38,7 @@ export class RegisterComponent extends BaseAuth implements OnInit {
     this.form = new FormGroup({
       email: new FormControl(null, [Validators.required, Validators.email]),
       password: new FormControl(null, [Validators.required, Validators.minLength(6)]),
-      nickname: new FormControl(null, [Validators.required])
+      displayName: new FormControl(null, [Validators.required])
     });
   }
 
