@@ -1,8 +1,17 @@
 <mat-accordion multi="true">
-  <mat-expansion-panel hideToggle="true" expanded="true">
+  <mat-expansion-panel expanded="true">
     <mat-expansion-panel-header>
       My Profile
     </mat-expansion-panel-header>
     <app-profile></app-profile>
+  </mat-expansion-panel>
+  <mat-expansion-panel expanded="true" *ngIf="showAddFriendsPanel">
+    <mat-expansion-panel-header>
+      Add Friends
+    </mat-expansion-panel-header>
+    <app-add-friend *ngIf="users.length > 0; else loading" [users]="users" (addFriend)="onAddFriend($event)"></app-add-friend>
+    <ng-template #loading>
+      <app-loader></app-loader>
+    </ng-template>
   </mat-expansion-panel>
 </mat-accordion>

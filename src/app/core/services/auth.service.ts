@@ -6,7 +6,7 @@ import { auth } from 'firebase/app';
 
 import { CoreModule } from '../core.module';
 import { User } from 'src/app/shared/models';
-import { ErrorHandlerService } from './error-handler.service';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: CoreModule
@@ -23,7 +23,7 @@ export class AuthService {
     private afs: AngularFirestore,
     private ngZone: NgZone,
     private router: Router,
-    private errorHandler: ErrorHandlerService
+    private notificationService: NotificationService
   ) {
     this.afauth.authState.subscribe(user => {
       this._authState = user;
@@ -34,11 +34,11 @@ export class AuthService {
   createUser(user: User) {
     return this.afauth.auth
       .createUserWithEmailAndPassword(user.email, user.password)
-      .catch(e => this.errorHandler.show(e))
+      .catch(e => this.notificationService.showError(e))
       .then((data) => {
         this._authState = data;
         this.afauth.auth.currentUser.updateProfile({
-          displayName: user.nickname,
+          displayName: user.displayName,
           photoURL: 'assets/img/no-photo.jpg'
         })
       .then(()  => {
@@ -55,13 +55,14 @@ export class AuthService {
       .signInWithEmailAndPassword(user.email, user.password)
       .then(data => {
         this._authState = data.user;
+
         if (this._authState.emailVerified) {
           this.saveSessionToken(data.user.providerId);
           this.updateUserStatus('online');
         } else {
           this.emailVerifiedErrorHandler();
         }
-      }).catch(e => this.errorHandler.show(e));
+      }).catch(e => this.notificationService.showError(e));
   }
 
   loginWithGoogle() {
@@ -71,7 +72,7 @@ export class AuthService {
         this.ngZone.run(() => {
           this._authState = data.user;
           this.saveSessionToken(data.user.providerId);
-          this.setUserData({ email: this._authState.email, nickname: this._authState.displayName }, this._authState.photoURL);
+          this.setUserData({ email: this._authState.email, displayName: this._authState.displayName }, this._authState.photoURL);
           this.updateUserStatus('online');
         });
       });
@@ -94,7 +95,7 @@ export class AuthService {
 
     userDoc.set({
       email: user.email,
-      nickname: user.nickname,
+      displayName: user.displayName,
       photoURL
     });
 
@@ -130,7 +131,7 @@ export class AuthService {
   }
 
   private emailVerifiedErrorHandler() {
-    this.errorHandler.show({ message: 'Please, confirm Your email!' });
+    this.notificationService.showMessage('Your account is inactive. Please, confirm Your email!');
   }
 
   private saveSessionToken(token: string) {

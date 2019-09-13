@@ -1,9 +1,11 @@
+@import './../../../scss/variables.scss';
+
 button {
   width: 80%;
 }
 
 a {
-  color: #3F51B5;
+  color: $primary;
   text-decoration: none;
 
   &:hover {

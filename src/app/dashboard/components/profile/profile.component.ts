@@ -28,7 +28,7 @@ export class ProfileComponent implements OnInit {
 
   onUpdateName() {
     this.loading = true;
-    this.userService.updateName(this.form.value.nickname).then(this.cancel.bind(this));
+    this.userService.updateName(this.form.value.displayName).then(this.cancel.bind(this));
   }
 
   onUpdatePhoto(file: File) {
@@ -59,9 +59,9 @@ export class ProfileComponent implements OnInit {
     this.editing = false;
   }
 
-  private buildForm(nickname: string) {
+  private buildForm(displayName: string) {
     this.form = new FormGroup({
-      nickname: new FormControl(nickname, [Validators.required])
+      displayName: new FormControl(displayName, [Validators.required])
     });
   }
 

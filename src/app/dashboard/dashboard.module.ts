@@ -5,10 +5,16 @@ import { DashBoardRoutingModule } from './dashboard-routing.module';
 import { SharedModule } from '../shared/shared.module';
 
 import { DashboardComponent } from './dashboard.component';
-import { NavbarComponent, SidebarComponent, ProfileComponent } from './components';
+import {
+  AddFriendComponent,
+  NavbarComponent,
+  SidebarComponent,
+  ProfileComponent
+} from './components';
 
 @NgModule({
   declarations: [
+    AddFriendComponent,
     DashboardComponent,
     NavbarComponent,
     SidebarComponent,
