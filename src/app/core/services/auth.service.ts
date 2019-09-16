@@ -42,7 +42,7 @@ export class AuthService {
           photoURL: 'assets/img/no-photo.jpg'
         })
       .then(() => {
-        this.setUserData(user, '');
+        this.setUserData(user, 'assets/img/no-photo.jpg');
       });
     });
   }
@@ -52,7 +52,7 @@ export class AuthService {
       .signInWithEmailAndPassword(user.email, user.password)
       .then(data => {
         this._authState = data.user;
-        this.saveSessionToken(data.user.providerId);
+        this.saveSessionToken(data.user.email);
         this.updateUserStatus('online');
       }).catch(e => this.notificationService.showError(e));
   }
@@ -63,7 +63,7 @@ export class AuthService {
       .then(data => {
         this.ngZone.run(() => {
           this._authState = data.user;
-          this.saveSessionToken(data.user.providerId);
+          this.saveSessionToken(data.user.email);
           this.setUserData({ email: this._authState.email, displayName: this._authState.displayName }, this._authState.photoURL);
           this.updateUserStatus('online');
         });

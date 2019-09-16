@@ -9,7 +9,8 @@ import {
   AddFriendComponent,
   NavbarComponent,
   SidebarComponent,
-  ProfileComponent
+  ProfileComponent,
+  RequestsComponent
 } from './components';
 
 @NgModule({
@@ -18,7 +19,8 @@ import {
     DashboardComponent,
     NavbarComponent,
     SidebarComponent,
-    ProfileComponent
+    ProfileComponent,
+    RequestsComponent
   ],
   imports: [
     CommonModule,

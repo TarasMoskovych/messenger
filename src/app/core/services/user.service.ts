@@ -59,6 +59,11 @@ export class UserService {
       .pipe(map((users: User[]) => users.filter((user: User) => user.email !== this.getCurrentUser().email)));
   }
 
+  getUsersByEmails(arr: string[]) {
+    return this.afs.collection('users').valueChanges()
+      .pipe(map((users: User[]) => users.filter((user: User) => arr.includes(user.email))));
+  }
+
   private getCurrentUser() {
     return this.afauth.auth.currentUser;
   }
