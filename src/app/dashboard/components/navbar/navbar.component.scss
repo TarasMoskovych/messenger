@@ -1,3 +1,5 @@
+@import './../../../scss/variables.scss';
+
 .navbar {
 
   &__toolbar {
@@ -8,7 +10,7 @@
     cursor: pointer;
 
     &:hover {
-      color: lighten(#3F51B5, 40);
+      color: lighten($primary, 40);
     }
   }
 

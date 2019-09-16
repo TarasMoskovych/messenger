@@ -41,6 +41,9 @@ export class AuthService {
           displayName: user.displayName,
           photoURL: 'assets/img/no-photo.jpg'
         })
+      .then(()  => {
+        this.afauth.auth.currentUser.sendEmailVerification();
+      })
       .then(() => {
         this.setUserData(user, 'assets/img/no-photo.jpg');
       });
@@ -52,8 +55,13 @@ export class AuthService {
       .signInWithEmailAndPassword(user.email, user.password)
       .then(data => {
         this._authState = data.user;
-        this.saveSessionToken(data.user.email);
-        this.updateUserStatus('online');
+
+        if (this._authState.emailVerified) {
+          this.saveSessionToken(data.user.providerId);
+          this.updateUserStatus('online');
+        } else {
+          this.emailVerifiedErrorHandler();
+        }
       }).catch(e => this.notificationService.showError(e));
   }
 
@@ -120,6 +128,10 @@ export class AuthService {
 
   private getUserId() {
     return this._authState ? this._authState.uid : '';
+  }
+
+  private emailVerifiedErrorHandler() {
+    this.notificationService.showMessage('Your account is inactive. Please, confirm Your email!');
   }
 
   private saveSessionToken(token: string) {

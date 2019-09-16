@@ -1,5 +1,10 @@
 @import './../../../scss/variables.scss';
 
+mat-expansion-panel-header {
+  color: $primary;
+  font-weight: 600;
+}
+
 .empty {
   color: $danger;
 }
