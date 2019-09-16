@@ -16,4 +16,8 @@ body {
       padding: 0 !important;
     }
   }
+
+  .mat-expansion-indicator::after {
+    color: $primary;
+  }
 }

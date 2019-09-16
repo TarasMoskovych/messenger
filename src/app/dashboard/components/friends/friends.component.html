@@ -1,0 +1,6 @@
+<mat-list>
+  <mat-list-item class="add-friend" *ngFor="let user of users; let idx = index">
+    <img matListAvatar [src]="user.photoURL" alt="" (click)="onImgClick(idx)">
+    <h3 matLine>{{ user.displayName }}</h3>
+  </mat-list-item>
+</mat-list>

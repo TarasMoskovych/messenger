@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { take } from 'rxjs/operators';
 
-import { NotificationService, RequestsService, UserService } from 'src/app/core/services';
+import { FriendsService, NotificationService, RequestsService, UserService } from 'src/app/core/services';
 import { User } from 'src/app/shared/models';
 
 @Component({
@@ -13,19 +13,24 @@ export class SidebarComponent implements OnInit {
   subLoading = false;
   showAddFriendsPanel = true;
   showRequetsPanel = true;
+  showFriendsPanel = true;
 
   usersByRequests: User[] = [];
   users: User[] = [];
+  friends: User[] = [];
 
   loadedUsers = false;
   loadedRequests = false;
 
   constructor(
     private notificationService: NotificationService,
+    private friendsService: FriendsService,
     private requestService: RequestsService,
     private userService: UserService) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.getFriends();
+  }
 
   onLoadUsers() {
     if (!this.loadedUsers) { this.getUsers(); }
@@ -53,6 +58,13 @@ export class SidebarComponent implements OnInit {
 
   onDeclineRequest(user: User) {
     this.requestService.declineRequest(user).then(() => this.notificationService.showMessage(`${user.displayName} is ignored`, 'Okay'));
+  }
+
+  private getFriends() {
+    this.friendsService.getAll().subscribe((users: User[]) => {
+      if (users.length === 0) { this.showFriendsPanel = false; }
+      this.friends = users;
+    });
   }
 
   private getUsers() {

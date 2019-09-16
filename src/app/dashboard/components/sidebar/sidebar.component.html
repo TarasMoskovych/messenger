@@ -1,36 +1,58 @@
 <mat-accordion multi="true">
+
   <mat-expansion-panel expanded="true">
     <mat-expansion-panel-header>
       My Profile
     </mat-expansion-panel-header>
-    <app-profile></app-profile>
+    <ng-template matExpansionPanelContent>
+      <app-profile></app-profile>
+    </ng-template>
   </mat-expansion-panel>
+
   <mat-expansion-panel (afterExpand)="onLoadUsers()">
     <mat-expansion-panel-header>
       Add Friends
     </mat-expansion-panel-header>
-    <ng-container *ngIf="showAddFriendsPanel; else emptyFriends">
-      <app-add-friend *ngIf="users.length > 0 && !subLoading; else loading" [users]="users" (addFriend)="onAddFriend($event)"></app-add-friend>
-      <ng-template #loading>
-        <app-loader></app-loader>
+    <ng-template matExpansionPanelContent>
+      <ng-container *ngIf="showAddFriendsPanel; else emptyFriends">
+        <app-add-friend *ngIf="users.length > 0 && !subLoading; else loading" [users]="users" (addFriend)="onAddFriend($event)"></app-add-friend>
+        <ng-template #loading>
+          <app-loader></app-loader>
+        </ng-template>
+      </ng-container>
+      <ng-template #emptyFriends>
+        <span class="empty">Users list is empty!</span>
       </ng-template>
-    </ng-container>
-    <ng-template #emptyFriends>
-      <span class="empty">Users list is empty!</span>
     </ng-template>
   </mat-expansion-panel>
+
+  <mat-expansion-panel expanded="true" *ngIf="showFriendsPanel">
+    <mat-expansion-panel-header>
+      Friends
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <app-friends *ngIf="friends.length > 0; else loading" [users]="friends"></app-friends>
+    </ng-template>
+    <ng-template #loading>
+      <app-loader></app-loader>
+    </ng-template>
+  </mat-expansion-panel>
+
   <mat-expansion-panel (afterExpand)="onLoadRequests()">
     <mat-expansion-panel-header>
       Requests
     </mat-expansion-panel-header>
-    <ng-container *ngIf="showRequetsPanel; else emptyRequests">
-      <ng-template #loading>
-        <app-loader></app-loader>
+    <ng-template matExpansionPanelContent>
+      <ng-container *ngIf="showRequetsPanel; else emptyRequests">
+        <app-requests *ngIf="usersByRequests.length > 0 && !subLoading; else loading" [users]="usersByRequests" (acceptRequest)="onAcceptRequest($event)" (declineRequest)="onDeclineRequest($event)"></app-requests>
+        <ng-template #loading>
+          <app-loader></app-loader>
+        </ng-template>
+      </ng-container>
+      <ng-template #emptyRequests>
+        <span class="empty">You don't have new requests!</span>
       </ng-template>
-      <app-requests *ngIf="usersByRequests.length > 0 && !subLoading; else loading" [users]="usersByRequests" (acceptRequest)="onAcceptRequest($event)" (declineRequest)="onDeclineRequest($event)"></app-requests>
-    </ng-container>
-    <ng-template #emptyRequests>
-      <span class="empty">You don't have new requests!</span>
     </ng-template>
   </mat-expansion-panel>
+
 </mat-accordion>

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { switchMap } from 'rxjs/operators';
 
 import { CoreModule } from './../core.module';
 import { Request, User } from './../../shared/models';
+import { AuthService } from './auth.service';
 import { UserService } from './user.service';
 
 @Injectable({
@@ -14,17 +14,17 @@ export class RequestsService {
   private requestRef: firebase.firestore.CollectionReference = this.afs.collection('requests').ref;
   private friendsRef: firebase.firestore.CollectionReference = this.afs.collection('friends').ref;
 
-  constructor(private userService: UserService, private afs: AngularFirestore, private afauth: AngularFireAuth) { }
+  constructor(private authService: AuthService, private userService: UserService, private afs: AngularFirestore) { }
 
   addRequest(request: string) {
     return this.requestRef.add({
-      sender: this.getCurrentUserEmail(),
+      sender: this.authService.isAuthorised(),
       receiver: request
     });
   }
 
   getUsersByRequests() {
-    return this.afs.collection('requests', ref => ref.where('receiver', '==', this.getCurrentUserEmail())).valueChanges()
+    return this.afs.collection('requests', ref => ref.where('receiver', '==', this.authService.isAuthorised())).valueChanges()
       .pipe(switchMap((requests: Request[]) => this.userService.getUsersByEmails(requests.map((request: Request) => request.sender))));
   }
 
@@ -50,11 +50,11 @@ export class RequestsService {
     };
 
     return new Promise(resolve => {
-      this.friendsRef.where('email', '==', this.getCurrentUserEmail()).get().then((snapshot: firebase.firestore.QuerySnapshot) => {
-        updateSnapshot(snapshot, this.getCurrentUserEmail(), user.email);
+      this.friendsRef.where('email', '==', this.authService.isAuthorised()).get().then((snapshot: firebase.firestore.QuerySnapshot) => {
+        updateSnapshot(snapshot, this.authService.isAuthorised(), user.email);
       }).then(() => {
         this.friendsRef.where('email', '==', user.email).get().then((snapshot: firebase.firestore.QuerySnapshot) => {
-          updateSnapshot(snapshot, user.email, this.getCurrentUserEmail());
+          updateSnapshot(snapshot, user.email, this.authService.isAuthorised());
         });
       }).then(() => {
         this.declineRequest(user).then(() => {
@@ -72,10 +72,6 @@ export class RequestsService {
         });
       });
     });
-  }
-
-  private getCurrentUserEmail() {
-    return window.sessionStorage.getItem('authorized');
   }
 
 }
