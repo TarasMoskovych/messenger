@@ -31,7 +31,7 @@ export class AuthService {
     });
   }
 
-  createUser(user: User) {
+  register(user: User) {
     return this.afauth.auth
       .createUserWithEmailAndPassword(user.email, user.password)
       .catch(e => this.notificationService.showError(e))
@@ -45,7 +45,7 @@ export class AuthService {
         this.afauth.auth.currentUser.sendEmailVerification();
       })
       .then(() => {
-        this.setUserData(user, '');
+        this.setUserData(user, 'assets/img/no-photo.jpg');
       });
     });
   }
@@ -71,7 +71,7 @@ export class AuthService {
       .then(data => {
         this.ngZone.run(() => {
           this._authState = data.user;
-          this.saveSessionToken(data.user.providerId);
+          this.saveSessionToken(data.user.email);
           this.setUserData({ email: this._authState.email, displayName: this._authState.displayName }, this._authState.photoURL);
           this.updateUserStatus('online');
         });

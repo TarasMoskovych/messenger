@@ -7,18 +7,22 @@ import { SharedModule } from '../shared/shared.module';
 import { DashboardComponent } from './dashboard.component';
 import {
   AddFriendComponent,
+  FriendsComponent,
   NavbarComponent,
   SidebarComponent,
-  ProfileComponent
+  ProfileComponent,
+  RequestsComponent
 } from './components';
 
 @NgModule({
   declarations: [
     AddFriendComponent,
+    FriendsComponent,
     DashboardComponent,
     NavbarComponent,
     SidebarComponent,
-    ProfileComponent
+    ProfileComponent,
+    RequestsComponent
   ],
   imports: [
     CommonModule,

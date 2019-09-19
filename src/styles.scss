@@ -10,7 +10,14 @@ body {
     display: none;
   }
 
-  .add-friend .mat-list-item-content {
-    padding: 0 !important;
+  .add-friend,
+  .requests {
+    .mat-list-item-content {
+      padding: 0 !important;
+    }
+  }
+
+  .mat-expansion-indicator::after {
+    color: $primary;
   }
 }

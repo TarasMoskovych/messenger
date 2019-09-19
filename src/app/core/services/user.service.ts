@@ -54,9 +54,14 @@ export class UserService {
     });
   }
 
-  getUsers() {
+  getAll() {
     return this.afs.collection('users').valueChanges()
       .pipe(map((users: User[]) => users.filter((user: User) => user.email !== this.getCurrentUser().email)));
+  }
+
+  getAllByEmails(arr: string[]) {
+    return this.afs.collection('users').valueChanges()
+      .pipe(map((users: User[]) => users.filter((user: User) => arr.includes(user.email))));
   }
 
   private getCurrentUser() {

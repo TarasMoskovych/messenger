@@ -4,3 +4,8 @@ export interface User {
   displayName?: string;
   photoURL?: string;
 }
+
+export interface Request {
+  sender: string;
+  receiver: string;
+}
