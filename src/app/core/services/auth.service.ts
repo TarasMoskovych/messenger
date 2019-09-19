@@ -31,7 +31,7 @@ export class AuthService {
     });
   }
 
-  createUser(user: User) {
+  register(user: User) {
     return this.afauth.auth
       .createUserWithEmailAndPassword(user.email, user.password)
       .catch(e => this.notificationService.showError(e))

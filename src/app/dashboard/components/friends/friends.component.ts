@@ -1,5 +1,8 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
-import { User } from 'src/app/shared';
+import { Lightbox } from 'ngx-lightbox';
+
+import { AbstractLightBox } from '../../classes/lightbox.abstract';
+import { User } from 'src/app/shared/models';
 
 @Component({
   selector: 'app-friends',
@@ -7,16 +10,19 @@ import { User } from 'src/app/shared';
   styleUrls: ['./friends.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FriendsComponent implements OnInit {
+export class FriendsComponent extends AbstractLightBox implements OnInit {
   @Input() users: User[] = [];
 
-  constructor() { }
+  constructor(private lightbox: Lightbox) {
+    super();
+  }
 
   ngOnInit() {
+    this.initAlbum(this.users);
   }
 
   onImgClick(idx: number) {
-
+    this.lightbox.open(this.album, idx);
   }
 
 }

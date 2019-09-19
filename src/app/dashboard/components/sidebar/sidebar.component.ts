@@ -42,7 +42,7 @@ export class SidebarComponent implements OnInit {
 
   onAddFriend(user: User) {
     this.subLoading = true;
-    this.requestService.addRequest(user.email).then(() => {
+    this.requestService.add(user.email).then(() => {
       this.notificationService.showMessage(`Request is sent to ${user.displayName}.`, 'Okay');
       this.subLoading = false;
     });
@@ -50,14 +50,14 @@ export class SidebarComponent implements OnInit {
 
   onAcceptRequest(user: User) {
     this.subLoading = true;
-    this.requestService.acceptRequest(user).then(() => {
+    this.requestService.accept(user).then(() => {
       this.notificationService.showMessage(`${user.displayName} is added`, 'Okay');
       this.subLoading = false;
     });
   }
 
   onDeclineRequest(user: User) {
-    this.requestService.declineRequest(user).then(() => this.notificationService.showMessage(`${user.displayName} is ignored`, 'Okay'));
+    this.requestService.decline(user).then(() => this.notificationService.showMessage(`${user.displayName} is ignored`, 'Okay'));
   }
 
   private getFriends() {
@@ -68,7 +68,7 @@ export class SidebarComponent implements OnInit {
   }
 
   private getUsers() {
-    this.userService.getUsers()
+    this.userService.getAll()
       .pipe(take(1))
       .subscribe((users: User[]) => {
         if (users.length === 0) { this.showAddFriendsPanel = false; }

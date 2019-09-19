@@ -16,7 +16,7 @@ export class RequestsService {
 
   constructor(private authService: AuthService, private userService: UserService, private afs: AngularFirestore) { }
 
-  addRequest(request: string) {
+  add(request: string) {
     return this.requestRef.add({
       sender: this.authService.isAuthorised(),
       receiver: request
@@ -25,10 +25,10 @@ export class RequestsService {
 
   getUsersByRequests() {
     return this.afs.collection('requests', ref => ref.where('receiver', '==', this.authService.isAuthorised())).valueChanges()
-      .pipe(switchMap((requests: Request[]) => this.userService.getUsersByEmails(requests.map((request: Request) => request.sender))));
+      .pipe(switchMap((requests: Request[]) => this.userService.getAllByEmails(requests.map((request: Request) => request.sender))));
   }
 
-  acceptRequest(user: User) {
+  accept(user: User) {
     const updateFriendsCollection = (snapshot: firebase.firestore.QuerySnapshot, email: string) => {
       this.afs.doc(`friends/${snapshot.docs[0].id}`).collection('myfriends').add({ email });
     };
@@ -57,14 +57,14 @@ export class RequestsService {
           updateSnapshot(snapshot, user.email, this.authService.isAuthorised());
         });
       }).then(() => {
-        this.declineRequest(user).then(() => {
+        this.decline(user).then(() => {
           resolve(true);
         });
       });
     });
   }
 
-  declineRequest(user: User) {
+  decline(user: User) {
     return new Promise(resolve => {
       this.requestRef.where('sender', '==', user.email).get().then((snapshot: firebase.firestore.QuerySnapshot) => {
         snapshot.docs[0].ref.delete().then(() => {

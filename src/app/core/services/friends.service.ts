@@ -22,7 +22,7 @@ export class FriendsService {
     return this.afs.collection('friends', ref => ref.where('email', '==', this.authService.isAuthorised())).snapshotChanges().pipe(
       switchMap(action => this.afs.collection(`friends/${action[0].payload.doc.id}/myfriends`).valueChanges()),
       switchMap((emails: [{ email: string }]) => {
-        return this.userService.getUsersByEmails(emails.map((item: { email: string }) => item.email));
+        return this.userService.getAllByEmails(emails.map((item: { email: string }) => item.email));
       })
     );
   }

@@ -23,7 +23,7 @@ export class RegisterComponent extends BaseAuth implements OnInit {
     this.showLoader();
     this.disableForm();
     this.authService
-      .createUser(this.form.value)
+      .register(this.form.value)
       .then(() => {
         this.authService.user = this.form.value;
         this.router.navigate(['login']);
