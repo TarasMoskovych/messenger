@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFirestore } from 'angularfire2/firestore';
@@ -21,7 +21,6 @@ export class AuthService {
   constructor(
     private afauth: AngularFireAuth,
     private afs: AngularFirestore,
-    private ngZone: NgZone,
     private router: Router,
     private notificationService: NotificationService
   ) {
@@ -69,12 +68,10 @@ export class AuthService {
     return this.afauth.auth
       .signInWithPopup(new auth.GoogleAuthProvider())
       .then(data => {
-        this.ngZone.run(() => {
-          this._authState = data.user;
-          this.saveSessionToken(data.user.email);
-          this.setUserData({ email: this._authState.email, displayName: this._authState.displayName }, this._authState.photoURL);
-          this.updateUserStatus('online');
-        });
+        this._authState = data.user;
+        this.saveSessionToken(data.user.email);
+        this.setUserData({ email: this._authState.email, displayName: this._authState.displayName }, this._authState.photoURL);
+        this.updateUserStatus('online');
       });
   }
 

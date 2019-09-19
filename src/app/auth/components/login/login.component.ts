@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -11,9 +11,9 @@ import { BaseAuth } from './../auth.base';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent extends BaseAuth implements OnInit {
-  constructor(private router: Router, private authService: AuthService) {
+  constructor(private ngZone: NgZone, private router: Router, private authService: AuthService) {
     super();
-   }
+  }
 
   ngOnInit() {
     this.buildForm();
@@ -46,7 +46,7 @@ export class LoginComponent extends BaseAuth implements OnInit {
 
   private onAuthSuccess() {
     if (this.authService.authState) {
-      this.router.navigate(['dashboard']);
+      this.ngZone.run(() => this.router.navigate(['dashboard']));
     }
   }
 }

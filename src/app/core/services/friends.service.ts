@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 import { CoreModule } from '../core.module';
 import { AuthService } from './auth.service';
@@ -20,7 +20,7 @@ export class FriendsService {
 
   getAll() {
     return this.afs.collection('friends', ref => ref.where('email', '==', this.authService.isAuthorised())).snapshotChanges().pipe(
-      switchMap(action => this.afs.collection(`friends/${action[0].payload.doc.id}/myfriends`).valueChanges()),
+      switchMap(action => action.length > 0 ? this.afs.collection(`friends/${action[0].payload.doc.id}/myfriends`).valueChanges() : of([])),
       switchMap((emails: [{ email: string }]) => {
         return this.userService.getAllByEmails(emails.map((item: { email: string }) => item.email));
       })
