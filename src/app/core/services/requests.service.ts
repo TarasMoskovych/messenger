@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from 'angularfire2/firestore';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, map } from 'rxjs/operators';
 
 import { CoreModule } from './../core.module';
 import { Request, User } from './../../shared/models';
@@ -21,6 +21,18 @@ export class RequestsService {
       sender: this.authService.isAuthorised(),
       receiver: request
     });
+  }
+
+  getAll() {
+    let receivers = [];
+    return this.afs.collection('requests', ref => ref.where('receiver', '==', this.authService.isAuthorised())).valueChanges()
+      .pipe(
+        switchMap((data: Request[]) => {
+          receivers = data;
+          return this.afs.collection('requests', ref => ref.where('sender', '==', this.authService.isAuthorised())).valueChanges();
+        }),
+        map((senders: Request[]) => receivers.concat(senders))
+      );
   }
 
   getUsersByRequests() {

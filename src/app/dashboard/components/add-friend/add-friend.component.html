@@ -2,7 +2,9 @@
   <mat-list-item class="add-friend" *ngFor="let user of users; let idx = index">
     <img matListAvatar [src]="user.photoURL" alt="" (click)="onImgClick(idx)">
     <h3 matLine>{{ user.displayName }}</h3>
-    <button mat-icon-button (click)="onAddFriend(user)">
+    <p matLine *ngIf="user.receiver">Requested</p>
+    <p matLine *ngIf="user.sender">sent you request</p>
+    <button *ngIf="!user.receiver && !user.sender" mat-icon-button (click)="onAddFriend(user)">
       <mat-icon color="primary">add_circle</mat-icon>
     </button>
   </mat-list-item>

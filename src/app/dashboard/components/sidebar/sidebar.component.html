@@ -14,27 +14,32 @@
       Add Friends
     </mat-expansion-panel-header>
     <ng-template matExpansionPanelContent>
-      <ng-container *ngIf="showAddFriendsPanel; else emptyFriends">
+      <ng-container *ngIf="showAddFriendsPanel; else emptyUsers">
         <app-add-friend *ngIf="users.length > 0 && !subLoading; else loading" [users]="users" (addFriend)="onAddFriend($event)"></app-add-friend>
         <ng-template #loading>
           <app-loader></app-loader>
         </ng-template>
       </ng-container>
-      <ng-template #emptyFriends>
+      <ng-template #emptyUsers>
         <span class="empty">Users list is empty!</span>
       </ng-template>
     </ng-template>
   </mat-expansion-panel>
 
-  <mat-expansion-panel expanded="true" *ngIf="showFriendsPanel">
+  <mat-expansion-panel expanded="true">
     <mat-expansion-panel-header>
       Friends
     </mat-expansion-panel-header>
     <ng-template matExpansionPanelContent>
-      <app-friends *ngIf="friends.length > 0; else loading" [users]="friends"></app-friends>
-    </ng-template>
-    <ng-template #loading>
-      <app-loader></app-loader>
+      <ng-container *ngIf="showFriendsPanel; else emptyFriends">
+        <app-friends *ngIf="friends.length > 0; else loading" [users]="friends"></app-friends>
+        <ng-template #loading>
+          <app-loader></app-loader>
+        </ng-template>
+      </ng-container>
+      <ng-template #emptyFriends>
+        <span class="empty">Friends list is empty!</span>
+      </ng-template>
     </ng-template>
   </mat-expansion-panel>
 

@@ -3,6 +3,8 @@ export interface User {
   password?: string;
   displayName?: string;
   photoURL?: string;
+  sender?: boolean;
+  receiver?: boolean;
 }
 
 export interface Request {
