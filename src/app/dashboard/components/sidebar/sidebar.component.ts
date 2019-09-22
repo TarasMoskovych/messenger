@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { take, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { take, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { FriendsService, NotificationService, RequestsService, UserService } from 'src/app/core/services';
 import { User, Request } from 'src/app/shared/models';
@@ -11,6 +11,8 @@ import { User, Request } from 'src/app/shared/models';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit, OnDestroy {
+  private emailS = new Subject<string>();
+  private email$ = this.emailS.asObservable();
   private destroy$ = new Subject<boolean>();
 
   subLoading = false;
@@ -36,6 +38,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getFriends();
     this.getRequests();
+    this.onSearchUser();
   }
 
   ngOnDestroy() {
@@ -66,7 +69,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       this.notificationService.showMessage(`${user.displayName} is added`, 'Okay');
       this.subLoading = false;
       this.users = [ ...this.users.filter((u: User) => user.email !== u.email)];
-      this.showAddFriendsPanel = this.users.length !== 0;
+      this.toggleAddFriendsPanel();
     });
   }
 
@@ -81,6 +84,33 @@ export class SidebarComponent implements OnInit, OnDestroy {
       });
       this.subLoading = false;
     });
+  }
+
+  onInputUser(email: string) {
+    this.emailS.next(email);
+  }
+
+  onSearchUser() {
+    this.email$
+      .pipe(
+        takeUntil(this.destroy$),
+        distinctUntilChanged(),
+        debounceTime(400)
+      )
+      .subscribe((email: string) => {
+        this.userService.getByQuery(email, email + '\uf8ff')
+          .pipe(take(1))
+          .subscribe((users: User[]) => {
+            if (email) {
+              this.users = users;
+              this.filterUsersByFriends(this.users);
+              this.filterUsersByRequests();
+            } else {
+              this.getUsers();
+            }
+            this.toggleAddFriendsPanel();
+          });
+      });
   }
 
   private getFriends() {
@@ -110,7 +140,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       .subscribe((users: User[]) => {
         this.filterUsersByFriends(users);
         this.filterUsersByRequests();
-        this.showAddFriendsPanel = this.users.length !== 0;
+        this.toggleAddFriendsPanel();
         this.loadedUsers = true;
       });
   }
@@ -143,6 +173,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
     });
 
     this.users = [...this.users];
+  }
+
+  private toggleAddFriendsPanel() {
+    this.showAddFriendsPanel = this.users.length !== 0;
   }
 
 }

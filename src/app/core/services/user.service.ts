@@ -55,8 +55,8 @@ export class UserService {
   }
 
   getAll() {
-    return this.afs.collection('users').valueChanges()
-      .pipe(map((users: User[]) => users.filter((user: User) => user.email !== this.getCurrentUser().email)));
+    return this.afs.collection('users', ref => ref.limit(20)).valueChanges()
+      .pipe(map((users: User[]) => this.excludeCurrentUser(users)));
   }
 
   getAllByEmails(arr: string[]) {
@@ -64,7 +64,16 @@ export class UserService {
       .pipe(map((users: User[]) => users.filter((user: User) => arr.includes(user.email))));
   }
 
+  getByQuery(start: string, end: string) {
+    return this.afs.collection('users', ref => ref.orderBy('displayName').startAt(start).endAt(end)).valueChanges()
+      .pipe(map((users: User[]) => this.excludeCurrentUser(users)));
+  }
+
   private getCurrentUser() {
     return this.afauth.auth.currentUser;
+  }
+
+  private excludeCurrentUser(users: User[]) {
+    return users.filter((user: User) => user.email !== this.getCurrentUser().email);
   }
 }
