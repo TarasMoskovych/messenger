@@ -5,9 +5,15 @@ export interface User {
   photoURL?: string;
   sender?: boolean;
   receiver?: boolean;
+  online?: boolean;
 }
 
 export interface Request {
   sender: string;
   receiver: string;
+}
+
+export interface Status {
+  email: string;
+  status: string;
 }

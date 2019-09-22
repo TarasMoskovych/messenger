@@ -6,4 +6,21 @@
   &__list {
     max-height: $friends-max-height;
   }
+
+  &__title {
+    align-items: center;
+    display: flex !important;
+  }
+
+  &__presence {
+    background: $danger;
+    border-radius: 50%;
+    height: 10px;
+    margin-left: 7px;
+    width: 10px;
+
+    &.online {
+      background: lawngreen;
+    }
+  }
 }

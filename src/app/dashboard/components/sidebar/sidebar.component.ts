@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { take, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { FriendsService, NotificationService, RequestsService, UserService } from 'src/app/core/services';
-import { User, Request } from 'src/app/shared/models';
+import { User, Request, Status } from 'src/app/shared/models';
 
 @Component({
   selector: 'app-sidebar',
@@ -39,6 +39,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.getFriends();
     this.getRequests();
     this.onSearchUser();
+    this.onCheckStatuses();
   }
 
   ngOnDestroy() {
@@ -90,7 +91,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.emailS.next(email);
   }
 
-  onSearchUser() {
+  private onSearchUser() {
     this.email$
       .pipe(
         takeUntil(this.destroy$),
@@ -113,6 +114,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
       });
   }
 
+  private onCheckStatuses() {
+    this.userService.checkStatuses()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.getStatuses());
+  }
+
   private getFriends() {
     this.friendsService.getAll()
       .pipe(takeUntil(this.destroy$))
@@ -121,6 +128,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         this.friends = [...users];
         this.filterUsersByFriends(this.users);
         this.loadedFriends = true;
+        this.getStatuses();
     });
   }
 
@@ -154,9 +162,24 @@ export class SidebarComponent implements OnInit, OnDestroy {
       });
   }
 
+  private getStatuses() {
+    this.userService.getStatuses(this.friends).then((statuses: Status[]) => {
+      this.friends = this.friends.map((user: User) => {
+        const status = statuses.find((s: Status) => user.email === s.email);
+        if (status) { user.online = status.status === 'online'; }
+        return user;
+      });
+    });
+  }
+
   private filterUsersByFriends(users: User[]) {
-    if (!this.friends.length) { return this.users = [...users]; }
-    this.users = users.filter((user: User) => this.friends.find((friend: User) => user.email !== friend.email));
+    this.users = [...users];
+    this.friends.forEach((friend: User) => {
+      const idx = this.users.findIndex((u: User) => u.email === friend.email);
+      if (idx > -1) {
+        this.users.splice(idx, 1);
+      }
+    });
   }
 
   private filterUsersByRequests() {

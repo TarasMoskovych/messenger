@@ -2,7 +2,10 @@
   <mat-list class="friends__list">
     <mat-list-item class="add-friend" *ngFor="let user of users; let idx = index">
       <img matListAvatar [src]="user.photoURL" alt="" (click)="onImgClick(idx)">
-      <h3 matLine>{{ user.displayName }}</h3>
+      <h3 class="friends__title" matLine>
+        {{ user.displayName }}
+        <p matLine class="friends__presence" [class.online]="user.online"></p>
+      </h3>
     </mat-list-item>
   </mat-list>
 </div>

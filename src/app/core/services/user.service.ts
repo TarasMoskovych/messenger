@@ -69,6 +69,20 @@ export class UserService {
       .pipe(map((users: User[]) => this.excludeCurrentUser(users)));
   }
 
+  getStatuses(users: User[]) {
+    const ref = this.afs.collection('status').ref;
+
+    return Promise
+      .all(users.map((user: User) => ref.where('email', '==', user.email).get()))
+      .then((snapshots: firebase.firestore.QuerySnapshot[]) => {
+        return snapshots.map((snapshot: firebase.firestore.QuerySnapshot) => snapshot.docs[0].data());
+      });
+  }
+
+  checkStatuses() {
+    return this.afs.collection('status').snapshotChanges(['modified']);
+  }
+
   private getCurrentUser() {
     return this.afauth.auth.currentUser;
   }
