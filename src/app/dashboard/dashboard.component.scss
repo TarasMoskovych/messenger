@@ -1,7 +1,9 @@
+@import './../scss/variables';
+
 .dashboard {
 
   &__wrapper {
-    background: #f7f8fb;
+    background: $grey;
   }
 
   &__item {

@@ -1,12 +1,14 @@
-<mat-list class="requests">
-  <mat-list-item *ngFor="let user of users; let idx = index">
-    <img matListAvatar [src]="user.photoURL" alt="" (click)="onImgClick(idx)">
-    <h3 matLine>{{ user.displayName }}</h3>
-    <button mat-icon-button (click)="onAcceptRequest(user)">
-      <mat-icon color="primary">check</mat-icon>
-    </button>
-    <button mat-icon-button (click)="onDeclineRequest(user)">
-      <mat-icon color="warn">delete</mat-icon>
-    </button>
-  </mat-list-item>
-</mat-list>
+<div class="requests scrollbar">
+  <mat-list class="requests__list">
+    <mat-list-item *ngFor="let user of users; let idx = index">
+      <img matListAvatar [src]="user.photoURL" alt="" (click)="onImgClick(idx)">
+      <h3 matLine>{{ user.displayName }}</h3>
+      <button mat-icon-button (click)="onAcceptRequest(user)">
+        <mat-icon color="primary">check</mat-icon>
+      </button>
+      <button mat-icon-button (click)="onDeclineRequest(user)">
+        <mat-icon color="warn">delete</mat-icon>
+      </button>
+    </mat-list-item>
+  </mat-list>
+</div>

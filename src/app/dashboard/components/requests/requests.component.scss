@@ -1,3 +1,13 @@
-img {
-  cursor: pointer;
+@import './../../../scss/variables';
+
+.requests {
+  overflow: auto;
+
+  &__list {
+    max-height: $friends-max-height;
+  }
+
+  img {
+    cursor: pointer;
+  }
 }

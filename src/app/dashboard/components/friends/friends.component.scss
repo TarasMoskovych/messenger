@@ -1,0 +1,9 @@
+@import './../../../scss/variables';
+
+.friends {
+  overflow: auto;
+
+  &__list {
+    max-height: $friends-max-height;
+  }
+}
