@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { SharedModule } from 'src/app/shared/shared.module';
 
+import { UserActionsComponent } from './user-actions.component';
 import {
   AddFriendComponent,
   FriendsComponent,
@@ -17,18 +18,15 @@ import {
     FriendsComponent,
     ProfileComponent,
     RequestsComponent,
-    LiveSearchComponent
+    LiveSearchComponent,
+    UserActionsComponent
   ],
   imports: [
     CommonModule,
     SharedModule
   ],
   exports: [
-    AddFriendComponent,
-    FriendsComponent,
-    ProfileComponent,
-    RequestsComponent,
-    LiveSearchComponent
+    UserActionsComponent
   ]
 })
 export class UserActionsModule { }

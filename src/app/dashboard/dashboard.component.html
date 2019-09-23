@@ -1,8 +1,11 @@
 <div class="dashboard">
   <app-navbar></app-navbar>
-  <div class="dashboard__wrapper" fxLayout="row" fxLayoutGap="20px">
+  <div class="dashboard__wrapper" fxLayout="row">
     <div fxFlex="25%" class="dashboard__item">
       <app-user-actions></app-user-actions>
+    </div>
+    <div fxFlex="50%" class="dashboard__item dashboard__item--chat">
+      <app-chat></app-chat>
     </div>
   </div>
 </div>

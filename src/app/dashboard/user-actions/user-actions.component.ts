@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { take, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
-import { FriendsService, NotificationService, RequestsService, UserService } from 'src/app/core/services';
+import { ChatService, FriendsService, NotificationService, RequestsService, UserService } from 'src/app/core/services';
 import { User, Request, Status } from 'src/app/shared/models';
 
 @Component({
@@ -30,6 +30,7 @@ export class UserActionsComponent implements OnInit, OnDestroy {
   loadedAllRequests = false;
 
   constructor(
+    private chatService: ChatService,
     private notificationService: NotificationService,
     private friendsService: FriendsService,
     private requestService: RequestsService,
@@ -85,6 +86,10 @@ export class UserActionsComponent implements OnInit, OnDestroy {
       });
       this.subLoading = false;
     });
+  }
+
+  onSelectFriend(user: User) {
+    this.chatService.selectFriend(user);
   }
 
   onInputUser(email: string) {

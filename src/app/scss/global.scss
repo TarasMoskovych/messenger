@@ -24,10 +24,16 @@ body {
   }
 
   .add-friends-panel,
-  .friends-panel,
   .requests-panel {
     .mat-expansion-panel-body {
       padding-right: 8px;
+    }
+  }
+
+  .friends-panel {
+    .mat-expansion-panel-body {
+      padding-left: 0;
+      padding-right: 0;
     }
   }
 
@@ -38,7 +44,7 @@ body {
   }
 
   .scrollbar::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
     background-color: $grey;
   }
 

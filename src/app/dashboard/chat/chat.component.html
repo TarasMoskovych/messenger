@@ -1,0 +1,11 @@
+<ng-container *ngIf="user; else background">
+  <app-textbox (sendMessage)="onSendMessage($event)"></app-textbox>
+</ng-container>
+
+<ng-template #background>
+  <div class="chat__background">
+    <div class="chat__background__title">
+      Please select a chat to start messaging
+    </div>
+  </div>
+</ng-template>

@@ -1,7 +1,7 @@
 <div class="friends scrollbar">
   <mat-list class="friends__list">
-    <mat-list-item class="add-friend" *ngFor="let user of users; let idx = index">
-      <img matListAvatar [src]="user.photoURL" alt="" (click)="onImgClick(idx)">
+    <mat-list-item class="friends__list__item add-friend" *ngFor="let user of users; let idx = index" (click)="onFriendClick(user)">
+      <img class="friends__img" matListAvatar [src]="user.photoURL" alt="" (click)="onImgClick($event, idx)">
       <h3 class="friends__title" matLine>
         {{ user.displayName }}
         <p matLine class="friends__presence" [class.online]="user.online"></p>

@@ -1,7 +1,8 @@
 @import './../../../../scss/variables';
 
 .requests {
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   &__list {
     max-height: $friends-max-height;
