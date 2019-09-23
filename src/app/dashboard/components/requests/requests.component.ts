@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { Lightbox } from 'ngx-lightbox';
 
 import { AbstractLightBox } from '../../classes/lightbox.abstract';
 import { User } from 'src/app/shared/models';
@@ -15,10 +14,6 @@ export class RequestsComponent extends AbstractLightBox implements OnInit {
   @Output() acceptRequest = new EventEmitter<User>();
   @Output() declineRequest = new EventEmitter<User>();
 
-  constructor(private lightbox: Lightbox) {
-    super();
-  }
-
   ngOnInit() {
     this.initAlbum(this.users);
   }
@@ -32,7 +27,7 @@ export class RequestsComponent extends AbstractLightBox implements OnInit {
   }
 
   onImgClick(idx: number) {
-    this.lightbox.open(this.album, idx);
+    this.openImg(idx);
   }
 
 }
