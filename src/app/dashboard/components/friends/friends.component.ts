@@ -1,5 +1,4 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
-import { Lightbox } from 'ngx-lightbox';
 
 import { AbstractLightBox } from '../../classes/lightbox.abstract';
 import { User } from 'src/app/shared/models';
@@ -13,16 +12,12 @@ import { User } from 'src/app/shared/models';
 export class FriendsComponent extends AbstractLightBox implements OnInit {
   @Input() users: User[] = [];
 
-  constructor(private lightbox: Lightbox) {
-    super();
-  }
-
   ngOnInit() {
     this.initAlbum(this.users);
   }
 
   onImgClick(idx: number) {
-    this.lightbox.open(this.album, idx);
+    this.openImg(idx);
   }
 
 }

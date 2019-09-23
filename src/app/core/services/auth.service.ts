@@ -97,7 +97,8 @@ export class AuthService {
     });
 
     status.set({
-      status: 'offline'
+      status: 'offline',
+      email: user.email
     });
   }
 
@@ -108,7 +109,7 @@ export class AuthService {
   }
 
   isAuthorised() {
-    return window.sessionStorage.getItem('authorized');
+    return this.afauth.auth.currentUser && this.afauth.auth.currentUser.email || window.sessionStorage.getItem('authorized');
   }
 
   set user(user: User) {

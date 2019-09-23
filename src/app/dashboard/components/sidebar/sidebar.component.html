@@ -14,14 +14,19 @@
       Add Friends
     </mat-expansion-panel-header>
     <ng-template matExpansionPanelContent>
+      <app-live-search (searchUser)="onInputUser($event)"></app-live-search>
       <ng-container *ngIf="showAddFriendsPanel; else emptyUsers">
-        <app-add-friend *ngIf="users.length > 0 && !subLoading; else loading" [users]="users" (addFriend)="onAddFriend($event)"></app-add-friend>
+        <app-add-friend
+          *ngIf="users.length && !subLoading; else loading"
+          [users]="users"
+          (addFriend)="onAddFriend($event)"
+        ></app-add-friend>
         <ng-template #loading>
           <app-loader></app-loader>
         </ng-template>
       </ng-container>
       <ng-template #emptyUsers>
-        <span class="empty">Users list is empty!</span>
+        <div class="empty">Users list is empty!</div>
       </ng-template>
     </ng-template>
   </mat-expansion-panel>

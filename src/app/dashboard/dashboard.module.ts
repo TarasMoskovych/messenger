@@ -11,7 +11,8 @@ import {
   NavbarComponent,
   SidebarComponent,
   ProfileComponent,
-  RequestsComponent
+  RequestsComponent,
+  LiveSearchComponent
 } from './components';
 
 @NgModule({
@@ -22,7 +23,8 @@ import {
     NavbarComponent,
     SidebarComponent,
     ProfileComponent,
-    RequestsComponent
+    RequestsComponent,
+    LiveSearchComponent
   ],
   imports: [
     CommonModule,

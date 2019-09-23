@@ -4,3 +4,4 @@ export * from './requests/requests.component';
 export * from './profile/profile.component';
 export * from './sidebar/sidebar.component';
 export * from './friends/friends.component';
+export * from './live-search/live-search.component';

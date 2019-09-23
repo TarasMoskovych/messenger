@@ -55,8 +55,8 @@ export class UserService {
   }
 
   getAll() {
-    return this.afs.collection('users').valueChanges()
-      .pipe(map((users: User[]) => users.filter((user: User) => user.email !== this.getCurrentUser().email)));
+    return this.afs.collection('users', ref => ref.limit(20)).valueChanges()
+      .pipe(map((users: User[]) => this.excludeCurrentUser(users)));
   }
 
   getAllByEmails(arr: string[]) {
@@ -64,7 +64,30 @@ export class UserService {
       .pipe(map((users: User[]) => users.filter((user: User) => arr.includes(user.email))));
   }
 
+  getByQuery(start: string, end: string) {
+    return this.afs.collection('users', ref => ref.orderBy('displayName').startAt(start).endAt(end)).valueChanges()
+      .pipe(map((users: User[]) => this.excludeCurrentUser(users)));
+  }
+
+  getStatuses(users: User[]) {
+    const ref = this.afs.collection('status').ref;
+
+    return Promise
+      .all(users.map((user: User) => ref.where('email', '==', user.email).get()))
+      .then((snapshots: firebase.firestore.QuerySnapshot[]) => {
+        return snapshots.map((snapshot: firebase.firestore.QuerySnapshot) => snapshot.docs[0].data());
+      });
+  }
+
+  checkStatuses() {
+    return this.afs.collection('status').snapshotChanges(['modified']);
+  }
+
   private getCurrentUser() {
     return this.afauth.auth.currentUser;
+  }
+
+  private excludeCurrentUser(users: User[]) {
+    return users.filter((user: User) => user.email !== this.getCurrentUser().email);
   }
 }
