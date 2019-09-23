@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
 
-import { AbstractLightBox } from '../../classes/lightbox.abstract';
+import { AbstractLightBox } from './../../../classes';
 import { User } from 'src/app/shared/models';
 
 @Component({

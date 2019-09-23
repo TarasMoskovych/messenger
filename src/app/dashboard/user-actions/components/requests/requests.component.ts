@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
-import { AbstractLightBox } from '../../classes/lightbox.abstract';
+import { AbstractLightBox } from './../../../classes';
 import { User } from 'src/app/shared/models';
 
 @Component({

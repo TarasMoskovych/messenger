@@ -3,32 +3,22 @@ import { CommonModule } from '@angular/common';
 
 import { DashBoardRoutingModule } from './dashboard-routing.module';
 import { SharedModule } from '../shared/shared.module';
+import { UserActionsModule } from './user-actions/user-actions.module';
 
 import { DashboardComponent } from './dashboard.component';
-import {
-  AddFriendComponent,
-  FriendsComponent,
-  NavbarComponent,
-  SidebarComponent,
-  ProfileComponent,
-  RequestsComponent,
-  LiveSearchComponent
-} from './components';
+import { NavbarComponent } from './navbar/navbar.component';
+import { UserActionsComponent } from './user-actions/user-actions.component';
 
 @NgModule({
   declarations: [
-    AddFriendComponent,
-    FriendsComponent,
     DashboardComponent,
     NavbarComponent,
-    SidebarComponent,
-    ProfileComponent,
-    RequestsComponent,
-    LiveSearchComponent
+    UserActionsComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
+    UserActionsModule,
     DashBoardRoutingModule
   ]
 })

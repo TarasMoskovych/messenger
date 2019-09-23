@@ -6,11 +6,11 @@ import { FriendsService, NotificationService, RequestsService, UserService } fro
 import { User, Request, Status } from 'src/app/shared/models';
 
 @Component({
-  selector: 'app-sidebar',
-  templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss']
+  selector: 'app-user-actions',
+  templateUrl: './user-actions.component.html',
+  styleUrls: ['./user-actions.component.scss']
 })
-export class SidebarComponent implements OnInit, OnDestroy {
+export class UserActionsComponent implements OnInit, OnDestroy {
   private emailS = new Subject<string>();
   private email$ = this.emailS.asObservable();
   private destroy$ = new Subject<boolean>();
