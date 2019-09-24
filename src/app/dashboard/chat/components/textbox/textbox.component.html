@@ -1,3 +1,5 @@
+<mat-divider></mat-divider>
+
 <div class="textbox">
   <mat-icon color="primary">message</mat-icon>
 
@@ -14,7 +16,7 @@
       cdkAutosizeMinRows="1"
       cdkAutosizeMaxRows="5">
     </textarea>
-    <mat-hint align="end">{{ field.value.length }}/{{ maxLength }}</mat-hint>
+    <mat-hint [class.red]="field.value.length === maxLength" align="end">{{ field.value.length }}/{{ maxLength }}</mat-hint>
   </mat-form-field>
 
   <button mat-icon-button (click)="onSendMessage()">
