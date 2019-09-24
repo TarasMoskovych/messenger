@@ -8,7 +8,7 @@
     <textarea
       [maxlength]="maxLength"
       class="scrollbar"
-      (keyup.enter)="onSendMessage()"
+      (keyDown.enter)="onSendMessage($event)"
       [(ngModel)]="message"
       matInput
       cdkTextareaAutosize

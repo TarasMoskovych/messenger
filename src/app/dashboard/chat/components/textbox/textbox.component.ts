@@ -12,10 +12,13 @@ export class TextboxComponent {
   @Output() sendMessage = new EventEmitter<string>();
 
   maxLength = appConfig.textBoxLength;
-  message: string;
+  message = '';
 
-  onSendMessage() {
+  onSendMessage(event?: KeyboardEvent) {
+    event && event.preventDefault();
+
     const msg = this.message.trim();
+
     if (msg.length) {
       this.sendMessage.emit(msg);
       this.message = '';
