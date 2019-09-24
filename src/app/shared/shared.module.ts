@@ -8,11 +8,13 @@ import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { LightboxModule } from 'ngx-lightbox';
 
 import { MaterialModule } from './../material/material.module';
-import { LoaderComponent } from './components/loader/loader.component';
-import { InputBoxComponent } from './components/input-box/input-box.component';
+import { LoaderComponent, InputBoxComponent } from './components';
 
 @NgModule({
-  declarations: [LoaderComponent, InputBoxComponent],
+  declarations: [
+    LoaderComponent,
+    InputBoxComponent
+  ],
   imports: [
     CommonModule,
     FormsModule,

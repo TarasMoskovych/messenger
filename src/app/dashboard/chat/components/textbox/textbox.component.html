@@ -1,0 +1,25 @@
+<mat-divider></mat-divider>
+
+<div class="textbox">
+  <mat-icon color="primary">message</mat-icon>
+
+  <mat-form-field class="chat-input">
+    <mat-label>Type a message</mat-label>
+    <textarea
+      [maxlength]="maxLength"
+      class="scrollbar"
+      (keyDown.enter)="onSendMessage($event)"
+      [(ngModel)]="message"
+      matInput
+      cdkTextareaAutosize
+      #field
+      cdkAutosizeMinRows="1"
+      cdkAutosizeMaxRows="5">
+    </textarea>
+    <mat-hint [class.red]="field.value.length === maxLength" align="end">{{ field.value.length }}/{{ maxLength }}</mat-hint>
+  </mat-form-field>
+
+  <button mat-icon-button (click)="onSendMessage()">
+    <mat-icon color="primary">send</mat-icon>
+  </button>
+</div>

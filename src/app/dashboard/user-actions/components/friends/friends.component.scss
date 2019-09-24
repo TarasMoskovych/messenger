@@ -1,15 +1,30 @@
-@import './../../../scss/variables';
+@import './../../../../scss/variables';
 
 .friends {
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   &__list {
     max-height: $friends-max-height;
+
+    &__item {
+      transition: .3s;
+
+      &:hover {
+        background: darken($grey, 5);
+        cursor: pointer;
+      }
+
+    }
   }
 
   &__title {
     align-items: center;
     display: flex !important;
+  }
+
+  &__img {
+    margin-left: 24px;
   }
 
   &__presence {

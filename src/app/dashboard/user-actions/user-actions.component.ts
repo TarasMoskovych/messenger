@@ -1,16 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
-import { take, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { take, takeUntil, debounceTime, distinctUntilChanged, throttleTime } from 'rxjs/operators';
 
-import { FriendsService, NotificationService, RequestsService, UserService } from 'src/app/core/services';
+import { ChatService, FriendsService, NotificationService, RequestsService, UserService } from 'src/app/core/services';
+import { appConfig } from 'src/app/configs';
 import { User, Request, Status } from 'src/app/shared/models';
 
 @Component({
-  selector: 'app-sidebar',
-  templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss']
+  selector: 'app-user-actions',
+  templateUrl: './user-actions.component.html',
+  styleUrls: ['./user-actions.component.scss']
 })
-export class SidebarComponent implements OnInit, OnDestroy {
+export class UserActionsComponent implements OnInit, OnDestroy {
   private emailS = new Subject<string>();
   private email$ = this.emailS.asObservable();
   private destroy$ = new Subject<boolean>();
@@ -30,6 +31,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   loadedAllRequests = false;
 
   constructor(
+    private chatService: ChatService,
     private notificationService: NotificationService,
     private friendsService: FriendsService,
     private requestService: RequestsService,
@@ -87,6 +89,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
     });
   }
 
+  onSelectFriend(user: User) {
+    this.chatService.selectFriend(user);
+  }
+
   onInputUser(email: string) {
     this.emailS.next(email);
   }
@@ -116,13 +122,19 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   private onCheckStatuses() {
     this.userService.checkStatuses()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(appConfig.debounceTime)
+      )
       .subscribe(() => this.getStatuses());
   }
 
   private getFriends() {
     this.friendsService.getAll()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$),
+        throttleTime(appConfig.debounceTime)
+      )
       .subscribe((users: User[]) => {
         this.showFriendsPanel = users.length !== 0;
         this.friends = [...users];
@@ -134,7 +146,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   private getRequests() {
     this.requestService.getAll()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$),
+        throttleTime(appConfig.debounceTime)
+      )
       .subscribe((requests: Request[]) => {
         this.requests = [...requests];
         this.loadedAllRequests = true;

@@ -1,0 +1,14 @@
+<div class="chat" [class.chat--empty]="!user">
+  <ng-container *ngIf="user; else empty">
+    <div class="chat__user">
+      {{ user.displayName }}
+      <mat-divider></mat-divider>
+    </div>
+    <app-textbox (sendMessage)="onSendMessage($event)"></app-textbox>
+  </ng-container>
+  <ng-template #empty>
+    <div class="chat__title">
+      Please select a chat to start messaging
+    </div>
+  </ng-template>
+</div>

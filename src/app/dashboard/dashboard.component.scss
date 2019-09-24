@@ -4,9 +4,22 @@
 
   &__wrapper {
     background: $grey;
+    padding-top: 65px;
   }
 
   &__item {
-    padding: 10px;
+    padding: 16px;
+
+    &--chat {
+      height: calc(100vh - 65px);
+      padding: 16px 0;
+    }
   }
+
+  app-navbar {
+    position: fixed;
+    width: 100%;
+    z-index: 2;
+  }
+
 }

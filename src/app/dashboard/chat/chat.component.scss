@@ -1,0 +1,42 @@
+@import './../../scss/variables';
+
+.chat {
+  align-items: center;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100vh - 100px);
+  position: fixed;
+  width: 50%;
+
+  &--empty {
+    background-attachment: scroll;
+    background-image: url('./../../../assets/img/chat.jpg');
+    background-size: cover;
+    justify-content: center;
+  }
+
+  &__title {
+    color: $primary;
+    font-weight: 700;
+    padding: 15px;
+  }
+
+  &__user {
+    color: $primary;
+    font-size: 1.2em;
+    font-weight: 700;
+    margin-top: 10px;
+    text-align: center;
+    width: 90%;
+  }
+
+  app-textbox {
+    margin-bottom: 10px;
+    width: 90%;
+  }
+
+}

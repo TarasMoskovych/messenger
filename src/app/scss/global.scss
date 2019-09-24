@@ -4,8 +4,20 @@ body {
   margin: 0;
   padding: 0;
 
-  .lb-data .lb-close {
-    display: none;
+  .lb-data {
+
+    .lb-close {
+      display: none;
+    }
+
+    .lb-caption {
+      font-size: 1.5em;
+    }
+
+    .lb-details {
+      text-align: center;
+      width: 100%;
+    }
   }
 
   .add-friend,
@@ -24,10 +36,16 @@ body {
   }
 
   .add-friends-panel,
-  .friends-panel,
   .requests-panel {
     .mat-expansion-panel-body {
       padding-right: 8px;
+    }
+  }
+
+  .friends-panel {
+    .mat-expansion-panel-body {
+      padding-left: 0;
+      padding-right: 0;
     }
   }
 
@@ -38,7 +56,7 @@ body {
   }
 
   .scrollbar::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
     background-color: $grey;
   }
 

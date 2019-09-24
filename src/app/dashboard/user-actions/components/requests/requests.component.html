@@ -1,7 +1,7 @@
 <div class="requests scrollbar">
   <mat-list class="requests__list">
     <mat-list-item *ngFor="let user of users; let idx = index">
-      <img matListAvatar [src]="user.photoURL" alt="" (click)="onImgClick(idx)">
+      <img matListAvatar [src]="user.photoURL" alt="" (click)="onImgClick(user)">
       <h3 matLine>{{ user.displayName }}</h3>
       <button mat-icon-button (click)="onAcceptRequest(user)">
         <mat-icon color="primary">check</mat-icon>

@@ -1,34 +1,25 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { DashBoardRoutingModule } from './dashboard-routing.module';
 import { SharedModule } from '../shared/shared.module';
+import { ChatModule } from './chat/chat.module';
+import { UserActionsModule } from './user-actions/user-actions.module';
+
+import { DashBoardRoutingModule } from './dashboard-routing.module';
 
 import { DashboardComponent } from './dashboard.component';
-import {
-  AddFriendComponent,
-  FriendsComponent,
-  NavbarComponent,
-  SidebarComponent,
-  ProfileComponent,
-  RequestsComponent,
-  LiveSearchComponent
-} from './components';
+import { NavbarComponent } from './navbar/navbar.component';
 
 @NgModule({
   declarations: [
-    AddFriendComponent,
-    FriendsComponent,
     DashboardComponent,
-    NavbarComponent,
-    SidebarComponent,
-    ProfileComponent,
-    RequestsComponent,
-    LiveSearchComponent
+    NavbarComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
+    ChatModule,
+    UserActionsModule,
     DashBoardRoutingModule
   ]
 })

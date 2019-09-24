@@ -1,0 +1,22 @@
+@import './../../../../scss/variables';
+
+.textbox {
+  align-items: center;
+  display: flex;
+
+  mat-form-field {
+    margin-left: 5px;
+    width: 100%;
+  }
+
+  mat-hint {
+    &.red {
+      color: $danger;
+    }
+  }
+}
+
+mat-divider {
+  border-top-color: darken($grey, 20);
+  margin: 0 15px 10px;
+}
