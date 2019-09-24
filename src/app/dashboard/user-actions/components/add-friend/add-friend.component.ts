@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
 
 import { AbstractLightBox } from './../../../classes';
 import { User } from 'src/app/shared/models';
@@ -9,20 +9,16 @@ import { User } from 'src/app/shared/models';
   styleUrls: ['./add-friend.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AddFriendComponent extends AbstractLightBox implements OnInit {
+export class AddFriendComponent extends AbstractLightBox {
   @Input() users: User[] = [];
   @Output() addFriend = new EventEmitter<User>();
-
-  ngOnInit() {
-    this.initAlbum(this.users);
-  }
 
   onAddFriend(user: User) {
     this.addFriend.emit(user);
   }
 
-  onImgClick(idx: number) {
-    this.openImg(idx);
+  onImgClick(user: User) {
+    this.openImg(user);
   }
 
 }

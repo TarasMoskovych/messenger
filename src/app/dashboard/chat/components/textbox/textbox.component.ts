@@ -1,5 +1,7 @@
 import { Component, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 
+import { appConfig } from 'src/app/configs';
+
 @Component({
   selector: 'app-textbox',
   templateUrl: './textbox.component.html',
@@ -9,7 +11,7 @@ import { Component, ChangeDetectionStrategy, Output, EventEmitter } from '@angul
 export class TextboxComponent {
   @Output() sendMessage = new EventEmitter<string>();
 
-  maxLength = 100;
+  maxLength = appConfig.textBoxLength;
   message: string;
 
   onSendMessage() {

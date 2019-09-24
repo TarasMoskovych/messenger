@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
-import { take, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { take, takeUntil, debounceTime, distinctUntilChanged, throttleTime } from 'rxjs/operators';
 
 import { ChatService, FriendsService, NotificationService, RequestsService, UserService } from 'src/app/core/services';
+import { appConfig } from 'src/app/configs';
 import { User, Request, Status } from 'src/app/shared/models';
 
 @Component({
@@ -121,13 +122,19 @@ export class UserActionsComponent implements OnInit, OnDestroy {
 
   private onCheckStatuses() {
     this.userService.checkStatuses()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(appConfig.debounceTime)
+      )
       .subscribe(() => this.getStatuses());
   }
 
   private getFriends() {
     this.friendsService.getAll()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$),
+        throttleTime(appConfig.debounceTime)
+      )
       .subscribe((users: User[]) => {
         this.showFriendsPanel = users.length !== 0;
         this.friends = [...users];
@@ -139,7 +146,10 @@ export class UserActionsComponent implements OnInit, OnDestroy {
 
   private getRequests() {
     this.requestService.getAll()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$),
+        throttleTime(appConfig.debounceTime)
+      )
       .subscribe((requests: Request[]) => {
         this.requests = [...requests];
         this.loadedAllRequests = true;

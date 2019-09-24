@@ -4,8 +4,20 @@ body {
   margin: 0;
   padding: 0;
 
-  .lb-data .lb-close {
-    display: none;
+  .lb-data {
+
+    .lb-close {
+      display: none;
+    }
+
+    .lb-caption {
+      font-size: 1.5em;
+    }
+
+    .lb-details {
+      text-align: center;
+      width: 100%;
+    }
   }
 
   .add-friend,

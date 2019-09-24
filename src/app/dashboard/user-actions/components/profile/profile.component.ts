@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { Lightbox } from 'ngx-lightbox';
 
+import { AbstractLightBox } from 'src/app/dashboard/classes';
 import { UserService } from 'src/app/core/services';
 import { User } from 'src/app/shared/models';
 
@@ -11,7 +12,7 @@ import { User } from 'src/app/shared/models';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent extends AbstractLightBox implements OnInit {
   form: FormGroup;
   editing = false;
   updateProfile = false;
@@ -20,7 +21,9 @@ export class ProfileComponent implements OnInit {
   selectedImage: File;
   user$: BehaviorSubject<User>;
 
-  constructor(private userService: UserService, private lightbox: Lightbox) { }
+  constructor(private userService: UserService, protected lightbox: Lightbox) {
+    super(lightbox);
+  }
 
   ngOnInit() {
     this.user$ = this.userService.user$;
@@ -45,8 +48,8 @@ export class ProfileComponent implements OnInit {
     this.profileImageLoaded = true;
   }
 
-  onImgClick(src: string) {
-    this.lightbox.open([{ src, thumb: '' }], 0);
+  onImgClick(user: User) {
+    this.openImg(user);
   }
 
   showForm(name: string) {

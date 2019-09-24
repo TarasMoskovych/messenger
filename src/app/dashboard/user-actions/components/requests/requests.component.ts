@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 import { AbstractLightBox } from './../../../classes';
 import { User } from 'src/app/shared/models';
@@ -9,14 +9,10 @@ import { User } from 'src/app/shared/models';
   styleUrls: ['./requests.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RequestsComponent extends AbstractLightBox implements OnInit {
+export class RequestsComponent extends AbstractLightBox {
   @Input() users: User[];
   @Output() acceptRequest = new EventEmitter<User>();
   @Output() declineRequest = new EventEmitter<User>();
-
-  ngOnInit() {
-    this.initAlbum(this.users);
-  }
 
   onAcceptRequest(user: User) {
     this.acceptRequest.emit(user);
@@ -26,8 +22,8 @@ export class RequestsComponent extends AbstractLightBox implements OnInit {
     this.declineRequest.emit(user);
   }
 
-  onImgClick(idx: number) {
-    this.openImg(idx);
+  onImgClick(user: User) {
+    this.openImg(user);
   }
 
 }

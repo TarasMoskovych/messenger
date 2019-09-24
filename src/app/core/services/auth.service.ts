@@ -7,6 +7,7 @@ import { auth } from 'firebase/app';
 import { CoreModule } from '../core.module';
 import { User } from 'src/app/shared/models';
 import { NotificationService } from './notification.service';
+import { appConfig } from 'src/app/configs';
 
 @Injectable({
   providedIn: CoreModule
@@ -38,13 +39,13 @@ export class AuthService {
         this._authState = data;
         this.afauth.auth.currentUser.updateProfile({
           displayName: user.displayName,
-          photoURL: 'assets/img/no-photo.jpg'
+          photoURL: appConfig.defaultPhotoUrl
         })
       .then(()  => {
         this.afauth.auth.currentUser.sendEmailVerification();
       })
       .then(() => {
-        this.setUserData(user, 'assets/img/no-photo.jpg');
+        this.setUserData(user, appConfig.defaultPhotoUrl);
       });
     });
   }

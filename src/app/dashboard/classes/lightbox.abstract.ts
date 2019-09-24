@@ -1,18 +1,23 @@
 import { Lightbox } from 'ngx-lightbox';
 
+import { appConfig } from 'src/app/configs';
 import { User } from 'src/app/shared/models';
 
 export abstract class AbstractLightBox {
-  protected album = [];
+  private cache = {};
 
-  constructor(private lightbox: Lightbox) {}
+  constructor(protected lightbox: Lightbox) {}
 
-  protected initAlbum(users: User[]) {
-    users.forEach((user: User) => this.album.push({ src: user.photoURL, thumb: '' }));
-  }
+  protected openImg(user: User) {
+    if (user.photoURL === appConfig.defaultPhotoUrl) {
+      return;
+    }
 
-  protected openImg(idx: number) {
-    this.lightbox.open(this.album, idx);
+    if (!this.cache[user.email]) {
+      this.cache[user.email] = [{ src: user.photoURL, thumb: '', caption: user.displayName, }];
+    }
+
+    this.lightbox.open(this.cache[user.email], 0);
   }
 
 }
