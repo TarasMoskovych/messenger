@@ -1,21 +1,99 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firestore';
+import { Subject, of, Observable, from } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
+import * as firebase from 'firebase/app';
 
 import { CoreModule } from '../core.module';
-import { User } from './../../shared/models';
+
+import { AuthService } from './auth.service';
+import { Chat, Message, User } from './../../shared/models';
+import { MathHelper } from './../../shared/helpers';
 
 @Injectable({
   providedIn: CoreModule
 })
 export class ChatService {
-  private selectedUser = new Subject<User>();
+  private chats = this.afs.collection('chats');
+  private conversations = this.afs.collection('conversations');
+  private selectedUser: User;
+  private selectedUserS = new Subject<User>();
 
-  selectedUser$ = this.selectedUser.asObservable();
+  selectedUser$ = this.selectedUserS.asObservable();
 
-  constructor() { }
+  constructor(private afs: AngularFirestore, private authService: AuthService) { }
 
-  selectFriend(user: User) {
-    this.selectedUser.next(user);
+  getAll(): Observable<Message[]> {
+    return from(Promise.resolve(
+      this.chats.ref
+        .where('me', '==', this.authService.isAuthorised())
+        .where('friend', '==', this.selectedUser.email)
+        .get()
+    )).pipe(switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
+      if (snapshot.empty) {
+        return of([]);
+      }
+      return this.conversations.doc(snapshot.docs[0].data().id).collection('messages', ref => ref.orderBy('timestamp')).valueChanges();
+    }));
+  }
+
+  send(message: string): Promise<void> {
+    let docId1: string;
+    let docId2: string;
+
+    const populateChats = (chat: Chat) => this.chats.add({ me: chat.me, friend: chat.friend });
+    const addConversation = (document: AngularFirestoreDocument) => {
+      return document.collection('messages').add({
+        message,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        sentBy: this.authService.isAuthorised()
+      });
+    };
+
+    return this.chats.ref
+      .where('me', '==', this.authService.isAuthorised())
+      .where('friend', '==', this.selectedUser.email)
+      .get()
+      .then((snapshot: firebase.firestore.QuerySnapshot) => {
+
+        if (!snapshot.empty) {
+          return addConversation(this.conversations.doc(snapshot.docs[0].data().id))
+            .then(() => {
+              console.log('send');
+            });
+        }
+
+        populateChats({ me: this.authService.isAuthorised(), friend: this.selectedUser.email })
+          .then((docRef: firebase.firestore.DocumentReference) => {
+            docId1 = docRef.id;
+            populateChats({ me: this.selectedUser.email, friend: this.authService.isAuthorised() })
+              .then((docRef2: firebase.firestore.DocumentReference) => {
+                docId2 = docRef2.id;
+                this.conversations.add({ key: MathHelper.generateRandomNumber() })
+                  .then((conversationsDocRef: firebase.firestore.DocumentReference) => {
+                    addConversation(this.conversations.doc(conversationsDocRef.id))
+                      .then(() => {
+                        this.chats.doc(docId1).update({ id: conversationsDocRef.id})
+                          .then(() => {
+                            this.chats.doc(docId2).update({ id: conversationsDocRef.id });
+                          }).then(() => {
+                            console.log('send new');
+                          });
+                      });
+                  });
+              });
+          });
+      });
+  }
+
+  getSelected(): User {
+    return this.selectedUser;
+  }
+
+  selectFriend(user: User): void {
+    this.selectedUser = user;
+    this.selectedUserS.next(user);
   }
 
 }

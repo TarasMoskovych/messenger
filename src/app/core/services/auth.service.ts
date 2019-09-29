@@ -31,7 +31,7 @@ export class AuthService {
     });
   }
 
-  register(user: User) {
+  register(user: User): Promise<void> {
     return this.afauth.auth
       .createUserWithEmailAndPassword(user.email, user.password)
       .catch(e => this.notificationService.showError(e))
@@ -50,7 +50,7 @@ export class AuthService {
     });
   }
 
-  login(user: User) {
+  login(user: User): Promise<void> {
     return this.afauth.auth
       .signInWithEmailAndPassword(user.email, user.password)
       .then(data => {
@@ -65,7 +65,7 @@ export class AuthService {
       }).catch(e => this.notificationService.showError(e));
   }
 
-  loginWithGoogle() {
+  loginWithGoogle(): Promise<void> {
     return this.afauth.auth
       .signInWithPopup(new auth.GoogleAuthProvider())
       .then(data => {
@@ -76,7 +76,7 @@ export class AuthService {
       });
   }
 
-  logout() {
+  logout(): Promise<void> {
     return this.updateUserStatus('offline')
       .then(() => {
         this.afauth.auth.signOut();
@@ -85,7 +85,7 @@ export class AuthService {
       });
   }
 
-  setUserData(user?: User, photoURL?: string) {
+  setUserData(user?: User, photoURL?: string): void {
     const path = `users/${this.getUserId()}`;
     const statusPath = `status/${this.getUserId()}`;
     const userDoc = this.afs.doc(path);
@@ -103,13 +103,13 @@ export class AuthService {
     });
   }
 
-  updateUserStatus(status: string) {
+  updateUserStatus(status: string): Promise<void> {
     return this.afs.doc(`status/${this.getUserId()}`)
       .update({ status })
       .catch(e => console.warn(e));
   }
 
-  isAuthorised() {
+  isAuthorised(): string {
     return this.afauth.auth.currentUser && this.afauth.auth.currentUser.email || window.sessionStorage.getItem('authorized');
   }
 

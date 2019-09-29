@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFirestore, DocumentReference } from 'angularfire2/firestore';
 import { switchMap, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 import { CoreModule } from './../core.module';
 import { Request, User } from './../../shared/models';
@@ -16,14 +17,14 @@ export class RequestsService {
 
   constructor(private authService: AuthService, private userService: UserService, private afs: AngularFirestore) { }
 
-  add(request: string) {
+  add(request: string): Promise<DocumentReference> {
     return this.requestRef.add({
       sender: this.authService.isAuthorised(),
       receiver: request
     });
   }
 
-  getAll() {
+  getAll(): Observable<Request[]> {
     let receivers = [];
     return this.afs.collection('requests', ref => ref.where('receiver', '==', this.authService.isAuthorised())).valueChanges()
       .pipe(
@@ -35,12 +36,12 @@ export class RequestsService {
       );
   }
 
-  getUsersByRequests() {
+  getUsersByRequests(): Observable<User[]> {
     return this.afs.collection('requests', ref => ref.where('receiver', '==', this.authService.isAuthorised())).valueChanges()
       .pipe(switchMap((requests: Request[]) => this.userService.getAllByEmails(requests.map((request: Request) => request.sender))));
   }
 
-  accept(user: User) {
+  accept(user: User): Promise<boolean> {
     const updateFriendsCollection = (snapshot: firebase.firestore.QuerySnapshot, email: string) => {
       this.afs.doc(`friends/${snapshot.docs[0].id}`).collection('myfriends').add({ email });
     };
@@ -76,7 +77,7 @@ export class RequestsService {
     });
   }
 
-  decline(user: User) {
+  decline(user: User): Promise<boolean> {
     return new Promise(resolve => {
       this.requestRef.where('sender', '==', user.email).get().then((snapshot: firebase.firestore.QuerySnapshot) => {
         snapshot.docs[0].ref.delete().then(() => {

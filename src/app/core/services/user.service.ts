@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFirestore, DocumentData, DocumentChangeAction } from 'angularfire2/firestore';
 import { AngularFireStorage } from 'angularfire2/storage';
 import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
 
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
 
 import { CoreModule } from './../core.module';
 import { NotificationService } from './notification.service';
@@ -29,7 +29,7 @@ export class UserService {
     });
   }
 
-  updateName(displayName: string) {
+  updateName(displayName: string): Promise<void> {
     const user = this.getCurrentUser();
 
     return this.afs.doc(`users/${user.uid}`)
@@ -38,7 +38,7 @@ export class UserService {
       .catch(e => this.notificationService.showError(e));
   }
 
-  updateImage(file: File) {
+  updateImage(file: File): Promise<void> {
     const user = this.getCurrentUser();
 
     return this.storage
@@ -54,22 +54,22 @@ export class UserService {
     });
   }
 
-  getAll() {
+  getAll(): Observable<User[]> {
     return this.afs.collection('users', ref => ref.limit(20)).valueChanges()
       .pipe(map((users: User[]) => this.excludeCurrentUser(users)));
   }
 
-  getAllByEmails(arr: string[]) {
+  getAllByEmails(arr: string[]): Observable<User[]> {
     return this.afs.collection('users').valueChanges()
       .pipe(map((users: User[]) => users.filter((user: User) => arr.includes(user.email))));
   }
 
-  getByQuery(start: string, end: string) {
+  getByQuery(start: string, end: string): Observable<User[]> {
     return this.afs.collection('users', ref => ref.orderBy('displayName').startAt(start).endAt(end)).valueChanges()
       .pipe(map((users: User[]) => this.excludeCurrentUser(users)));
   }
 
-  getStatuses(users: User[]) {
+  getStatuses(users: User[]): Promise<DocumentData[]> {
     const ref = this.afs.collection('status').ref;
 
     return Promise
@@ -79,15 +79,15 @@ export class UserService {
       });
   }
 
-  checkStatuses() {
+  checkStatuses(): Observable<DocumentChangeAction<firebase.firestore.DocumentData>[]> {
     return this.afs.collection('status').snapshotChanges(['modified']);
   }
 
-  private getCurrentUser() {
+  private getCurrentUser(): firebase.User {
     return this.afauth.auth.currentUser;
   }
 
-  private excludeCurrentUser(users: User[]) {
+  private excludeCurrentUser(users: User[]): User[] {
     return users.filter((user: User) => user.email !== this.getCurrentUser().email);
   }
 }

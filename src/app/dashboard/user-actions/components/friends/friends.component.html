@@ -1,7 +1,11 @@
 <div class="friends scrollbar">
   <mat-list class="friends__list">
-    <mat-list-item class="friends__list__item add-friend" *ngFor="let user of users; let idx = index" (click)="onFriendClick(user)">
-      <img class="friends__img" matListAvatar [src]="user.photoURL" alt="" (click)="onImgClick($event, user)">
+    <mat-list-item
+      class="friends__list__item add-friend"
+      [class.friends__list__item--selected]="user.email === selected?.email"
+      *ngFor="let user of users; let idx = index"
+      (click)="onFriendClick(user)"
+    ><img class="friends__img" matListAvatar [src]="user.photoURL" alt="" (click)="onImgClick($event, user)">
       <h3 class="friends__title" matLine>
         {{ user.displayName }}
         <p matLine class="friends__presence" [class.online]="user.online"></p>

@@ -24,6 +24,7 @@
     "@angular/router": "~8.2.3",
     "angularfire2": "^5.2.1",
     "firebase": "^6.4.2",
+    "hammerjs": "^2.0.8",
     "ngx-lightbox": "^2.1.0",
     "ngx-skeleton-loader": "^1.2.2",
     "rxjs": "~6.4.0",
