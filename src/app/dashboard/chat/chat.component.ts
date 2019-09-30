@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { Subject, BehaviorSubject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { NgScrollbar } from 'ngx-scrollbar';
 
@@ -15,6 +15,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   @ViewChild(NgScrollbar, { static: false }) scrollbar: NgScrollbar;
 
   private destroy$ = new Subject<boolean>();
+  private sub$: Subscription;
 
   loader = false;
   messages: Message[];
@@ -58,7 +59,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   private getMessages() {
-    this.chatService.getAll()
+    if (this.sub$) { this.sub$.unsubscribe(); }
+    this.sub$ = this.chatService.getAll()
       .pipe(takeUntil(this.destroy$))
       .subscribe((messages: Message[]) => {
         this.messages = messages.map((message: Message) => {

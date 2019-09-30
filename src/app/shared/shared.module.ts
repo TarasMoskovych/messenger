@@ -10,11 +10,14 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 
 import { MaterialModule } from './../material/material.module';
 import { LoaderComponent, InputBoxComponent } from './components';
+import { RelativeDatePipe, SmartDatePipe } from './pipes';
 
 @NgModule({
   declarations: [
     LoaderComponent,
-    InputBoxComponent
+    InputBoxComponent,
+    RelativeDatePipe,
+    SmartDatePipe
   ],
   imports: [
     CommonModule,
@@ -37,7 +40,9 @@ import { LoaderComponent, InputBoxComponent } from './components';
     LightboxModule,
     NgScrollbarModule,
     LoaderComponent,
-    InputBoxComponent
+    InputBoxComponent,
+    RelativeDatePipe,
+    SmartDatePipe
   ]
 })
 export class SharedModule { }

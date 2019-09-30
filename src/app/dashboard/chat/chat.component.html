@@ -8,7 +8,12 @@
       <mat-list class="chat__messages">
         <mat-list-item class="chat__message" [class.chat__message--outcome]="message.outcome" *ngFor="let message of messages">
           <img class="chat__message__img" [class.chat__message__img--outome]="message.outcome" matListAvatar [src]="message.outcome ? currentUser.photoURL : user.photoURL" alt="Image">
-          {{ message.message }}
+          <p matLine>
+            {{ message.message }}
+          </p>
+          <p matLine>
+            {{ message.timestamp.toDate() | smartDate }}
+          </p>
         </mat-list-item>
       </mat-list>
     </ng-scrollbar>
