@@ -37,10 +37,6 @@
   &__messages {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    margin: 5px 0;
-    overflow-y: auto;
-    width: 100%;
   }
 
   &__message {
@@ -76,6 +72,13 @@
   app-textbox {
     margin-bottom: 10px;
     width: 90%;
+  }
+
+  ng-scrollbar {
+    margin: 5px 0;
+    width: 100%;
+    --scrollbar-padding: 0px;
+    --scrollbar-thumb-color: #3F51B5;
   }
 
 }

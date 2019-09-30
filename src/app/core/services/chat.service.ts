@@ -38,7 +38,7 @@ export class ChatService {
     }));
   }
 
-  send(message: string): Promise<void> {
+  send(message: string): Promise<boolean> {
     let docId1: string;
     let docId2: string;
 
@@ -51,40 +51,38 @@ export class ChatService {
       });
     };
 
-    return this.chats.ref
-      .where('me', '==', this.authService.isAuthorised())
-      .where('friend', '==', this.selectedUser.email)
-      .get()
-      .then((snapshot: firebase.firestore.QuerySnapshot) => {
+    return new Promise(resolve => {
+      this.chats.ref
+        .where('me', '==', this.authService.isAuthorised())
+        .where('friend', '==', this.selectedUser.email)
+        .get()
+        .then((snapshot: firebase.firestore.QuerySnapshot) => {
 
-        if (!snapshot.empty) {
-          return addConversation(this.conversations.doc(snapshot.docs[0].data().id))
-            .then(() => {
-              console.log('send');
+          if (!snapshot.empty) {
+            return addConversation(this.conversations.doc(snapshot.docs[0].data().id))
+              .then(() => resolve(false));
+          }
+
+          populateChats({ me: this.authService.isAuthorised(), friend: this.selectedUser.email })
+            .then((docRef: firebase.firestore.DocumentReference) => {
+              docId1 = docRef.id;
+              populateChats({ me: this.selectedUser.email, friend: this.authService.isAuthorised() })
+                .then((docRef2: firebase.firestore.DocumentReference) => {
+                  docId2 = docRef2.id;
+                  this.conversations.add({ key: MathHelper.generateRandomNumber() })
+                    .then((conversationsDocRef: firebase.firestore.DocumentReference) => {
+                      addConversation(this.conversations.doc(conversationsDocRef.id))
+                        .then(() => {
+                          this.chats.doc(docId1).update({ id: conversationsDocRef.id})
+                            .then(() => {
+                              this.chats.doc(docId2).update({ id: conversationsDocRef.id });
+                            }).then(() => resolve(true));
+                        });
+                    });
+                });
             });
-        }
-
-        populateChats({ me: this.authService.isAuthorised(), friend: this.selectedUser.email })
-          .then((docRef: firebase.firestore.DocumentReference) => {
-            docId1 = docRef.id;
-            populateChats({ me: this.selectedUser.email, friend: this.authService.isAuthorised() })
-              .then((docRef2: firebase.firestore.DocumentReference) => {
-                docId2 = docRef2.id;
-                this.conversations.add({ key: MathHelper.generateRandomNumber() })
-                  .then((conversationsDocRef: firebase.firestore.DocumentReference) => {
-                    addConversation(this.conversations.doc(conversationsDocRef.id))
-                      .then(() => {
-                        this.chats.doc(docId1).update({ id: conversationsDocRef.id})
-                          .then(() => {
-                            this.chats.doc(docId2).update({ id: conversationsDocRef.id });
-                          }).then(() => {
-                            console.log('send new');
-                          });
-                      });
-                  });
-              });
-          });
       });
+    });
   }
 
   getSelected(): User {

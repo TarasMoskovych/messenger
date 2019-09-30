@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { LightboxModule } from 'ngx-lightbox';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 import { MaterialModule } from './../material/material.module';
 import { LoaderComponent, InputBoxComponent } from './components';
@@ -23,7 +24,8 @@ import { LoaderComponent, InputBoxComponent } from './components';
     FlexLayoutModule,
     MaterialModule,
     NgxSkeletonLoaderModule,
-    LightboxModule
+    LightboxModule,
+    NgScrollbarModule
   ],
   exports: [
     FormsModule,
@@ -33,6 +35,7 @@ import { LoaderComponent, InputBoxComponent } from './components';
     MaterialModule,
     NgxSkeletonLoaderModule,
     LightboxModule,
+    NgScrollbarModule,
     LoaderComponent,
     InputBoxComponent
   ]
