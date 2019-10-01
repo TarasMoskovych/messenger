@@ -1,0 +1,13 @@
+<ng-scrollbar *ngIf="currentUser$ | async as me" visibility="always" viewClass="scroll-y" (updated)="onScrollbarUpdate()">
+  <mat-list class="messages">
+    <div *ngFor="let message of messages" class="messages__wrapper" [class.messages__wrapper--outcome]="message.outcome">
+      <mat-list-item class="messages__item" [class.messages__item--outcome]="message.outcome">
+        <img class="messages__item__img" [class.messages__item__img--outcome]="message.outcome" matListAvatar [src]="message.outcome ? me.photoURL : userPhotoUrl" alt="Image">
+        {{ message.message }}
+      </mat-list-item>
+      <p matLine class="messages__date" [class.messages__date--outcome]="message.outcome">
+        {{ message.timestamp.toDate() | smartDate }}
+      </p>
+    </div>
+  </mat-list>
+</ng-scrollbar>

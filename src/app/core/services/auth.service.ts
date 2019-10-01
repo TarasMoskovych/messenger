@@ -56,7 +56,7 @@ export class AuthService {
       .then(data => {
         this._authState = data.user;
 
-        if (this._authState.emailVerified) {
+        if (this._authState.isEmailVerified) {
           this.saveSessionToken(data.user.email);
           this.updateUserStatus('online');
         } else {
