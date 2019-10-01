@@ -29,44 +29,9 @@
     color: $primary;
     font-size: 1.2em;
     font-weight: 700;
-    margin-top: 10px;
+    margin: 10px 0;
     text-align: center;
     width: 90%;
-  }
-
-  &__messages {
-    display: flex;
-    flex-direction: column;
-  }
-
-  &__message {
-    background: #F2F6F9;
-    border-radius: 10px;
-    color: #323232;
-    display: flex !important;
-    font-size: 0.9em;
-    height: auto !important;
-    margin: 10px;
-    padding: 10px 0 !important;
-    width: 75% !important;
-
-    &__img {
-      box-shadow: $box-shadow;
-      margin-right: 5px;
-
-      &--outome {
-        margin-left: 5px;
-        margin-right: 0;
-        order: 1;
-      }
-    }
-
-    &--outcome {
-      align-self: flex-end;
-      background: $light-blue;
-      justify-content: flex-end;
-    }
-
   }
 
   app-messages {
@@ -75,15 +40,7 @@
   }
 
   app-textbox {
-    margin-bottom: 10px;
+    margin: 10px 0;
     width: 90%;
   }
-
-  ng-scrollbar {
-    margin: 5px 0;
-    width: 100%;
-    --scrollbar-padding: 0px;
-    --scrollbar-thumb-color: #3F51B5;
-  }
-
 }

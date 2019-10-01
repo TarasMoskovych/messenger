@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, BehaviorSubject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { NgScrollbar } from 'ngx-scrollbar';
 
 import { AuthService, ChatService, UserService } from 'src/app/core/services';
 import { Message, User } from 'src/app/shared/models';
@@ -12,8 +11,6 @@ import { Message, User } from 'src/app/shared/models';
   styleUrls: ['./chat.component.scss']
 })
 export class ChatComponent implements OnInit, OnDestroy {
-  @ViewChild(NgScrollbar, { static: false }) scrollbar: NgScrollbar;
-
   private destroy$ = new Subject<boolean>();
   private sub$: Subscription;
 
@@ -42,10 +39,6 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.getMessages();
       }
     });
-  }
-
-  onScrollbarUpdate() {
-    this.scrollbar.scrollTo({ bottom: 0, duration: 200 });
   }
 
   private onUserSelect() {

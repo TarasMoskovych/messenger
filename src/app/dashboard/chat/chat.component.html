@@ -1,23 +1,10 @@
-<div class="chat" *ngIf="currentUser$ | async as currentUser"  [class.chat--empty]="!user">
+<div class="chat" *ngIf="currentUser$ | async as currentUser" [class.chat--empty]="!user">
   <ng-container *ngIf="user; else empty">
     <div class="chat__user">
       {{ user.displayName }}
       <mat-divider class="mt-5"></mat-divider>
     </div>
-    <app-messages *ngIf="!loader" [messages]="messages" [currentUser$]="currentUser$" [userPhotoUrl]="user.photoURL"></app-messages>
-    <!-- <ng-scrollbar *ngIf="!loader" visibility="always" viewClass="scroll-y" (updated)="onScrollbarUpdate()">
-      <mat-list class="chat__messages">
-        <mat-list-item class="chat__message" [class.chat__message--outcome]="message.outcome" *ngFor="let message of messages">
-          <img class="chat__message__img" [class.chat__message__img--outome]="message.outcome" matListAvatar [src]="message.outcome ? currentUser.photoURL : user.photoURL" alt="Image">
-          <p matLine>
-            {{ message.message }}
-          </p>
-          <p matLine>
-            {{ message.timestamp.toDate() | smartDate }}
-          </p>
-        </mat-list-item>
-      </mat-list>
-    </ng-scrollbar> -->
+    <app-messages *ngIf="!loader" [messages]="messages" [currentUser]="currentUser" [userPhotoUrl]="user.photoURL"></app-messages>
     <app-loader *ngIf="loader"></app-loader>
     <app-textbox (sendMessage)="onSendMessage($event)"></app-textbox>
   </ng-container>

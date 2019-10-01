@@ -25,12 +25,12 @@ export class ChatService {
   constructor(private afs: AngularFirestore, private authService: AuthService) { }
 
   getAll(): Observable<Message[]> {
-    return from(Promise.resolve(
+    return from(
       this.chats.ref
         .where('me', '==', this.authService.isAuthorised())
         .where('friend', '==', this.selectedUser.email)
         .get()
-    )).pipe(switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
+    ).pipe(switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
       if (snapshot.empty) {
         return of([]);
       }

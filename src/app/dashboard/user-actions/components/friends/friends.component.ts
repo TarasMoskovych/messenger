@@ -25,7 +25,6 @@ export class FriendsComponent extends AbstractLightBox implements OnInit, OnDest
 
   ngOnInit() {
     this.selected$ = this.chatService.selectedUser$
-      .pipe()
       .subscribe((user: User) => this.selected = user);
   }
 

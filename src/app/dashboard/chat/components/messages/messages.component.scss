@@ -1,8 +1,6 @@
 @import './../../../../scss/variables';
 
 ng-scrollbar {
-  margin: 5px 0;
-  width: 100%;
   --scrollbar-padding: 0px;
   --scrollbar-thumb-color: #3F51B5;
 }
@@ -10,6 +8,7 @@ ng-scrollbar {
 .messages {
   display: flex;
   flex-direction: column;
+  padding: 10px;
 
   &__wrapper {
     align-self: flex-start;
@@ -18,20 +17,19 @@ ng-scrollbar {
 
     &--outcome {
       align-self: flex-end;
-      justify-content: flex-end;
     }
   }
 
   &__item {
-    background: #F2F6F9;
-    border-radius: 10px;
-    color: #323232;
+    background: $grey2;
+    border-radius: 10px 15px 10px 0;
+    color: $grey3;
     display: flex !important;
-    font-size: 0.9em;
     padding: 5px 0;
 
     &--outcome {
       background: $light-blue;
+      border-radius: 15px 10px 0 10px;
     }
 
     &__img {
@@ -47,11 +45,13 @@ ng-scrollbar {
   }
 
   &__date {
+    color: $grey4;
+    font-size: 0.8em;
     margin: 5px 5px 0;
     text-align: left;
 
     &--outcome {
-        text-align: right;
+      text-align: right;
     }
   }
 }

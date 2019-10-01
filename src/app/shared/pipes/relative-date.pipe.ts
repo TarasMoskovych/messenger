@@ -44,6 +44,6 @@ export class RelativeDatePipe implements PipeTransform {
     const { interval, epoch } = this.getDuration(timeAgoInSeconds);
     const suffix = interval === 1 ? '' : 's';
 
-    return `${interval} ${epoch}${suffix} ago`;
+    return interval === 0 ? 'Now' : `${interval} ${epoch}${suffix} ago`;
   }
 }
