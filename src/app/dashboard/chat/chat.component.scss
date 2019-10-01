@@ -4,7 +4,7 @@
   align-items: center;
   background-color: #fff;
   border-radius: 4px;
-  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  box-shadow: $box-shadow;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -29,14 +29,18 @@
     color: $primary;
     font-size: 1.2em;
     font-weight: 700;
-    margin-top: 10px;
+    margin: 10px 0;
     text-align: center;
     width: 90%;
   }
 
-  app-textbox {
-    margin-bottom: 10px;
-    width: 90%;
+  app-messages {
+    height: 100%;
+    width: 100%;
   }
 
+  app-textbox {
+    margin: 10px 0;
+    width: 90%;
+  }
 }

@@ -90,6 +90,9 @@ export class UserActionsComponent implements OnInit, OnDestroy {
   }
 
   onSelectFriend(user: User) {
+    const friend = this.chatService.getSelected();
+
+    if (friend && friend.email === user.email) { return; }
     this.chatService.selectFriend(user);
   }
 

@@ -7,13 +7,3 @@ export interface User {
   receiver?: boolean;
   online?: boolean;
 }
-
-export interface Request {
-  sender: string;
-  receiver: string;
-}
-
-export interface Status {
-  email: string;
-  status: string;
-}

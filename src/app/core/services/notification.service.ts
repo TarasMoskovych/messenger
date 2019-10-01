@@ -18,7 +18,7 @@ export class NotificationService {
     }
   }
 
-  showMessage(msg: string, buttonName: string = 'Close') {
+  showMessage(msg: string, buttonName: string = 'Close'): void {
     this.snackBar.open(msg, buttonName, { duration: 3000 });
   }
 

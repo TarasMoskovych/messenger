@@ -1,0 +1,57 @@
+@import './../../../../scss/variables';
+
+ng-scrollbar {
+  --scrollbar-padding: 0px;
+  --scrollbar-thumb-color: #3F51B5;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+
+  &__wrapper {
+    align-self: flex-start;
+    margin: 10px;
+    word-break: break-word;
+
+    &--outcome {
+      align-self: flex-end;
+    }
+  }
+
+  &__item {
+    background: $grey2;
+    border-radius: 10px 15px 10px 0;
+    color: $grey3;
+    display: flex !important;
+    padding: 5px 0;
+
+    &--outcome {
+      background: $light-blue;
+      border-radius: 15px 10px 0 10px;
+    }
+
+    &__img {
+      box-shadow: $box-shadow;
+      margin-right: 10px;
+
+      &--outcome {
+        margin-left: 10px;
+        margin-right: 0;
+        order: 1;
+      }
+    }
+  }
+
+  &__date {
+    color: $grey4;
+    font-size: 0.8em;
+    margin: 5px 5px 0;
+    text-align: left;
+
+    &--outcome {
+      text-align: right;
+    }
+  }
+}

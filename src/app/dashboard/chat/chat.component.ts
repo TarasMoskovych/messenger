@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { ChatService } from './../../core/services';
-import { User } from 'src/app/shared/models';
+import { AuthService, ChatService, UserService } from 'src/app/core/services';
+import { Message, User } from 'src/app/shared/models';
 
 @Component({
   selector: 'app-chat',
@@ -12,13 +12,20 @@ import { User } from 'src/app/shared/models';
 })
 export class ChatComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<boolean>();
+  private sub$: Subscription;
 
+  loader = false;
+  messages: Message[];
+  currentUserEmail: string;
+  currentUser$: BehaviorSubject<User>;
   user: User;
 
-  constructor(private chatService: ChatService) { }
+  constructor(private authService: AuthService, private chatService: ChatService, private userService: UserService) { }
 
   ngOnInit() {
     this.onUserSelect();
+    this.currentUser$ = this.userService.user$;
+    this.currentUserEmail = this.authService.isAuthorised();
   }
 
   ngOnDestroy() {
@@ -27,14 +34,33 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   onSendMessage(message: string) {
-    console.log(message);
+    this.chatService.send(message).then((isFirstMessage: boolean) => {
+      if (isFirstMessage) {
+        this.getMessages();
+      }
+    });
   }
 
   private onUserSelect() {
     this.chatService.selectedUser$
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((user: User) => {
+      this.loader = true;
+      this.user = user;
+      this.getMessages();
+    });
+  }
+
+  private getMessages() {
+    if (this.sub$) { this.sub$.unsubscribe(); }
+    this.sub$ = this.chatService.getAll()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((user: User) => {
-        this.user = user;
+      .subscribe((messages: Message[]) => {
+        this.messages = messages.map((message: Message) => {
+          message.outcome = message.sentBy === this.currentUserEmail;
+          return message;
+        });
+        this.loader = false;
       });
   }
 

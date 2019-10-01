@@ -4,12 +4,13 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 import { ChatComponent } from './chat.component';
-import { TextboxComponent } from './components';
+import { MessagesComponent, TextboxComponent } from './components';
 
 @NgModule({
   declarations: [
     ChatComponent,
-    TextboxComponent
+    TextboxComponent,
+    MessagesComponent
   ],
   imports: [
     CommonModule,

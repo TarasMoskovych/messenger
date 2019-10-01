@@ -1,9 +1,11 @@
-<div class="chat" [class.chat--empty]="!user">
+<div class="chat" *ngIf="currentUser$ | async as currentUser" [class.chat--empty]="!user">
   <ng-container *ngIf="user; else empty">
     <div class="chat__user">
       {{ user.displayName }}
-      <mat-divider></mat-divider>
+      <mat-divider class="mt-5"></mat-divider>
     </div>
+    <app-messages *ngIf="!loader" [messages]="messages" [currentUser]="currentUser" [userPhotoUrl]="user.photoURL"></app-messages>
+    <app-loader *ngIf="loader"></app-loader>
     <app-textbox (sendMessage)="onSendMessage($event)"></app-textbox>
   </ng-container>
   <ng-template #empty>
