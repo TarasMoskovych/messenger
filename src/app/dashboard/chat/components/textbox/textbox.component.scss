@@ -3,6 +3,13 @@
 .textbox {
   align-items: center;
   display: flex;
+  flex-direction: column;
+
+  &__wrapper {
+    align-items: center;
+    display: flex;
+    width: 100%;
+  }
 
   mat-form-field {
     margin-left: 5px;
@@ -13,5 +20,9 @@
     &.red {
       color: $danger;
     }
+  }
+
+  emoji-mart {
+    align-self: flex-end;
   }
 }

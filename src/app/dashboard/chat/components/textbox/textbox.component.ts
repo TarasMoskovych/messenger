@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { EmojiEvent } from '@ctrl/ngx-emoji-mart/ngx-emoji/public_api';
 
 import { appConfig } from 'src/app/configs';
 
@@ -10,9 +11,20 @@ import { appConfig } from 'src/app/configs';
 })
 export class TextboxComponent {
   @Output() sendMessage = new EventEmitter<string>();
+  @ViewChild('field', { static: false }) private textarea: ElementRef;
 
   maxLength = appConfig.textBoxLength;
   message = '';
+  showEmojiPicker = false;
+
+  onAddEmoji(event: EmojiEvent) {
+    const { message } = this;
+    const text = `${message}${event.emoji.native}`;
+
+    this.message = text;
+    this.textarea.nativeElement.focus();
+    this.showEmojiPicker = false;
+  }
 
   onSendMessage(event?: KeyboardEvent) {
     event && event.preventDefault();
@@ -25,4 +37,7 @@ export class TextboxComponent {
     }
   }
 
+  toggleEmojiPicker() {
+    this.showEmojiPicker = !this.showEmojiPicker;
+  }
 }

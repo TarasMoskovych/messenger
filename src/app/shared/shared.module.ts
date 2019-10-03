@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { FeatherModule } from 'angular-feather';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
@@ -28,7 +30,9 @@ import { RelativeDatePipe, SmartDatePipe } from './pipes';
     MaterialModule,
     NgxSkeletonLoaderModule,
     LightboxModule,
-    NgScrollbarModule
+    NgScrollbarModule,
+    FeatherModule.pick({}),
+    PickerModule
   ],
   exports: [
     FormsModule,
@@ -42,7 +46,9 @@ import { RelativeDatePipe, SmartDatePipe } from './pipes';
     LoaderComponent,
     InputBoxComponent,
     RelativeDatePipe,
-    SmartDatePipe
+    SmartDatePipe,
+    FeatherModule,
+    PickerModule
   ]
 })
 export class SharedModule { }
