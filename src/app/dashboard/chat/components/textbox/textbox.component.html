@@ -1,7 +1,7 @@
 <div class="textbox">
-  <emoji-mart class="emoji-mart" set="emojione" (emojiSelect)="onAddEmoji($event)" *ngIf="showEmojiPicker" title="Pick your emoji…"></emoji-mart>
+  <emoji-mart class="emoji-mart" perLine="10" set="emojione" (emojiSelect)="onAddEmoji($event)" *ngIf="showEmojiPicker"></emoji-mart>
   <div class="textbox__wrapper">
-    <mat-icon color="primary" (click)="toggleEmojiPicker()">face</mat-icon>
+    <mat-icon class="emoji-icon"  color="primary" (click)="toggleEmojiPicker()">{{ showEmojiPicker ? 'keyboard_arrow_down' : 'mood' }}</mat-icon>
 
     <mat-form-field class="chat-input">
       <mat-label>Type a message</mat-label>
