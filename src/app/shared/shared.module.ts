@@ -7,7 +7,7 @@ import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { LightboxModule } from 'ngx-lightbox';
-import { NgScrollbarModule } from 'ngx-scrollbar';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { MaterialModule } from './../material/material.module';
 import { LoaderComponent, InputBoxComponent } from './components';
@@ -29,7 +29,7 @@ import { RelativeDatePipe, SmartDatePipe } from './pipes';
     MaterialModule,
     NgxSkeletonLoaderModule,
     LightboxModule,
-    NgScrollbarModule,
+    InfiniteScrollModule,
     PickerModule
   ],
   exports: [
@@ -40,7 +40,7 @@ import { RelativeDatePipe, SmartDatePipe } from './pipes';
     MaterialModule,
     NgxSkeletonLoaderModule,
     LightboxModule,
-    NgScrollbarModule,
+    InfiniteScrollModule,
     LoaderComponent,
     InputBoxComponent,
     RelativeDatePipe,

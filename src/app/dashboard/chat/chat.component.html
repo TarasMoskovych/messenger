@@ -4,7 +4,19 @@
       {{ user.displayName }}
       <mat-divider class="mt-5"></mat-divider>
     </div>
-    <app-messages *ngIf="!loader" [messages]="messages" [currentUser]="currentUser" [userPhotoUrl]="user.photoURL"></app-messages>
+    <div
+      *ngIf="!loader"
+      #scroll
+      class="chat__messages scrollbar"
+      scrollViewport
+      infiniteScroll
+      [scrollWindow]="false"
+      [infiniteScrollUpDistance]="2"
+      [infiniteScrollThrottle]="200"
+      (scrolledUp)="onGetMoreMessages()">
+
+      <app-messages [messages]="messages" [currentUser]="currentUser" [userPhotoUrl]="user.photoURL"></app-messages>
+    </div>
     <app-loader *ngIf="loader"></app-loader>
     <app-textbox (sendMessage)="onSendMessage($event)"></app-textbox>
   </ng-container>

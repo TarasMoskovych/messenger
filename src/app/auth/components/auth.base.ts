@@ -1,8 +1,8 @@
 import { FormGroup } from '@angular/forms';
 
 export abstract class BaseAuth {
-  protected loading = false;
-  protected form: FormGroup;
+  loading = false;
+  form: FormGroup;
 
   protected showLoader() {
     this.loading = true;
