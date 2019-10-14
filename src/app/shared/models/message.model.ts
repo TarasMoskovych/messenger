@@ -1,6 +1,6 @@
 export interface Message {
   message: string;
-  timestamp: IDate;
+  timestamp?: IDate;
   sentBy: string;
   outcome?: boolean;
 }

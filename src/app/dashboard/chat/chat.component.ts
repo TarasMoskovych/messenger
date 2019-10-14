@@ -42,6 +42,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   onSendMessage(message: string) {
+    if (this.messages.length === 0) {
+      this.messages.push({ message, outcome: true, sentBy: this.currentUserEmail });
+      this.messages = [...this.messages];
+    }
+
     this.chatService.send(message).then((isFirstMessage: boolean) => {
       if (isFirstMessage) {
         this.getMessages();
