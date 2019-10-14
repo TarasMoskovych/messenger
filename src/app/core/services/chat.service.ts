@@ -103,4 +103,9 @@ export class ChatService {
     this.onSendDoneS.next(true);
   }
 
+  close() {
+    this.selectedUserS.next(null);
+    this.selectedUser = null;
+  }
+
 }

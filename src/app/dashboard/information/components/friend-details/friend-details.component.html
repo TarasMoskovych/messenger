@@ -1,0 +1,24 @@
+<ng-container *ngIf="user$ | async as user; else empty">
+  <div class="profile" fxLayout="row" fxLayoutAlign="center center">
+    <div fxLayout="column">
+      <img class="profile__img" [src]="user.photoURL" alt="" (click)="onImgClick(user)">
+      <h3 class="profile__title">{{ user.displayName }}</h3>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="center">
+    <span matTooltip="Call" class="mr-5">
+      <button mat-mini-fab color="primary" (click)="onCall(user)">
+        <mat-icon aria-hidden="true">call</mat-icon>
+      </button>
+    </span>
+    <span matTooltip="Close Chat">
+      <button mat-mini-fab color="warn" (click)="onCloseChat()">
+        <mat-icon aria-hidden="true">close</mat-icon>
+      </button>
+    </span>
+  </div>
+</ng-container>
+
+<ng-template #empty>
+  Please select a friend for chatting
+</ng-template>
