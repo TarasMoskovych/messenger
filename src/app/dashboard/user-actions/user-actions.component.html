@@ -16,11 +16,11 @@
     <ng-template matExpansionPanelContent>
       <app-live-search (searchUser)="onInputUser($event)"></app-live-search>
       <ng-container *ngIf="showAddFriendsPanel; else emptyUsers">
-        <!-- <app-add-friend
+        <app-add-friend
           *ngIf="users.length && !subLoading; else loading"
           [users]="users"
           (addFriend)="onAddFriend($event)"
-        ></app-add-friend> -->
+        ></app-add-friend>
         <ng-template #loading>
           <app-loader></app-loader>
         </ng-template>
