@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from 'angularfire2/auth';
-import { AngularFirestore, DocumentData, DocumentChangeAction } from 'angularfire2/firestore';
-import { AngularFireStorage } from 'angularfire2/storage';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFirestore, DocumentData, DocumentChangeAction } from '@angular/fire/firestore';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
 
 import { BehaviorSubject, Observable } from 'rxjs';

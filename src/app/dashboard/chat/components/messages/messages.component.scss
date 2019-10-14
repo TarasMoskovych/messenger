@@ -1,10 +1,5 @@
 @import './../../../../scss/variables';
 
-ng-scrollbar {
-  --scrollbar-padding: 0px;
-  --scrollbar-thumb-color: #3F51B5;
-}
-
 .messages {
   display: flex;
   flex-direction: column;

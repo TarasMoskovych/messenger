@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firestore';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Subject, of, Observable, from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -19,12 +19,14 @@ export class ChatService {
   private conversations = this.afs.collection('conversations');
   private selectedUser: User;
   private selectedUserS = new Subject<User>();
+  private onSendDoneS = new Subject<boolean>();
 
   selectedUser$ = this.selectedUserS.asObservable();
+  onSendDone$ = this.onSendDoneS.asObservable();
 
   constructor(private afs: AngularFirestore, private authService: AuthService) { }
 
-  getAll(): Observable<Message[]> {
+  getAll(count: number): Observable<Message[]> {
     return from(
       this.chats.ref
         .where('me', '==', this.authService.isAuthorised())
@@ -34,7 +36,10 @@ export class ChatService {
       if (snapshot.empty) {
         return of([]);
       }
-      return this.conversations.doc(snapshot.docs[0].data().id).collection('messages', ref => ref.orderBy('timestamp')).valueChanges();
+      return this.conversations.doc(snapshot.docs[0].data().id).collection('messages', ref => ref
+        .orderBy('timestamp', 'desc')
+        .limit(count))
+        .valueChanges();
     }));
   }
 
@@ -92,6 +97,10 @@ export class ChatService {
   selectFriend(user: User): void {
     this.selectedUser = user;
     this.selectedUserS.next(user);
+  }
+
+  sendDone() {
+    this.onSendDoneS.next(true);
   }
 
 }

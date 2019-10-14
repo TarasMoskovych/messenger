@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { AngularFireAuth } from 'angularfire2/auth';
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { auth } from 'firebase/app';
 
 import { CoreModule } from '../core.module';
@@ -56,7 +56,7 @@ export class AuthService {
       .then(data => {
         this._authState = data.user;
 
-        if (this._authState.isEmailVerified) {
+        if (this._authState.emailVerified) {
           this.saveSessionToken(data.user.email);
           this.updateUserStatus('online');
         } else {
