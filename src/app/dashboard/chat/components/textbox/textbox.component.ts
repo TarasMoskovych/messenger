@@ -11,6 +11,7 @@ import { appConfig } from 'src/app/configs';
 })
 export class TextboxComponent {
   @Output() sendMessage = new EventEmitter<string>();
+  @Output() fileUpload = new EventEmitter<File>();
   @ViewChild('field', { static: false }) private textarea: ElementRef;
 
   maxLength = appConfig.textBoxLength;
@@ -34,6 +35,12 @@ export class TextboxComponent {
     if (msg.length) {
       this.sendMessage.emit(msg);
       this.message = '';
+    }
+  }
+
+  onFileUpload(file: File) {
+    if (file) {
+      this.fileUpload.emit(file);
     }
   }
 

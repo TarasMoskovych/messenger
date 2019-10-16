@@ -19,6 +19,12 @@
       <mat-hint [class.red]="field.value.length === maxLength" align="end">{{ field.value.length }}/{{ maxLength }}</mat-hint>
     </mat-form-field>
 
+    <button mat-icon-button (click)="fileInput.click()">
+      <mat-icon color="primary">attach_file</mat-icon>
+    </button>
+
+    <input #fileInput type="file" (change)="onFileUpload(fileInput.files[0])" style="display: none;">
+
     <button mat-icon-button (click)="onSendMessage()">
       <mat-icon color="primary">send</mat-icon>
     </button>

@@ -2,7 +2,14 @@
   <div *ngFor="let message of messages" class="messages__wrapper" [class.messages__wrapper--outcome]="message.outcome">
     <mat-list-item class="messages__item" [class.messages__item--outcome]="message.outcome">
       <img class="messages__item__img" [class.messages__item__img--outcome]="message.outcome" matListAvatar [src]="message.outcome ? currentUser.photoURL : userPhotoUrl" alt="Image">
-      {{ message.message }}
+      <ng-container *ngIf="message.fileMessage; else textMessage">
+        <div class="messages__item--file">
+          <img (click)="onImageClick(message.message)" [src]="message.message" alt="">
+        </div>
+      </ng-container>
+      <ng-template #textMessage>
+        {{ message.message }}
+      </ng-template>
     </mat-list-item>
     <p matLine class="messages__date" [class.messages__date--outcome]="message.outcome">
       <ng-container *ngIf="message.timestamp">

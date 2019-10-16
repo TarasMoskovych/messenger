@@ -28,7 +28,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   scrollUp = false;
   user: User;
 
-  constructor(private authService: AuthService, private chatService: ChatService, private userService: UserService) { }
+  constructor(
+    private authService: AuthService,
+    private chatService: ChatService,
+    private userService: UserService
+  ) { }
 
   ngOnInit() {
     this.onUserSelect();
@@ -52,6 +56,10 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.getMessages();
       }
     });
+  }
+
+  onFileUpload(file: File) {
+    this.chatService.sendFile(file).then(data => console.log(data));
   }
 
   onGetMoreMessages() {

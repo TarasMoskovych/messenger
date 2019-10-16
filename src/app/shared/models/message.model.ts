@@ -3,6 +3,7 @@ export interface Message {
   timestamp?: IDate;
   sentBy: string;
   outcome?: boolean;
+  fileMessage?: boolean;
 }
 
 interface IDate {
