@@ -103,6 +103,12 @@ export class ChatService {
   }
 
   sendFile(file: File): Promise<boolean> {
+    if (!file.type.match('image/.*')) {
+      this.notificationService.showMessage('File type is not supported!');
+      this.sendFileDone();
+      return Promise.resolve(false);
+    }
+
     return this.storage
       .upload(`files/picture_${this.hashService.generateHash()}`, file)
       .then((data: UploadTaskSnapshot) => {

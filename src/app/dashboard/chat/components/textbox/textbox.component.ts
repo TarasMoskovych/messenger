@@ -10,7 +10,7 @@ import { ChatService } from 'src/app/core';
   selector: 'app-textbox',
   templateUrl: './textbox.component.html',
   styleUrls: ['./textbox.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Default
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TextboxComponent implements OnInit, OnDestroy {
   @Output() sendMessage = new EventEmitter<string>();
