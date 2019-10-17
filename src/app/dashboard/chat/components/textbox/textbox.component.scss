@@ -26,6 +26,14 @@
     align-self: flex-end;
   }
 
+  .spinner {
+    margin: 0 5px;
+
+    mat-spinner {
+      zoom: 0.3;
+    }
+  }
+
   .emoji-icon {
     border-radius: 50%;
     cursor: pointer;

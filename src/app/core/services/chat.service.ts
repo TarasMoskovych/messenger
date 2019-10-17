@@ -23,9 +23,11 @@ export class ChatService {
   private selectedUser: User;
   private selectedUserS = new Subject<User>();
   private onSendDoneS = new Subject<boolean>();
+  private onSendFileDoneS = new Subject<boolean>();
 
   selectedUser$ = this.selectedUserS.asObservable();
   onSendDone$ = this.onSendDoneS.asObservable();
+  onSendFileDone$ = this.onSendFileDoneS.asObservable();
 
   constructor(
     private afs: AngularFirestore,
@@ -129,6 +131,10 @@ export class ChatService {
 
   sendDone() {
     this.onSendDoneS.next(true);
+  }
+
+  sendFileDone() {
+    this.onSendFileDoneS.next(true);
   }
 
   close() {

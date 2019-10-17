@@ -105,6 +105,8 @@ export class ChatComponent implements OnInit, OnDestroy {
           this.scroll.nativeElement.scrollTop = Math.floor(this.scroll.nativeElement.scrollHeight / 1.6);
           this.scrollUp = false;
         }
+
+        this.chatService.sendFileDone();
       });
   }
 

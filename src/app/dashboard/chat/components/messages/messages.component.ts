@@ -41,7 +41,7 @@ export class MessagesComponent extends AbstractLightBox implements OnInit, After
   }
 
   onImageClick(photoURL: string) {
-    this.openImg({ photoURL, displayName: '' });
+    this.openImg({ photoURL, displayName: '', email: photoURL });
   }
 
   private scrollContent() {
