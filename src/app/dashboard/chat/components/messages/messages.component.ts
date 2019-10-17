@@ -2,9 +2,11 @@ import { Component, ChangeDetectionStrategy, Input, OnInit, AfterViewInit, ViewC
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
+import { AbstractLightBox } from 'src/app/dashboard/classes';
 import { ChatService } from 'src/app/core/services';
 import { Message, User } from 'src/app/shared/models';
 import { appConfig } from 'src/app/configs';
+import { Lightbox } from 'ngx-lightbox';
 
 @Component({
   selector: 'app-messages',
@@ -12,7 +14,7 @@ import { appConfig } from 'src/app/configs';
   styleUrls: ['./messages.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MessagesComponent implements OnInit, AfterViewInit, OnDestroy {
+export class MessagesComponent extends AbstractLightBox implements OnInit, AfterViewInit, OnDestroy {
   @Input() messages: Message[] = [];
   @Input() currentUser: User;
   @Input() userPhotoUrl: string;
@@ -20,7 +22,9 @@ export class MessagesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   sub$: Subscription;
 
-  constructor(private charService: ChatService) { }
+  constructor(private charService: ChatService, protected lightbox: Lightbox) {
+    super(lightbox);
+  }
 
   ngOnInit() {
     this.sub$ = this.charService.onSendDone$
@@ -34,6 +38,10 @@ export class MessagesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.sub$.unsubscribe();
+  }
+
+  onImageClick(photoURL: string) {
+    this.openImg({ photoURL, displayName: '', email: photoURL });
   }
 
   private scrollContent() {

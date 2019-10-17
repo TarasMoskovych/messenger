@@ -20,6 +20,7 @@
     border-radius: 10px 15px 10px 0;
     color: $grey3;
     display: flex !important;
+    height: auto !important;
     padding: 5px 0;
 
     &--outcome {
@@ -27,7 +28,18 @@
       border-radius: 15px 10px 0 10px;
     }
 
+    &--file {
+      max-width: 50%;
+
+      img {
+        cursor: pointer;
+        margin-left: 0;
+        width: 100%;
+      }
+    }
+
     &__img {
+      align-self: flex-start;
       box-shadow: $box-shadow;
       margin-right: 10px;
 

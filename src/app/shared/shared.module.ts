@@ -12,13 +12,15 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MaterialModule } from './../material/material.module';
 import { LoaderComponent, InputBoxComponent } from './components';
 import { RelativeDatePipe, SmartDatePipe } from './pipes';
+import { DragAndDropDirective } from './directives';
 
 @NgModule({
   declarations: [
     LoaderComponent,
     InputBoxComponent,
     RelativeDatePipe,
-    SmartDatePipe
+    SmartDatePipe,
+    DragAndDropDirective
   ],
   imports: [
     CommonModule,
@@ -45,7 +47,8 @@ import { RelativeDatePipe, SmartDatePipe } from './pipes';
     InputBoxComponent,
     RelativeDatePipe,
     SmartDatePipe,
-    PickerModule
+    PickerModule,
+    DragAndDropDirective
   ]
 })
 export class SharedModule { }

@@ -1,4 +1,4 @@
-<div class="textbox">
+<div class="textbox" appDragDrop (onFileDropped)="onFileDropped($event)">
   <emoji-mart class="emoji-mart" perLine="10" set="emojione" (emojiSelect)="onAddEmoji($event)" *ngIf="showEmojiPicker"></emoji-mart>
   <div class="textbox__wrapper">
     <mat-icon class="emoji-icon"  color="primary" (click)="toggleEmojiPicker()">{{ showEmojiPicker ? 'keyboard_arrow_down' : 'mood' }}</mat-icon>
@@ -19,8 +19,20 @@
       <mat-hint [class.red]="field.value.length === maxLength" align="end">{{ field.value.length }}/{{ maxLength }}</mat-hint>
     </mat-form-field>
 
-    <button mat-icon-button (click)="onSendMessage()">
-      <mat-icon color="primary">send</mat-icon>
-    </button>
+    <ng-container *ngIf="!showLoader">
+      <button mat-icon-button (click)="fileInput.click()">
+        <mat-icon color="primary">attach_file</mat-icon>
+      </button>
+
+      <input #fileInput type="file" (change)="onFileUpload(fileInput.files[0])" style="display: none;">
+
+      <button mat-icon-button (click)="onSendMessage()">
+        <mat-icon color="primary">send</mat-icon>
+      </button>
+    </ng-container>
+
+    <div class="spinner" *ngIf="showLoader">
+      <mat-spinner></mat-spinner>
+    </div>
   </div>
 </div>

@@ -27,6 +27,12 @@ body {
     }
   }
 
+  .messages {
+    .mat-list-item-content {
+      justify-content: space-between;
+    }
+  }
+
   .mat-expansion-indicator::after {
     color: $primary;
   }

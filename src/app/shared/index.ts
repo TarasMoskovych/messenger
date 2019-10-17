@@ -1,4 +1,4 @@
 export * from './components';
-export * from './helpers';
+export * from './directives';
 export * from './models';
 export * from './pipes';

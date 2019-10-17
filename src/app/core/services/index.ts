@@ -4,3 +4,4 @@ export * from './user.service';
 export * from './notification.service';
 export * from './friends.service';
 export * from './chat.service';
+export * from './hash.service';

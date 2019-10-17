@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { Subject, of, Observable, from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -9,7 +11,8 @@ import { CoreModule } from '../core.module';
 
 import { AuthService } from './auth.service';
 import { Chat, Message, User } from './../../shared/models';
-import { MathHelper } from './../../shared/helpers';
+import { NotificationService } from './notification.service';
+import { HashService } from './hash.service';
 
 @Injectable({
   providedIn: CoreModule
@@ -20,11 +23,19 @@ export class ChatService {
   private selectedUser: User;
   private selectedUserS = new Subject<User>();
   private onSendDoneS = new Subject<boolean>();
+  private onSendFileDoneS = new Subject<boolean>();
 
   selectedUser$ = this.selectedUserS.asObservable();
   onSendDone$ = this.onSendDoneS.asObservable();
+  onSendFileDone$ = this.onSendFileDoneS.asObservable();
 
-  constructor(private afs: AngularFirestore, private authService: AuthService) { }
+  constructor(
+    private afs: AngularFirestore,
+    private authService: AuthService,
+    private storage: AngularFireStorage,
+    private notificationService: NotificationService,
+    private hashService: HashService
+  ) { }
 
   getAll(count: number): Observable<Message[]> {
     return from(
@@ -43,7 +54,7 @@ export class ChatService {
     }));
   }
 
-  send(message: string): Promise<boolean> {
+  send(message: string, fileMessage = false): Promise<boolean> {
     let docId1: string;
     let docId2: string;
 
@@ -52,7 +63,8 @@ export class ChatService {
       return document.collection('messages').add({
         message,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        sentBy: this.authService.isAuthorised()
+        sentBy: this.authService.isAuthorised(),
+        fileMessage
       });
     };
 
@@ -74,7 +86,7 @@ export class ChatService {
               populateChats({ me: this.selectedUser.email, friend: this.authService.isAuthorised() })
                 .then((docRef2: firebase.firestore.DocumentReference) => {
                   docId2 = docRef2.id;
-                  this.conversations.add({ key: MathHelper.generateRandomNumber() })
+                  this.conversations.add({ key: this.hashService.generateHash() })
                     .then((conversationsDocRef: firebase.firestore.DocumentReference) => {
                       addConversation(this.conversations.doc(conversationsDocRef.id))
                         .then(() => {
@@ -90,6 +102,30 @@ export class ChatService {
     });
   }
 
+  sendFile(file: File): Promise<boolean> {
+    if (!file.type.match('image/.*')) {
+      this.notificationService.showMessage('File type is not supported!');
+      this.sendFileDone();
+      return Promise.resolve(false);
+    }
+
+    return this.storage
+      .upload(`files/picture_${this.hashService.generateHash()}`, file)
+      .then((data: UploadTaskSnapshot) => {
+        if (data.metadata.contentType.match('image/.*')) {
+          return data.ref
+            .getDownloadURL()
+            .then((url: string) => this.send(url, true));
+        } else {
+          return data.ref.delete()
+            .then(() => {
+              this.notificationService.showMessage('File type is not supported!');
+              return false;
+            });
+        }
+    });
+  }
+
   getSelected(): User {
     return this.selectedUser;
   }
@@ -101,6 +137,10 @@ export class ChatService {
 
   sendDone() {
     this.onSendDoneS.next(true);
+  }
+
+  sendFileDone() {
+    this.onSendFileDoneS.next(true);
   }
 
   close() {

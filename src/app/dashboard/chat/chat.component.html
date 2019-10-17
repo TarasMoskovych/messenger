@@ -18,7 +18,7 @@
       <app-messages [messages]="messages" [currentUser]="currentUser" [userPhotoUrl]="user.photoURL"></app-messages>
     </div>
     <app-loader *ngIf="loader"></app-loader>
-    <app-textbox (sendMessage)="onSendMessage($event)"></app-textbox>
+    <app-textbox (fileUpload)="onFileUpload($event)" (sendMessage)="onSendMessage($event)"></app-textbox>
   </ng-container>
   <ng-template #empty>
     <div class="chat__title">
