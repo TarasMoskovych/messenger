@@ -6,16 +6,24 @@
     </div>
   </div>
   <div fxLayout="row" fxLayoutAlign="center">
-    <span matTooltip="Call" class="mr-5">
-      <button mat-mini-fab color="primary" (click)="onCall(user)">
-        <mat-icon aria-hidden="true">call</mat-icon>
-      </button>
-    </span>
-    <span matTooltip="Close Chat">
-      <button mat-mini-fab color="warn" (click)="onCloseChat()">
-        <mat-icon aria-hidden="true">close</mat-icon>
-      </button>
-    </span>
+    <app-loader *ngIf="loader"></app-loader>
+    <ng-container *ngIf="!loader">
+      <span matTooltip="Call" class="mr-5">
+        <button mat-mini-fab color="primary" (click)="onCall(user)">
+          <mat-icon aria-hidden="true">call</mat-icon>
+        </button>
+      </span>
+      <span matTooltip="Close Chat" class="mr-5">
+        <button mat-mini-fab color="warn" (click)="onCloseChat()">
+          <mat-icon aria-hidden="true">close</mat-icon>
+        </button>
+      </span>
+      <span matTooltip="Remove Friend">
+        <button mat-mini-fab color="warn" (click)="onRemoveFriend(user)">
+          <mat-icon aria-hidden="true">delete_forever</mat-icon>
+        </button>
+      </span>
+    </ng-container>
   </div>
 </ng-container>
 

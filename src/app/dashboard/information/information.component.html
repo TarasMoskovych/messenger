@@ -5,7 +5,7 @@
       Friend Information
     </mat-expansion-panel-header>
     <ng-template matExpansionPanelContent>
-      <app-friend-details [user$]="friend$" (closeChat)="onCloseChat()" (call)="onCall($event)"></app-friend-details>
+      <app-friend-details [user$]="friend$" (closeChat)="onCloseChat()" (call)="onCall($event)" (removeFriend)="onRemoveFriend($event)"></app-friend-details>
     </ng-template>
   </mat-expansion-panel>
 

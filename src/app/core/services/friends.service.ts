@@ -27,4 +27,22 @@ export class FriendsService {
       })
     );
   }
+
+  remove(user: User): Observable<any> {
+    return this.removeFriend(this.authService.isAuthorised(), user.email)
+      .pipe(switchMap(() => this.removeFriend(user.email, this.authService.isAuthorised())));
+  }
+
+  private removeFriend(myEmail: string, friendEmail: string): Observable<void> {
+    let friendsId: string;
+
+    return this.afs.collection('friends', ref => ref.where('email', '==', myEmail)).get()
+    .pipe(
+      switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
+        friendsId = snapshot.docs[0].id;
+        return this.afs.collection(`friends/${friendsId}/myfriends`, ref => ref.where('email', '==', friendEmail)).get()
+      }),
+      switchMap((snapshot: firebase.firestore.QuerySnapshot) => this.afs.doc(`friends/${friendsId}/myfriends/${snapshot.docs[0].id}`).delete())
+    );
+  }
 }
