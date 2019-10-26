@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { ChatService, FriendsService, NotificationService } from 'src/app/core/services';
-import { User } from 'src/app/shared/models';
+import { ChatService, FriendsService, NotificationService, GroupService } from 'src/app/core/services';
+import { User, Group } from 'src/app/shared/models';
 import { FriendDetailsComponent } from './components';
 
 @Component({
@@ -15,15 +15,18 @@ export class InformationComponent implements OnInit {
   @ViewChild(FriendDetailsComponent, { static: false }) private friendsDetailsComponent: FriendDetailsComponent;
 
   friend$: Observable<User>;
+  group$: Observable<Group>;
 
   constructor(
     private chatService: ChatService,
+    private groupService: GroupService,
     private friendsService: FriendsService,
     private notificationService: NotificationService
   ) { }
 
   ngOnInit() {
     this.getFriendInfo();
+    this.getGroupInfo();
   }
 
   onCloseChat() {
@@ -47,6 +50,10 @@ export class InformationComponent implements OnInit {
 
   private getFriendInfo() {
     this.friend$ = this.chatService.selectedUser$;
+  }
+
+  private getGroupInfo() {
+    this.group$ = this.groupService.selectedGroup$;
   }
 
 }

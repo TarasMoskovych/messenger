@@ -2,8 +2,12 @@
 
   <div fxLayout="row" *ngIf="groups.length">
     <mat-list class="groups__list">
-      <mat-list-item *ngFor="let group of groups" class="groups__item" (click)="onOpenGroup(group)">
-        <img  class="groups__img" matListAvatar [src]="group.image" alt="">
+      <mat-list-item
+        *ngFor="let group of groups"
+        class="groups__item"
+        [class.groups__item--selected]="group?.conversationId === selected?.conversationId"
+        (click)="onOpenGroup(group)"
+      ><img  class="groups__img" matListAvatar [src]="group.image" alt="">
         <h3 matLine>
           {{ group.name }}
         </h3>

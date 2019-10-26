@@ -72,6 +72,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.chatService.selectedUser$
     .pipe(takeUntil(this.destroy$))
     .subscribe((user: User) => {
+      if (!user) { return; }
       this.loader = true;
       this.user = user;
       this.count = appConfig.count;
