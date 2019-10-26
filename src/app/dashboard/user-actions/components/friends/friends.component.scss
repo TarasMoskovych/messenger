@@ -5,7 +5,7 @@
   overflow-y: auto;
 
   &__list {
-    max-height: $friends-max-height;
+    max-height: $panel-max-height;
 
     &__item {
       transition: .3s;

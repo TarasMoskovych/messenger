@@ -1,0 +1,53 @@
+<div class="groups">
+
+  <div fxLayout="row" *ngIf="groups.length">
+    <mat-list class="groups__list">
+      <mat-list-item *ngFor="let group of groups" class="groups__item" (click)="onOpenGroup(group)">
+        <img  class="groups__img" matListAvatar [src]="group.image" alt="">
+        <h3 matLine>
+          {{ group.name }}
+        </h3>
+      </mat-list-item>
+    </mat-list>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="center">
+    <div fxLayout="column">
+
+      <form class="mb-10" [formGroup]="form" *ngIf="adding">
+        <app-input-box
+          [form]="form"
+          [autofocus]="true"
+          position="center"
+          type="text"
+          path="name"
+          placeholder="Name"
+        ></app-input-box>
+      </form>
+
+      <div fxLayout="row" fxLayoutAlign="center">
+        <span *ngIf="!adding" matTooltip="Add Group" class="mr-5">
+          <button mat-mini-fab color="primary" (click)="onToggleForm()">
+            <mat-icon aria-hidden="true">add</mat-icon>
+          </button>
+        </span>
+        <span *ngIf="adding" matTooltip="Create Group" class="mr-5">
+          <button [disabled]="form.invalid" mat-mini-fab color="primary" (click)="onAddGroup()">
+            <mat-icon aria-hidden="true">check</mat-icon>
+          </button>
+        </span>
+        <span *ngIf="!adding" matTooltip="Refresh" class="mr-5">
+          <button mat-mini-fab color="primary" (click)="onRefresh()">
+            <mat-icon aria-hidden="true">refresh</mat-icon>
+          </button>
+        </span>
+        <span *ngIf="adding" matTooltip="Cancel">
+          <button mat-mini-fab color="warn" (click)="onToggleForm()">
+            <mat-icon aria-hidden="true">close</mat-icon>
+          </button>
+        </span>
+      </div>
+    </div>
+  </div>
+
+</div>

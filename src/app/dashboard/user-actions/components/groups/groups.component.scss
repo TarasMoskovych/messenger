@@ -1,0 +1,23 @@
+@import './../../../../scss/variables';
+
+.groups {
+
+  &__list {
+    margin-bottom: 20px;
+    width: 100%;
+  }
+
+  &__item {
+    transition: .3s;
+
+    &:hover {
+      background: darken($grey, 5);
+      cursor: pointer;
+    }
+
+  }
+
+  &__img {
+    margin-left: 10px;
+  }
+}
