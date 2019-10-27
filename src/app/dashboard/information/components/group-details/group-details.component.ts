@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material';
 
@@ -14,18 +14,19 @@ import { Lightbox } from 'ngx-lightbox';
   styleUrls: ['./group-details.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GroupDetailsComponent extends AbstractLightBox implements OnInit {
+export class GroupDetailsComponent extends AbstractLightBox {
   @Input() group$: Observable<Group>;
+  @Output() changeImage = new EventEmitter<File>();
+
+  loading = false;
 
   constructor(
     private authService: AuthService,
     private dialogRef: MatDialog,
+    private cdr: ChangeDetectorRef,
     protected lighbox: Lightbox
   ) {
     super(lighbox);
-  }
-
-  ngOnInit() {
   }
 
   onOpenMembers() {
@@ -40,6 +41,18 @@ export class GroupDetailsComponent extends AbstractLightBox implements OnInit {
 
   onGroupClick(group: Group) {
     this.openImg({ email: group.conversationId, displayName: group.name, photoURL: group.image });
+  }
+
+  onImageChange(file: File) {
+    if (file) {
+      this.loading = true;
+      this.changeImage.emit(file);
+    }
+  }
+
+  hideLoader() {
+    this.loading = false;
+    this.cdr.detectChanges();
   }
 
 }

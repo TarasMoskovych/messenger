@@ -4,7 +4,7 @@ import { take } from 'rxjs/operators';
 
 import { ChatService, FriendsService, NotificationService, GroupService } from 'src/app/core/services';
 import { User, Group } from 'src/app/shared/models';
-import { FriendDetailsComponent } from './components';
+import { FriendDetailsComponent, GroupDetailsComponent } from './components';
 
 @Component({
   selector: 'app-information',
@@ -13,6 +13,7 @@ import { FriendDetailsComponent } from './components';
 })
 export class InformationComponent implements OnInit {
   @ViewChild(FriendDetailsComponent, { static: false }) private friendsDetailsComponent: FriendDetailsComponent;
+  @ViewChild(GroupDetailsComponent, { static: false }) private groupDetailsComponent: GroupDetailsComponent;
 
   friend$: Observable<User>;
   group$: Observable<Group>;
@@ -46,6 +47,12 @@ export class InformationComponent implements OnInit {
         this.friendsDetailsComponent.hideLoader();
         this.chatService.close();
       });
+  }
+
+  onChangeImage(file: File) {
+    this.groupService.changeImage(file)
+      .pipe(take(1))
+      .subscribe(() => this.groupDetailsComponent.hideLoader());
   }
 
   private getFriendInfo() {

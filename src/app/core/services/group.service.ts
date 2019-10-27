@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentReference, DocumentData } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentReference, DocumentData, QuerySnapshot } from '@angular/fire/firestore';
 import { Observable, from, Subject, of } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 
 import { appConfig } from 'src/app/configs';
 import { AuthService } from './auth.service';
 
+import { ImageService } from './image.service';
 import { Group, User } from './../../shared/models';
 
 @Injectable({
@@ -19,7 +20,8 @@ export class GroupService {
 
   constructor(
     private afs: AngularFirestore,
-    private authService: AuthService
+    private authService: AuthService,
+    private imageService: ImageService
   ) { }
 
   getByCreator() {
@@ -63,10 +65,7 @@ export class GroupService {
   }
 
   addMember(user: User): Observable<DocumentReference> {
-    return this.afs.collection('groups', (ref: firebase.firestore.CollectionReference) => ref
-      .where('name', '==', this.selectedGroup.name)
-      .where('creator', '==', this.authService.isAuthorised()))
-      .get()
+    return this.getCurrentGroupSnapshot()
       .pipe(
         switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
           return !snapshot.empty ? this.afs.doc(`groups/${snapshot.docs[0].id}`).collection('members').add(user) : of(null);
@@ -90,10 +89,7 @@ export class GroupService {
   }
 
   removeMember(user: User) {
-    return this.afs.collection('groups', (ref: firebase.firestore.CollectionReference) => ref
-      .where('name', '==', this.selectedGroup.name)
-      .where('creator', '==', this.authService.isAuthorised()))
-      .get()
+    return this.getCurrentGroupSnapshot()
       .pipe(
         switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
           return this.afs.doc(`groups/${snapshot.docs[0].id}`).collection('members', (ref: firebase.firestore.CollectionReference) => ref
@@ -117,6 +113,24 @@ export class GroupService {
       );
   }
 
+  changeImage(file: File): Observable<void> {
+    let photoUrl: string;
+
+    return this.imageService.upload(file, 'groups', this.selectedGroup.conversationId)
+      .pipe(
+        switchMap((url: string) => {
+          photoUrl = url;
+          return this.getCurrentGroupSnapshot();
+        }),
+        switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
+          if (!photoUrl) { return of(null); }
+
+          this.select({ ...this.selectedGroup, image: photoUrl });
+          return snapshot.docs[0].ref.update({ image: photoUrl });
+        })
+      );
+  }
+
   select(group: Group) {
     this.selectedGroup = group;
     this.selectedGroupS.next(group);
@@ -125,5 +139,12 @@ export class GroupService {
   close() {
     this.selectedGroupS.next(null);
     this.selectedGroup = null;
+  }
+
+  private getCurrentGroupSnapshot(): Observable<QuerySnapshot<DocumentData>> {
+    return this.afs.collection('groups', (ref: firebase.firestore.CollectionReference) => ref
+      .where('name', '==', this.selectedGroup.name)
+      .where('creator', '==', this.authService.isAuthorised()))
+      .get();
   }
 }

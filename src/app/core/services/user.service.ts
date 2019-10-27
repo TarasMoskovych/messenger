@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, DocumentData, DocumentChangeAction } from '@angular/fire/firestore';
-import { AngularFireStorage } from '@angular/fire/storage';
-import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
 
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
 
 import { CoreModule } from './../core.module';
+import { ImageService } from './image.service';
 import { NotificationService } from './notification.service';
 import { User } from 'src/app/shared/models';
 
@@ -21,7 +20,7 @@ export class UserService {
   constructor(
     private afauth: AngularFireAuth,
     private afs: AngularFirestore,
-    private storage: AngularFireStorage,
+    private imageService: ImageService,
     private notificationService: NotificationService
   ) {
     this.afauth.authState.subscribe((user: firebase.User) => {
@@ -38,20 +37,20 @@ export class UserService {
       .catch(e => this.notificationService.showError(e));
   }
 
-  updateImage(file: File): Promise<void> {
+  updateImage(file: File): Observable<void> {
     const user = this.getCurrentUser();
 
-    return this.storage
-      .upload(`images/${user.uid}`, file)
-      .then((data: UploadTaskSnapshot) => {
-        return data.ref
-          .getDownloadURL()
-          .then((photoURL: string) => {
-            return this.afs.doc(`users/${user.uid}`)
-              .update({ photoURL })
-              .then(() => user.updateProfile({ displayName: user.displayName, photoURL }));
-      });
-    });
+    return this.imageService.upload(file, 'users', user.uid)
+      .pipe(
+        switchMap((photoURL: string) => {
+          if (!photoURL) {
+            return of(null);
+          }
+          return this.afs.doc(`users/${user.uid}`)
+            .update({ photoURL })
+            .then(() => user.updateProfile({ displayName: user.displayName, photoURL }));
+        })
+      );
   }
 
   getAll(): Observable<User[]> {

@@ -1,7 +1,8 @@
 <ng-container *ngIf="group$ | async as group; else empty">
   <div class="group" fxLayout="row" fxLayoutAlign="center center">
     <div fxLayout="column">
-      <img class="group__img" (click)="onGroupClick(group)" [src]="group.image" alt="">
+      <img *ngIf="!loading" class="group__img" (click)="onGroupClick(group)" [src]="group.image" alt="">
+      <app-loader *ngIf="loading"></app-loader>
       <h3 class="group__title">{{ group.name }}</h3>
     </div>
   </div>
@@ -12,7 +13,7 @@
       </button>
     </span>
     <span matTooltip="Change Photo">
-      <button mat-mini-fab color="primary">
+      <button mat-mini-fab color="primary" (click)="fileInput.click()">
         <mat-icon aria-hidden="true">perm_contact_calendar</mat-icon>
       </button>
     </span>
@@ -21,6 +22,7 @@
         <mat-icon aria-hidden="true">delete_forever</mat-icon>
       </button>
     </span>
+    <input #fileInput type="file" (change)="onImageChange(fileInput.files[0])" style="display: none;">
   </div>
 </ng-container>
 

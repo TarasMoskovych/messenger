@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
-import { AngularFireStorage } from '@angular/fire/storage';
 import { Subject, of, Observable, from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -11,7 +9,7 @@ import { CoreModule } from '../core.module';
 
 import { AuthService } from './auth.service';
 import { Chat, Message, User } from './../../shared/models';
-import { NotificationService } from './notification.service';
+import { ImageService } from './image.service';
 import { HashService } from './hash.service';
 
 @Injectable({
@@ -32,8 +30,7 @@ export class ChatService {
   constructor(
     private afs: AngularFirestore,
     private authService: AuthService,
-    private storage: AngularFireStorage,
-    private notificationService: NotificationService,
+    private imageService: ImageService,
     private hashService: HashService
   ) { }
 
@@ -102,28 +99,15 @@ export class ChatService {
     });
   }
 
-  sendFile(file: File): Promise<boolean> {
-    if (!file.type.match('image/.*')) {
-      this.notificationService.showMessage('File type is not supported!');
-      this.sendFileDone();
-      return Promise.resolve(false);
-    }
-
-    return this.storage
-      .upload(`files/picture_${this.hashService.generateHash()}`, file)
-      .then((data: UploadTaskSnapshot) => {
-        if (data.metadata.contentType.match('image/.*')) {
-          return data.ref
-            .getDownloadURL()
-            .then((url: string) => this.send(url, true));
-        } else {
-          return data.ref.delete()
-            .then(() => {
-              this.notificationService.showMessage('File type is not supported!');
-              return false;
-            });
+  sendFile(file: File): Observable<boolean> {
+    return this.imageService.upload(file, 'files')
+      .pipe(switchMap((url: string) => {
+        if (!url) {
+          this.sendFileDone();
+          return of(false);
         }
-    });
+        return this.send(url, true);
+      }));
   }
 
   getSelected(): User {

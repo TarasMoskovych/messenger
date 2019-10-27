@@ -16,6 +16,7 @@
     <ng-template matExpansionPanelContent>
       <app-group-details
         [group$]="group$"
+        (changeImage)="onChangeImage($event)"
       ></app-group-details>
     </ng-template>
   </mat-expansion-panel>
