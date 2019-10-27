@@ -1,29 +1,19 @@
 <ng-container *ngIf="group$ | async as group; else empty">
   <div class="group" fxLayout="row" fxLayoutAlign="center center">
     <div fxLayout="column">
-      <img class="group__img" [src]="group.image" alt="">
+      <img class="group__img" (click)="onGroupClick(group)" [src]="group.image" alt="">
       <h3 class="group__title">{{ group.name }}</h3>
     </div>
   </div>
   <div class="group__buttons">
-    <span matTooltip="Add Member">
-      <button mat-mini-fab color="primary">
-        <mat-icon aria-hidden="true">add</mat-icon>
-      </button>
-    </span>
-    <span matTooltip="Remove Member">
-      <button mat-mini-fab color="primary">
-        <mat-icon aria-hidden="true">remove</mat-icon>
+    <span matTooltip="Members">
+      <button mat-mini-fab color="primary" (click)="onOpenMembers()">
+        <mat-icon aria-hidden="true">group_add</mat-icon>
       </button>
     </span>
     <span matTooltip="Change Photo">
       <button mat-mini-fab color="primary">
         <mat-icon aria-hidden="true">perm_contact_calendar</mat-icon>
-      </button>
-    </span>
-    <span matTooltip="Information">
-      <button mat-mini-fab color="primary">
-        <mat-icon aria-hidden="true">info</mat-icon>
       </button>
     </span>
     <span matTooltip="Remove Group">
