@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference, DocumentData, QuerySnapshot } from '@angular/fire/firestore';
-import { Observable, from, Subject, of } from 'rxjs';
+import { Observable, from, Subject, of, zip } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 
 import { appConfig } from 'src/app/configs';
 import { AuthService } from './auth.service';
 
 import { ImageService } from './image.service';
-import { Group, User } from './../../shared/models';
+import { Collections, Group, User } from './../../shared/models';
 
 @Injectable({
   providedIn: 'root'
@@ -24,18 +24,42 @@ export class GroupService {
     private imageService: ImageService
   ) { }
 
-  getByCreator() {
-    return this.afs.collection('groups', (ref: firebase.firestore.CollectionReference) => ref
+  getAll(): Observable<DocumentData[]> {
+    return zip(this.getByMemberOf(), this.getByCreator())
+      .pipe(
+        map((data: DocumentData[]) => [].concat(...data.filter(d => d)))
+      );
+  }
+
+  getByCreator(): Observable<DocumentData[]> {
+    return this.afs.collection(Collections.Groups, (ref: firebase.firestore.CollectionReference) => ref
       .where('creator', '==', this.authService.isAuthorised()))
       .valueChanges();
   }
 
+  getByMemberOf(): Observable<DocumentData[]> {
+    return this.afs.collection(Collections.MemberOf, (ref: firebase.firestore.CollectionReference) => ref
+      .where('email', '==', this.authService.isAuthorised()))
+      .get()
+      .pipe(
+        switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
+          if (snapshot.empty) {
+            return of(null);
+          }
+          return this.afs.doc(`${Collections.MemberOf}/${snapshot.docs[0].id}`).collection(Collections.Groups).valueChanges();
+        })
+      );
+  }
+
   getMembers(): Observable<DocumentData[]> {
-    return this.afs.collection('groups', (ref: firebase.firestore.CollectionReference) => ref
+    return this.afs.collection(Collections.Groups, (ref: firebase.firestore.CollectionReference) => ref
       .where('name', '==', this.selectedGroup.name))
       .get()
       .pipe(switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
-        return snapshot.empty ? of(null) : this.afs.doc(`groups/${snapshot.docs[0].id}`).collection('members').valueChanges();
+        if (snapshot.empty) {
+          return of(null);
+        }
+        return this.afs.doc(`${Collections.Groups}/${snapshot.docs[0].id}`).collection(Collections.Members).valueChanges();
       }));
   }
 
@@ -43,7 +67,7 @@ export class GroupService {
     const email = this.authService.isAuthorised();
     let id: string;
 
-    return from(this.afs.collection('groups').add({
+    return from(this.afs.collection(Collections.Groups).add({
       name,
       creator: email,
       conversationId: '',
@@ -51,15 +75,15 @@ export class GroupService {
     })).pipe(
       switchMap((docRef: firebase.firestore.DocumentReference) => {
         id = docRef.id;
-        return docRef.collection('members').add({
+        return docRef.collection(Collections.Members).add({
           email,
           displayName: this.authService.user.displayName,
           photoURL: this.authService.user.photoURL
         });
       }),
-      switchMap(() => this.afs.collection('group_conversations').add({ name, creator: email })),
+      switchMap(() => this.afs.collection(Collections.GroupConversations).add({ name, creator: email })),
       switchMap((docRef: firebase.firestore.DocumentReference) => {
-        return this.afs.collection('groups').doc(id).update({ conversationId: docRef.id });
+        return this.afs.collection(Collections.Groups).doc(id).update({ conversationId: docRef.id });
       })
     );
   }
@@ -68,21 +92,24 @@ export class GroupService {
     return this.getCurrentGroupSnapshot()
       .pipe(
         switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
-          return !snapshot.empty ? this.afs.doc(`groups/${snapshot.docs[0].id}`).collection('members').add(user) : of(null);
+          if (snapshot.empty) {
+            return of(null);
+          }
+          return this.afs.doc(`${Collections.Groups}/${snapshot.docs[0].id}`).collection(Collections.Members).add(user);
         }),
         switchMap(() => {
-          return this.afs.collection('member_of', (ref: firebase.firestore.CollectionReference) => ref
+          return this.afs.collection(Collections.MemberOf, (ref: firebase.firestore.CollectionReference) => ref
             .where('email', '==', user.email))
             .get();
         }),
         switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
           if (snapshot.empty) {
-            return this.afs.collection('member_of').add({ email: user.email })
+            return this.afs.collection(Collections.MemberOf).add({ email: user.email })
               .then((docRef: firebase.firestore.DocumentReference) => {
-                return this.afs.doc(`member_of/${docRef.id}`).collection('groups').add(this.selectedGroup);
+                return this.afs.doc(`${Collections.MemberOf}/${docRef.id}`).collection(Collections.Groups).add(this.selectedGroup);
               });
           } else {
-            return this.afs.doc(`member_of/${snapshot.docs[0].id}`).collection('groups').add(this.selectedGroup);
+            return this.afs.doc(`${Collections.MemberOf}/${snapshot.docs[0].id}`).collection(Collections.Groups).add(this.selectedGroup);
           }
         })
       );
@@ -92,19 +119,20 @@ export class GroupService {
     return this.getCurrentGroupSnapshot()
       .pipe(
         switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
-          return this.afs.doc(`groups/${snapshot.docs[0].id}`).collection('members', (ref: firebase.firestore.CollectionReference) => ref
+          return this.afs.doc(`${Collections.Groups}/${snapshot.docs[0].id}`)
+            .collection(Collections.Members, (ref: firebase.firestore.CollectionReference) => ref
             .where('email', '==', user.email))
             .get();
         }),
         map((snapshot: firebase.firestore.QuerySnapshot) => snapshot.docs[0].ref.delete()),
         switchMap(() => {
-          return this.afs.collection('member_of', (ref: firebase.firestore.CollectionReference) => ref
+          return this.afs.collection(Collections.MemberOf, (ref: firebase.firestore.CollectionReference) => ref
             .where('email', '==', user.email))
             .get();
         }),
         switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
-          return this.afs.doc(`member_of/${snapshot.docs[0].id}`)
-            .collection('groups').ref
+          return this.afs.doc(`${Collections.MemberOf}/${snapshot.docs[0].id}`)
+            .collection(Collections.Groups).ref
             .where('name', '==', this.selectedGroup.name)
             .where('creator', '==', this.selectedGroup.creator)
             .get();
@@ -142,7 +170,7 @@ export class GroupService {
   }
 
   private getCurrentGroupSnapshot(): Observable<QuerySnapshot<DocumentData>> {
-    return this.afs.collection('groups', (ref: firebase.firestore.CollectionReference) => ref
+    return this.afs.collection(Collections.Groups, (ref: firebase.firestore.CollectionReference) => ref
       .where('name', '==', this.selectedGroup.name)
       .where('creator', '==', this.authService.isAuthorised()))
       .get();

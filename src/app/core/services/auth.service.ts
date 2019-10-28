@@ -5,7 +5,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { auth } from 'firebase/app';
 
 import { CoreModule } from '../core.module';
-import { User } from 'src/app/shared/models';
+import { User, Collections } from 'src/app/shared/models';
 import { NotificationService } from './notification.service';
 import { appConfig } from 'src/app/configs';
 
@@ -87,8 +87,8 @@ export class AuthService {
   }
 
   setUserData(user?: User, photoURL?: string): void {
-    const path = `users/${this.getUserId()}`;
-    const statusPath = `status/${this.getUserId()}`;
+    const path = `${Collections.Users}/${this.getUserId()}`;
+    const statusPath = `${Collections.Status}/${this.getUserId()}`;
     const userDoc = this.afs.doc(path);
     const status = this.afs.doc(statusPath);
 
@@ -105,7 +105,7 @@ export class AuthService {
   }
 
   updateUserStatus(status: string): Promise<void> {
-    return this.afs.doc(`status/${this.getUserId()}`)
+    return this.afs.doc(`${Collections.Status}/${this.getUserId()}`)
       .update({ status })
       .catch(e => console.warn(e));
   }

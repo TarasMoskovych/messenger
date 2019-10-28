@@ -40,11 +40,6 @@
             <mat-icon aria-hidden="true">check</mat-icon>
           </button>
         </span>
-        <span *ngIf="!adding" matTooltip="Refresh" class="mr-5">
-          <button mat-mini-fab color="primary" (click)="onRefresh()">
-            <mat-icon aria-hidden="true">refresh</mat-icon>
-          </button>
-        </span>
         <span *ngIf="adding" matTooltip="Cancel">
           <button mat-mini-fab color="warn" (click)="onToggleForm()">
             <mat-icon aria-hidden="true">close</mat-icon>

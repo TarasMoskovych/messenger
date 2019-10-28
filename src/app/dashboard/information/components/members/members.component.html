@@ -7,7 +7,8 @@
           {{ currentUser.displayName }}
         </h3>
         <img matListAvatar [src]="currentUser.photoURL" alt="">
-        <p *ngIf="isOwner(currentUser)" matLine>Owner</p>
+        <p *ngIf="currentUser.owner" matLine>Owner</p>
+        <p *ngIf="currentUser.member" matLine>Member</p>
       </mat-list-item>
     </mat-list>
     <mat-list>
@@ -16,17 +17,20 @@
         <h3 matLine>
           {{ friend.displayName }}
         </h3>
-        <p *ngIf="isOwner(friend)">Owner</p>
-        <ng-container *ngIf="!isMember(friend); else remove">
-          <button mat-icon-button (click)="onAddFriend(friend)">
-            <mat-icon color="primary">add_circle</mat-icon>
-          </button>
+        <p *ngIf="isMember(friend)" matLine>Member</p>
+        <p matLine *ngIf="isOwner(friend)">Owner</p>
+        <ng-container *ngIf="currentUser.owner">
+          <ng-container *ngIf="!isMember(friend); else remove">
+            <button mat-icon-button (click)="onAddFriend(friend)">
+              <mat-icon color="primary">add_circle</mat-icon>
+            </button>
+          </ng-container>
+          <ng-template #remove>
+            <button mat-icon-button (click)="onRemoveFriend(friend)">
+              <mat-icon color="warn">remove</mat-icon>
+            </button>
+          </ng-template>
         </ng-container>
-        <ng-template #remove>
-          <button mat-icon-button (click)="onRemoveFriend(friend)">
-            <mat-icon color="warn">remove</mat-icon>
-          </button>
-        </ng-template>
       </mat-list-item>
     </mat-list>
   </ng-container>

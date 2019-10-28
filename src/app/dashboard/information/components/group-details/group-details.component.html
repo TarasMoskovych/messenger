@@ -12,12 +12,12 @@
         <mat-icon aria-hidden="true">group_add</mat-icon>
       </button>
     </span>
-    <span matTooltip="Change Photo">
+    <span *ngIf="isOwner(group)"  matTooltip="Change Photo">
       <button mat-mini-fab color="primary" (click)="fileInput.click()">
         <mat-icon aria-hidden="true">perm_contact_calendar</mat-icon>
       </button>
     </span>
-    <span matTooltip="Remove Group">
+    <span *ngIf="isOwner(group)" matTooltip="Remove Group">
       <button mat-mini-fab color="warn">
         <mat-icon aria-hidden="true">delete_forever</mat-icon>
       </button>

@@ -61,8 +61,14 @@ export class MembersComponent implements OnInit, OnDestroy {
     this.sub = this.groupService.getMembers()
       .subscribe((members: User[]) => {
         this.members = members;
+        this.addCurrentUserRoles();
         this.cdr.detectChanges();
       });
+  }
+
+  private addCurrentUserRoles() {
+    this.currentUser.owner = this.isOwner(this.currentUser);
+    this.currentUser.member = this.isMember(this.currentUser);
   }
 
   private showNotification(user: User, isAdded: boolean) {

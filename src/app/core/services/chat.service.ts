@@ -8,7 +8,7 @@ import * as firebase from 'firebase/app';
 import { CoreModule } from '../core.module';
 
 import { AuthService } from './auth.service';
-import { Chat, Message, User } from './../../shared/models';
+import { Collections, Chat, Message, User } from './../../shared/models';
 import { ImageService } from './image.service';
 import { HashService } from './hash.service';
 
@@ -16,8 +16,8 @@ import { HashService } from './hash.service';
   providedIn: CoreModule
 })
 export class ChatService {
-  private chats = this.afs.collection('chats');
-  private conversations = this.afs.collection('conversations');
+  private chats = this.afs.collection(Collections.Chats);
+  private conversations = this.afs.collection(Collections.Conversations);
   private selectedUser: User;
   private selectedUserS = new Subject<User>();
   private onSendDoneS = new Subject<boolean>();
@@ -44,7 +44,7 @@ export class ChatService {
       if (snapshot.empty) {
         return of([]);
       }
-      return this.conversations.doc(snapshot.docs[0].data().id).collection('messages', ref => ref
+      return this.conversations.doc(snapshot.docs[0].data().id).collection(Collections.Messages, ref => ref
         .orderBy('timestamp', 'desc')
         .limit(count))
         .valueChanges();
@@ -57,7 +57,7 @@ export class ChatService {
 
     const populateChats = (chat: Chat) => this.chats.add({ me: chat.me, friend: chat.friend });
     const addConversation = (document: AngularFirestoreDocument) => {
-      return document.collection('messages').add({
+      return document.collection(Collections.Messages).add({
         message,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         sentBy: this.authService.isAuthorised(),

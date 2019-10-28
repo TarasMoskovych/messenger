@@ -6,4 +6,6 @@ export interface User {
   sender?: boolean;
   receiver?: boolean;
   online?: boolean;
+  owner?: boolean;
+  member?: boolean;
 }

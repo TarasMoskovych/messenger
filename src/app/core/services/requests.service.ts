@@ -4,7 +4,7 @@ import { switchMap, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import { CoreModule } from './../core.module';
-import { Request, User } from './../../shared/models';
+import { Collections, Request, User } from './../../shared/models';
 import { AuthService } from './auth.service';
 import { UserService } from './user.service';
 
@@ -12,8 +12,8 @@ import { UserService } from './user.service';
   providedIn: CoreModule
 })
 export class RequestsService {
-  private requestRef: firebase.firestore.CollectionReference = this.afs.collection('requests').ref;
-  private friendsRef: firebase.firestore.CollectionReference = this.afs.collection('friends').ref;
+  private requestRef: firebase.firestore.CollectionReference = this.afs.collection(Collections.Requests).ref;
+  private friendsRef: firebase.firestore.CollectionReference = this.afs.collection(Collections.Friends).ref;
 
   constructor(private authService: AuthService, private userService: UserService, private afs: AngularFirestore) { }
 
@@ -26,28 +26,30 @@ export class RequestsService {
 
   getAll(): Observable<Request[]> {
     let receivers = [];
-    return this.afs.collection('requests', ref => ref.where('receiver', '==', this.authService.isAuthorised())).valueChanges()
+    return this.afs.collection(Collections.Requests, ref => ref.where('receiver', '==', this.authService.isAuthorised())).valueChanges()
       .pipe(
         switchMap((data: Request[]) => {
           receivers = data;
-          return this.afs.collection('requests', ref => ref.where('sender', '==', this.authService.isAuthorised())).valueChanges();
+          return this.afs.collection(Collections.Requests, ref => ref
+            .where('sender', '==', this.authService.isAuthorised()))
+            .valueChanges();
         }),
         map((senders: Request[]) => receivers.concat(senders))
       );
   }
 
   getUsersByRequests(): Observable<User[]> {
-    return this.afs.collection('requests', ref => ref.where('receiver', '==', this.authService.isAuthorised())).valueChanges()
+    return this.afs.collection(Collections.Requests, ref => ref.where('receiver', '==', this.authService.isAuthorised())).valueChanges()
       .pipe(switchMap((requests: Request[]) => this.userService.getAllByEmails(requests.map((request: Request) => request.sender))));
   }
 
   accept(user: User): Promise<boolean> {
     const updateFriendsCollection = (snapshot: firebase.firestore.QuerySnapshot, email: string) => {
-      this.afs.doc(`friends/${snapshot.docs[0].id}`).collection('myfriends').add({ email });
+      this.afs.doc(`${Collections.Friends}/${snapshot.docs[0].id}`).collection(Collections.MyFriends).add({ email });
     };
 
     const updateFriendsCollectionRef = (docRef: firebase.firestore.DocumentReference, email: string) => {
-      this.friendsRef.doc(docRef.id).collection('myfriends').add({ email });
+      this.friendsRef.doc(docRef.id).collection(Collections.MyFriends).add({ email });
     };
 
     const updateSnapshot = (snapshot: firebase.firestore.QuerySnapshot, friendRefEmail: string, docRefEmail: string) => {

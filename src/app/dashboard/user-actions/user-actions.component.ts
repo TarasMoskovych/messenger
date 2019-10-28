@@ -113,7 +113,10 @@ export class UserActionsComponent implements OnInit, OnDestroy {
   onAddGroup(name: string) {
     this.groupService.add(name)
       .pipe(take(1))
-      .subscribe(() => this.notificationService.showMessage(`${name} was created.`));
+      .subscribe(() => {
+        this.getGroups();
+        this.notificationService.showMessage(`${name} was created.`);
+      });
   }
 
   private onSearchUser() {
@@ -237,10 +240,10 @@ export class UserActionsComponent implements OnInit, OnDestroy {
   }
 
   private getGroups() {
-    this.groupService.getByCreator()
-      .pipe(takeUntil(this.destroy$))
+    this.groupService.getAll()
+      .pipe(take(1))
       .subscribe((groups: Group[]) => {
-        this.groups = groups;
+        this.groups = [...groups];
         this.loadedGroups = true;
       });
   }

@@ -48,10 +48,6 @@ export class GroupsComponent implements OnInit, OnDestroy {
     this.chatService.close();
   }
 
-  onRefresh() {
-
-  }
-
   onToggleForm() {
     this.adding = !this.adding;
   }
