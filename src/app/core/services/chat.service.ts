@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreDocument, DocumentChangeAction } from '@angular/fire/firestore';
 import { Subject, of, Observable, from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -41,7 +41,7 @@ export class ChatService {
         .where('friend', '==', this.selectedUser.email)
         .get()
     ).pipe(switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
-      if (snapshot.empty) {
+      if (snapshot.empty || !snapshot.docs[0].data().id) {
         return of([]);
       }
       return this.conversations.doc(snapshot.docs[0].data().id).collection(Collections.Messages, ref => ref
@@ -49,6 +49,12 @@ export class ChatService {
         .limit(count))
         .valueChanges();
     }));
+  }
+
+  chatChanges(): Observable<DocumentChangeAction<firebase.firestore.DocumentData>[]> {
+    return this.afs.collection(Collections.Chats, ref => ref
+      .where('me', '==', this.authService.isAuthorised()))
+      .snapshotChanges();
   }
 
   send(message: string, fileMessage = false): Promise<boolean> {

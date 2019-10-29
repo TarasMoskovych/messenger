@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Subject, BehaviorSubject, Subscription } from 'rxjs';
-import { takeUntil, take } from 'rxjs/operators';
+import { takeUntil, take, throttleTime } from 'rxjs/operators';
 
 import * as _ from 'lodash';
 
@@ -22,7 +22,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   count = appConfig.count;
   length = 0;
   loader = false;
-  messages: Message[];
+  messages: Message[] = [];
   currentUserEmail: string;
   currentUser$: BehaviorSubject<User>;
   scrollUp = false;
@@ -70,6 +70,14 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.scrollUp = true;
   }
 
+  private onChatChanges() {
+    this.chatService.chatChanges()
+      .pipe(
+        takeUntil(this.destroy$),
+        throttleTime(500)
+      ).subscribe(() => this.getMessages());
+  }
+
   private onUserSelect() {
     this.chatService.selectedUser$
     .pipe(takeUntil(this.destroy$))
@@ -78,7 +86,8 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.loader = true;
       this.user = user;
       this.count = appConfig.count;
-      this.getMessages();
+      this.messages = [];
+      this.onChatChanges();
     });
   }
 
@@ -86,17 +95,23 @@ export class ChatComponent implements OnInit, OnDestroy {
     if (this.sub$) { this.sub$.unsubscribe(); }
 
     this.sub$ = this.chatService.getAll(this.count)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$),
+        throttleTime(200)
+      )
       .subscribe((messages: Message[]) => {
         if (this.length === messages.length) {
           this.scrollUp = false;
         }
 
         this.length = messages.length;
-        this.messages = _.reverse(messages.map((message: Message) => {
-          message.outcome = message.sentBy === this.currentUserEmail;
-          return message;
-        }));
+
+        if (messages.length) {
+          this.messages = _.reverse(messages.map((message: Message) => {
+            message.outcome = message.sentBy === this.currentUserEmail;
+            return message;
+          }));
+        }
 
         this.loader = false;
 
