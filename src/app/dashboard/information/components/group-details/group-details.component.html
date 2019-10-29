@@ -12,16 +12,19 @@
         <mat-icon aria-hidden="true">group_add</mat-icon>
       </button>
     </span>
-    <span *ngIf="isOwner(group)"  matTooltip="Change Photo">
-      <button mat-mini-fab color="primary" (click)="fileInput.click()">
-        <mat-icon aria-hidden="true">perm_contact_calendar</mat-icon>
-      </button>
+    <ng-container *ngIf="isOwner(group)">
+      <span matTooltip="Change Photo">
+        <button mat-mini-fab color="primary" (click)="fileInput.click()">
+          <mat-icon aria-hidden="true">perm_contact_calendar</mat-icon>
+        </button>
+      </span>
+      <span matTooltip="Remove Group">
+        <button mat-mini-fab color="warn">
+          <mat-icon aria-hidden="true">delete_forever</mat-icon>
+        </button>
     </span>
-    <span *ngIf="isOwner(group)" matTooltip="Remove Group">
-      <button mat-mini-fab color="warn">
-        <mat-icon aria-hidden="true">delete_forever</mat-icon>
-      </button>
-    </span>
+    </ng-container>
+
     <input #fileInput type="file" (change)="onImageChange(fileInput.files[0])" style="display: none;">
   </div>
 </ng-container>
