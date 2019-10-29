@@ -6,6 +6,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { UserActionsComponent } from './user-actions.component';
 import {
   AddFriendComponent,
+  GroupsComponent,
   FriendsComponent,
   ProfileComponent,
   RequestsComponent,
@@ -19,7 +20,8 @@ import {
     ProfileComponent,
     RequestsComponent,
     LiveSearchComponent,
-    UserActionsComponent
+    UserActionsComponent,
+    GroupsComponent
   ],
   imports: [
     CommonModule,

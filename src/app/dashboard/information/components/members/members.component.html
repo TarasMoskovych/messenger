@@ -1,0 +1,43 @@
+<div class="members">
+  <ng-container *ngIf="members?.length && (friends$ | async) as friends; else loader">
+    <h3 class="members__title">Members ({{ members.length }}) of {{ group.name }} group</h3>
+    <mat-list>
+      <mat-list-item>
+        <h3 matLine>
+          {{ currentUser.displayName }}
+        </h3>
+        <img matListAvatar [src]="currentUser.photoURL" alt="">
+        <p *ngIf="currentUser.owner" matLine>Owner</p>
+        <p *ngIf="currentUser.member" matLine>Member</p>
+      </mat-list-item>
+    </mat-list>
+    <mat-list>
+      <ng-container *ngFor="let friend of friends">
+        <mat-list-item *ngIf="currentUser.owner || isMember(friend)">
+          <img matListAvatar [src]="friend.photoURL" alt="">
+          <h3 matLine>
+            {{ friend.displayName }}
+          </h3>
+          <p *ngIf="isMember(friend)" matLine>Member</p>
+          <p matLine *ngIf="isOwner(friend)">Owner</p>
+          <ng-container *ngIf="currentUser.owner">
+            <ng-container *ngIf="!isMember(friend); else remove">
+              <button mat-icon-button (click)="onAddFriend(friend)">
+                <mat-icon color="primary">add_circle</mat-icon>
+              </button>
+            </ng-container>
+            <ng-template #remove>
+              <button mat-icon-button (click)="onRemoveFriend(friend)">
+                <mat-icon color="warn">remove</mat-icon>
+              </button>
+            </ng-template>
+          </ng-container>
+        </mat-list-item>
+      </ng-container>
+    </mat-list>
+  </ng-container>
+
+  <ng-template #loader>
+    <app-loader></app-loader>
+  </ng-template>
+</div>

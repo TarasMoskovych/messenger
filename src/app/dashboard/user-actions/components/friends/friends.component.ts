@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, EventEmitter, Output, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, EventEmitter, Output, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Lightbox } from 'ngx-lightbox';
 
@@ -19,13 +19,16 @@ export class FriendsComponent extends AbstractLightBox implements OnInit, OnDest
   selected: User;
   selected$: Subscription;
 
-  constructor(private chatService: ChatService, protected lightbox: Lightbox) {
+  constructor(private cdr: ChangeDetectorRef, private chatService: ChatService, protected lightbox: Lightbox) {
     super(lightbox);
   }
 
   ngOnInit() {
     this.selected$ = this.chatService.selectedUser$
-      .subscribe((user: User) => this.selected = user);
+      .subscribe((user: User) => {
+        this.selected = user;
+        this.cdr.detectChanges();
+      });
   }
 
   ngOnDestroy() {

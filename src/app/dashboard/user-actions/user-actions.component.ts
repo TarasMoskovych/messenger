@@ -2,9 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { take, takeUntil, debounceTime, distinctUntilChanged, throttleTime } from 'rxjs/operators';
 
-import { ChatService, FriendsService, NotificationService, RequestsService, UserService } from 'src/app/core/services';
+import { ChatService, GroupService, FriendsService, NotificationService, RequestsService, UserService } from 'src/app/core/services';
 import { appConfig } from 'src/app/configs';
-import { User, Request, Status } from 'src/app/shared/models';
+import { User, Request, Status, Group } from 'src/app/shared/models';
 
 @Component({
   selector: 'app-user-actions',
@@ -25,17 +25,21 @@ export class UserActionsComponent implements OnInit, OnDestroy {
   requests: Request[];
   users: User[] = [];
   friends: User[] = [];
+  groups: Group[];
 
+  loadedGroups = false;
   loadedUsers = false;
   loadedFriends = false;
   loadedAllRequests = false;
 
   constructor(
     private chatService: ChatService,
+    private groupService: GroupService,
     private notificationService: NotificationService,
     private friendsService: FriendsService,
     private requestService: RequestsService,
-    private userService: UserService) { }
+    private userService: UserService
+  ) { }
 
   ngOnInit() {
     this.getFriends();
@@ -55,6 +59,10 @@ export class UserActionsComponent implements OnInit, OnDestroy {
 
   onLoadRequests() {
     this.getUsersByRequests();
+  }
+
+  onLoadGroups() {
+    this.getGroups();
   }
 
   onAddFriend(user: User) {
@@ -93,11 +101,22 @@ export class UserActionsComponent implements OnInit, OnDestroy {
     const friend = this.chatService.getSelected();
 
     if (friend && friend.email === user.email) { return; }
+
     this.chatService.selectFriend(user);
+    this.groupService.close();
   }
 
   onInputUser(email: string) {
     this.emailS.next(email);
+  }
+
+  onAddGroup(name: string) {
+    this.groupService.add(name)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.getGroups();
+        this.notificationService.showMessage(`${name} was created.`);
+      });
   }
 
   private onSearchUser() {
@@ -218,6 +237,18 @@ export class UserActionsComponent implements OnInit, OnDestroy {
 
   private toggleAddFriendsPanel() {
     this.showAddFriendsPanel = this.users.length !== 0;
+  }
+
+  private getGroups() {
+    this.groupService.getAll()
+      .pipe(
+        take(1),
+        throttleTime(appConfig.debounceTime)
+      )
+      .subscribe((groups: Group[]) => {
+        this.groups = [...groups];
+        this.loadedGroups = true;
+      });
   }
 
 }

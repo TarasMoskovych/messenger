@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Subject, BehaviorSubject, Subscription } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, take } from 'rxjs/operators';
 
 import * as _ from 'lodash';
 
@@ -59,7 +59,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   onFileUpload(file: File) {
-    this.chatService.sendFile(file).then(data => console.log(data));
+    this.chatService.sendFile(file)
+      .pipe(take(1))
+      .subscribe();
   }
 
   onGetMoreMessages() {
@@ -72,6 +74,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.chatService.selectedUser$
     .pipe(takeUntil(this.destroy$))
     .subscribe((user: User) => {
+      if (!user) { return; }
       this.loader = true;
       this.user = user;
       this.count = appConfig.count;

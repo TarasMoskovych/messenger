@@ -2,9 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { ChatService, FriendsService, NotificationService } from 'src/app/core/services';
-import { User } from 'src/app/shared/models';
-import { FriendDetailsComponent } from './components';
+import { ChatService, FriendsService, NotificationService, GroupService } from 'src/app/core/services';
+import { User, Group } from 'src/app/shared/models';
+import { FriendDetailsComponent, GroupDetailsComponent } from './components';
 
 @Component({
   selector: 'app-information',
@@ -13,17 +13,21 @@ import { FriendDetailsComponent } from './components';
 })
 export class InformationComponent implements OnInit {
   @ViewChild(FriendDetailsComponent, { static: false }) private friendsDetailsComponent: FriendDetailsComponent;
+  @ViewChild(GroupDetailsComponent, { static: false }) private groupDetailsComponent: GroupDetailsComponent;
 
   friend$: Observable<User>;
+  group$: Observable<Group>;
 
   constructor(
     private chatService: ChatService,
+    private groupService: GroupService,
     private friendsService: FriendsService,
     private notificationService: NotificationService
   ) { }
 
   ngOnInit() {
     this.getFriendInfo();
+    this.getGroupInfo();
   }
 
   onCloseChat() {
@@ -45,8 +49,18 @@ export class InformationComponent implements OnInit {
       });
   }
 
+  onChangeImage(file: File) {
+    this.groupService.changeImage(file)
+      .pipe(take(1))
+      .subscribe(() => this.groupDetailsComponent.hideLoader());
+  }
+
   private getFriendInfo() {
     this.friend$ = this.chatService.selectedUser$;
+  }
+
+  private getGroupInfo() {
+    this.group$ = this.groupService.selectedGroup$;
   }
 
 }

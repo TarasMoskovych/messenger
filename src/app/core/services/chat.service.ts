@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
-import { AngularFireStorage } from '@angular/fire/storage';
 import { Subject, of, Observable, from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -10,16 +8,16 @@ import * as firebase from 'firebase/app';
 import { CoreModule } from '../core.module';
 
 import { AuthService } from './auth.service';
-import { Chat, Message, User } from './../../shared/models';
-import { NotificationService } from './notification.service';
+import { Collections, Chat, Message, User } from './../../shared/models';
+import { ImageService } from './image.service';
 import { HashService } from './hash.service';
 
 @Injectable({
   providedIn: CoreModule
 })
 export class ChatService {
-  private chats = this.afs.collection('chats');
-  private conversations = this.afs.collection('conversations');
+  private chats = this.afs.collection(Collections.Chats);
+  private conversations = this.afs.collection(Collections.Conversations);
   private selectedUser: User;
   private selectedUserS = new Subject<User>();
   private onSendDoneS = new Subject<boolean>();
@@ -32,8 +30,7 @@ export class ChatService {
   constructor(
     private afs: AngularFirestore,
     private authService: AuthService,
-    private storage: AngularFireStorage,
-    private notificationService: NotificationService,
+    private imageService: ImageService,
     private hashService: HashService
   ) { }
 
@@ -47,7 +44,7 @@ export class ChatService {
       if (snapshot.empty) {
         return of([]);
       }
-      return this.conversations.doc(snapshot.docs[0].data().id).collection('messages', ref => ref
+      return this.conversations.doc(snapshot.docs[0].data().id).collection(Collections.Messages, ref => ref
         .orderBy('timestamp', 'desc')
         .limit(count))
         .valueChanges();
@@ -60,7 +57,7 @@ export class ChatService {
 
     const populateChats = (chat: Chat) => this.chats.add({ me: chat.me, friend: chat.friend });
     const addConversation = (document: AngularFirestoreDocument) => {
-      return document.collection('messages').add({
+      return document.collection(Collections.Messages).add({
         message,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         sentBy: this.authService.isAuthorised(),
@@ -102,28 +99,15 @@ export class ChatService {
     });
   }
 
-  sendFile(file: File): Promise<boolean> {
-    if (!file.type.match('image/.*')) {
-      this.notificationService.showMessage('File type is not supported!');
-      this.sendFileDone();
-      return Promise.resolve(false);
-    }
-
-    return this.storage
-      .upload(`files/picture_${this.hashService.generateHash()}`, file)
-      .then((data: UploadTaskSnapshot) => {
-        if (data.metadata.contentType.match('image/.*')) {
-          return data.ref
-            .getDownloadURL()
-            .then((url: string) => this.send(url, true));
-        } else {
-          return data.ref.delete()
-            .then(() => {
-              this.notificationService.showMessage('File type is not supported!');
-              return false;
-            });
+  sendFile(file: File): Observable<boolean> {
+    return this.imageService.upload(file, 'files')
+      .pipe(switchMap((url: string) => {
+        if (!url) {
+          this.sendFileDone();
+          return of(false);
         }
-    });
+        return this.send(url, true);
+      }));
   }
 
   getSelected(): User {

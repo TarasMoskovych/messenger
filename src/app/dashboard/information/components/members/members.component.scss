@@ -1,0 +1,10 @@
+@import './../../../../scss/variables';
+
+.members {
+
+  &__title {
+    color: $primary;
+    font-weight: bold;
+    margin-top: 0;
+  }
+}

@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, DocumentData, DocumentChangeAction } from '@angular/fire/firestore';
-import { AngularFireStorage } from '@angular/fire/storage';
-import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
 
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
 
 import { CoreModule } from './../core.module';
+import { ImageService } from './image.service';
 import { NotificationService } from './notification.service';
-import { User } from 'src/app/shared/models';
+import { User, Collections } from 'src/app/shared/models';
 
 @Injectable({
   providedIn: CoreModule
@@ -21,7 +20,7 @@ export class UserService {
   constructor(
     private afauth: AngularFireAuth,
     private afs: AngularFirestore,
-    private storage: AngularFireStorage,
+    private imageService: ImageService,
     private notificationService: NotificationService
   ) {
     this.afauth.authState.subscribe((user: firebase.User) => {
@@ -32,45 +31,45 @@ export class UserService {
   updateName(displayName: string): Promise<void> {
     const user = this.getCurrentUser();
 
-    return this.afs.doc(`users/${user.uid}`)
+    return this.afs.doc(`${Collections.Users}/${user.uid}`)
       .update({ displayName })
       .then(() => user.updateProfile({ displayName, photoURL: user.photoURL}))
       .catch(e => this.notificationService.showError(e));
   }
 
-  updateImage(file: File): Promise<void> {
+  updateImage(file: File): Observable<void> {
     const user = this.getCurrentUser();
 
-    return this.storage
-      .upload(`images/${user.uid}`, file)
-      .then((data: UploadTaskSnapshot) => {
-        return data.ref
-          .getDownloadURL()
-          .then((photoURL: string) => {
-            return this.afs.doc(`users/${user.uid}`)
-              .update({ photoURL })
-              .then(() => user.updateProfile({ displayName: user.displayName, photoURL }));
-      });
-    });
+    return this.imageService.upload(file, 'users', user.uid)
+      .pipe(
+        switchMap((photoURL: string) => {
+          if (!photoURL) {
+            return of(null);
+          }
+          return this.afs.doc(`${Collections.Users}/${user.uid}`)
+            .update({ photoURL })
+            .then(() => user.updateProfile({ displayName: user.displayName, photoURL }));
+        })
+      );
   }
 
   getAll(): Observable<User[]> {
-    return this.afs.collection('users', ref => ref.limit(20)).valueChanges()
+    return this.afs.collection(Collections.Users, ref => ref.limit(20)).valueChanges()
       .pipe(map((users: User[]) => this.excludeCurrentUser(users)));
   }
 
   getAllByEmails(arr: string[]): Observable<User[]> {
-    return this.afs.collection('users').valueChanges()
+    return this.afs.collection(Collections.Users).valueChanges()
       .pipe(map((users: User[]) => users.filter((user: User) => arr.includes(user.email))));
   }
 
   getByQuery(start: string, end: string): Observable<User[]> {
-    return this.afs.collection('users', ref => ref.orderBy('displayName').startAt(start).endAt(end)).valueChanges()
+    return this.afs.collection(Collections.Users, ref => ref.orderBy('displayName').startAt(start).endAt(end)).valueChanges()
       .pipe(map((users: User[]) => this.excludeCurrentUser(users)));
   }
 
   getStatuses(users: User[]): Promise<DocumentData[]> {
-    const ref = this.afs.collection('status').ref;
+    const ref = this.afs.collection(Collections.Status).ref;
 
     return Promise
       .all(users.map((user: User) => ref.where('email', '==', user.email).get()))
@@ -80,7 +79,7 @@ export class UserService {
   }
 
   checkStatuses(): Observable<DocumentChangeAction<firebase.firestore.DocumentData>[]> {
-    return this.afs.collection('status').snapshotChanges(['modified']);
+    return this.afs.collection(Collections.Status).snapshotChanges(['modified']);
   }
 
   private getCurrentUser(): firebase.User {

@@ -1,6 +1,6 @@
 <mat-accordion multi="true">
 
-  <mat-expansion-panel expanded="true">
+  <mat-expansion-panel>
     <mat-expansion-panel-header>
       My Profile
     </mat-expansion-panel-header>
@@ -44,6 +44,22 @@
       </ng-container>
       <ng-template #emptyFriends>
         <span class="ml-24 empty">Friends list is empty!</span>
+      </ng-template>
+    </ng-template>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel class="groups-panel" (afterExpand)="onLoadGroups()">
+    <mat-expansion-panel-header>
+      Groups
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <app-groups
+        *ngIf="loadedGroups; else loading"
+        [groups]="groups"
+        (addGroup)="onAddGroup($event)"
+      ></app-groups>
+      <ng-template #loading>
+        <app-loader></app-loader>
       </ng-template>
     </ng-template>
   </mat-expansion-panel>

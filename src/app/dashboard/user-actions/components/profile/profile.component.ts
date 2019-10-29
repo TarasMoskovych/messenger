@@ -6,6 +6,7 @@ import { Lightbox } from 'ngx-lightbox';
 import { AbstractLightBox } from 'src/app/dashboard/classes';
 import { UserService } from 'src/app/core/services';
 import { User } from 'src/app/shared/models';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile',
@@ -38,9 +39,9 @@ export class ProfileComponent extends AbstractLightBox implements OnInit {
     if (file) {
       this.updateProfile = true;
       this.profileImageLoaded = false;
-      this.userService.updateImage(file).finally(() => {
-        this.updateProfile = false;
-      });
+      this.userService.updateImage(file)
+        .pipe(take(1))
+        .subscribe(() => this.updateProfile = false);
     }
   }
 

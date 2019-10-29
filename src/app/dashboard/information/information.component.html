@@ -9,4 +9,16 @@
     </ng-template>
   </mat-expansion-panel>
 
+  <mat-expansion-panel expanded="true">
+    <mat-expansion-panel-header>
+      Group Information
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <app-group-details
+        [group$]="group$"
+        (changeImage)="onChangeImage($event)"
+      ></app-group-details>
+    </ng-template>
+  </mat-expansion-panel>
+
 </mat-accordion>
