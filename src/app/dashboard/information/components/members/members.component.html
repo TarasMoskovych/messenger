@@ -12,26 +12,28 @@
       </mat-list-item>
     </mat-list>
     <mat-list>
-      <mat-list-item *ngFor="let friend of friends">
-        <img matListAvatar [src]="friend.photoURL" alt="">
-        <h3 matLine>
-          {{ friend.displayName }}
-        </h3>
-        <p *ngIf="isMember(friend)" matLine>Member</p>
-        <p matLine *ngIf="isOwner(friend)">Owner</p>
-        <ng-container *ngIf="currentUser.owner">
-          <ng-container *ngIf="!isMember(friend); else remove">
-            <button mat-icon-button (click)="onAddFriend(friend)">
-              <mat-icon color="primary">add_circle</mat-icon>
-            </button>
+      <ng-container *ngFor="let friend of friends">
+        <mat-list-item *ngIf="currentUser.owner || isMember(friend)">
+          <img matListAvatar [src]="friend.photoURL" alt="">
+          <h3 matLine>
+            {{ friend.displayName }}
+          </h3>
+          <p *ngIf="isMember(friend)" matLine>Member</p>
+          <p matLine *ngIf="isOwner(friend)">Owner</p>
+          <ng-container *ngIf="currentUser.owner">
+            <ng-container *ngIf="!isMember(friend); else remove">
+              <button mat-icon-button (click)="onAddFriend(friend)">
+                <mat-icon color="primary">add_circle</mat-icon>
+              </button>
+            </ng-container>
+            <ng-template #remove>
+              <button mat-icon-button (click)="onRemoveFriend(friend)">
+                <mat-icon color="warn">remove</mat-icon>
+              </button>
+            </ng-template>
           </ng-container>
-          <ng-template #remove>
-            <button mat-icon-button (click)="onRemoveFriend(friend)">
-              <mat-icon color="warn">remove</mat-icon>
-            </button>
-          </ng-template>
-        </ng-container>
-      </mat-list-item>
+        </mat-list-item>
+      </ng-container>
     </mat-list>
   </ng-container>
 

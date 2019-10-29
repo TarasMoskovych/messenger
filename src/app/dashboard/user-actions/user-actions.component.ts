@@ -62,7 +62,7 @@ export class UserActionsComponent implements OnInit, OnDestroy {
   }
 
   onLoadGroups() {
-    if (!this.groups) { this.getGroups(); }
+    this.getGroups();
   }
 
   onAddFriend(user: User) {
@@ -241,7 +241,10 @@ export class UserActionsComponent implements OnInit, OnDestroy {
 
   private getGroups() {
     this.groupService.getAll()
-      .pipe(take(1))
+      .pipe(
+        take(1),
+        throttleTime(appConfig.debounceTime)
+      )
       .subscribe((groups: Group[]) => {
         this.groups = [...groups];
         this.loadedGroups = true;
