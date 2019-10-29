@@ -1,9 +1,8 @@
-import { AuthService } from 'src/app/core/services/auth.service';
 import { Component, OnInit, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { FriendsService, GroupService, NotificationService } from 'src/app/core/services';
+import { AuthService, FriendsService, GroupService, NotificationService } from 'src/app/core/services';
 import { User } from 'src/app/shared/models';
 
 @Component({

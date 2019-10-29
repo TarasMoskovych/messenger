@@ -1,12 +1,12 @@
 import { Component, ChangeDetectionStrategy, Input, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
-import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material';
+import { Observable } from 'rxjs';
+import { Lightbox } from 'ngx-lightbox';
 
 import { AbstractLightBox } from 'src/app/dashboard/classes';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { Group } from 'src/app/shared/models';
 import { MembersComponent } from './../members/members.component';
-import { Lightbox } from 'ngx-lightbox';
 
 @Component({
   selector: 'app-group-details',
