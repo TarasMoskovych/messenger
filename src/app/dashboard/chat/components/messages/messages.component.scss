@@ -61,4 +61,11 @@
       text-align: right;
     }
   }
+
+  &__author {
+    color: darken($grey4, 20);
+    font-size: 0.85em;
+    font-weight: 600;
+    margin: 0 0 5px 5px;
+  }
 }

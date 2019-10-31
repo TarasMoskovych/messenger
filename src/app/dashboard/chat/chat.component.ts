@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { Subject, BehaviorSubject, Subscription } from 'rxjs';
+import { Subject, BehaviorSubject, Subscription, Observable } from 'rxjs';
 import { takeUntil, take, throttleTime } from 'rxjs/operators';
 
 import * as _ from 'lodash';
 
-import { AuthService, ChatService, UserService } from 'src/app/core/services';
-import { Message, User } from 'src/app/shared/models';
+import { AuthService, GroupService, ChatService, UserService } from 'src/app/core/services';
+import { Group, Message, User } from 'src/app/shared/models';
 import { appConfig } from 'src/app/configs';
 
 @Component({
@@ -26,16 +26,19 @@ export class ChatComponent implements OnInit, OnDestroy {
   currentUserEmail: string;
   currentUser$: BehaviorSubject<User>;
   scrollUp = false;
+  group: Group;
   user: User;
 
   constructor(
     private authService: AuthService,
+    private groupService: GroupService,
     private chatService: ChatService,
     private userService: UserService
   ) { }
 
   ngOnInit() {
     this.onUserSelect();
+    this.onGroupSelect();
     this.currentUser$ = this.userService.user$;
     this.currentUserEmail = this.authService.isAuthorised();
   }
@@ -51,17 +54,22 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.messages = [...this.messages];
     }
 
-    this.chatService.send(message).then((isFirstMessage: boolean) => {
-      if (isFirstMessage) {
-        this.getMessages();
-      }
-    });
+    if (this.user) {
+      this.chatService.send(message).then(this.onSendDone.bind(this));
+    }
+
+    if (this.group) {
+      this.chatService.sendInGroup(message).then(this.onSendDone.bind(this));
+    }
   }
 
   onFileUpload(file: File) {
-    this.chatService.sendFile(file)
-      .pipe(take(1))
-      .subscribe();
+    let obs$: Observable<boolean>;
+
+    if (this.user) { obs$ = this.chatService.sendFile(file); }
+    if (this.group) { obs$ = this.chatService.sendFileInGroup(file); }
+
+    obs$.pipe(take(1)).subscribe();
   }
 
   onGetMoreMessages() {
@@ -80,21 +88,38 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   private onUserSelect() {
     this.chatService.selectedUser$
-    .pipe(takeUntil(this.destroy$))
-    .subscribe((user: User) => {
-      if (!user) { return; }
-      this.loader = true;
-      this.user = user;
-      this.count = appConfig.count;
-      this.messages = [];
-      this.onChatChanges();
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((user: User) => {
+        if (!user) { return; }
+
+        this.group = null;
+        this.user = user;
+        this.reinitialize();
+        this.onChatChanges();
     });
   }
 
-  private getMessages() {
-    if (this.sub$) { this.sub$.unsubscribe(); }
+  private onGroupSelect() {
+    this.groupService.selectedGroup$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((group: Group) => {
+        if (!group) { return; }
 
-    this.sub$ = this.chatService.getAll(this.count)
+        this.user = null;
+        this.group = group;
+        this.reinitialize();
+        this.getMessages();
+      });
+  }
+
+  private getMessages() {
+    let messages$: Observable<Message[]>;
+
+    if (this.sub$) { this.sub$.unsubscribe(); }
+    if (this.user) { messages$ = this.chatService.getAll(this.count); }
+    if (this.group) { messages$ = this.chatService.getAllInGroup(this.count); }
+
+    this.sub$ = messages$
       .pipe(
         takeUntil(this.destroy$),
         throttleTime(200)
@@ -126,6 +151,18 @@ export class ChatComponent implements OnInit, OnDestroy {
 
         this.chatService.sendFileDone();
       });
+  }
+
+  private onSendDone(isFirstMessage: boolean) {
+    if (isFirstMessage) {
+      this.getMessages();
+    }
+  }
+
+  private reinitialize() {
+    this.loader = true;
+    this.count = appConfig.count;
+    this.messages = [];
   }
 
 }
