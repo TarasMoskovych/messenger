@@ -1,9 +1,12 @@
 export interface Message {
-  message: string;
-  timestamp?: IDate;
-  sentBy: string;
-  outcome?: boolean;
+  author?: string;
   fileMessage?: boolean;
+  group?: true;
+  message: string;
+  outcome?: boolean;
+  photoURL?: string;
+  sentBy: string;
+  timestamp?: IDate;
 }
 
 interface IDate {

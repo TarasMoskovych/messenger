@@ -10,6 +10,7 @@ import { CoreModule } from '../core.module';
 import { AuthService } from './auth.service';
 import { Collections, Chat, Message, User } from './../../shared/models';
 import { ImageService } from './image.service';
+import { GroupService } from './group.service';
 import { HashService } from './hash.service';
 
 @Injectable({
@@ -18,6 +19,7 @@ import { HashService } from './hash.service';
 export class ChatService {
   private chats = this.afs.collection(Collections.Chats);
   private conversations = this.afs.collection(Collections.Conversations);
+  private groups = this.afs.collection(Collections.Groups);
   private selectedUser: User;
   private selectedUserS = new Subject<User>();
   private onSendDoneS = new Subject<boolean>();
@@ -30,6 +32,7 @@ export class ChatService {
   constructor(
     private afs: AngularFirestore,
     private authService: AuthService,
+    private groupService: GroupService,
     private imageService: ImageService,
     private hashService: HashService
   ) { }
@@ -45,6 +48,24 @@ export class ChatService {
         return of([]);
       }
       return this.conversations.doc(snapshot.docs[0].data().id).collection(Collections.Messages, ref => ref
+        .orderBy('timestamp', 'desc')
+        .limit(count))
+        .valueChanges();
+    }));
+  }
+
+  getAllInGroup(count: number): Observable<Message[]> {
+    return from(
+      this.groups.ref
+        .where('name', '==', this.groupService.selectedGroup.name)
+        .where('creator', '==', this.groupService.selectedGroup.creator)
+        .get()
+    ).pipe(switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
+      if (snapshot.empty || !snapshot.docs[0].data().conversationId) {
+        return of([]);
+      }
+      return this.afs.doc(`${Collections.GroupConversations}/${snapshot.docs[0].data().conversationId}`)
+        .collection(Collections.Messages, ref => ref
         .orderBy('timestamp', 'desc')
         .limit(count))
         .valueChanges();
@@ -105,6 +126,27 @@ export class ChatService {
     });
   }
 
+  sendInGroup(message: string, fileMessage = false): Promise<boolean> {
+    return this.groups.ref
+      .where('name', '==', this.groupService.selectedGroup.name)
+      .where('creator', '==', this.groupService.selectedGroup.creator)
+      .get()
+      .then((snapshot: firebase.firestore.QuerySnapshot) => {
+        return this.afs
+          .doc(`${Collections.GroupConversations}/${snapshot.docs[0].data().conversationId}`)
+          .collection(Collections.Messages)
+          .add({
+            message,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            sentBy: this.authService.isAuthorised(),
+            author: this.authService.user.displayName,
+            photoURL: this.authService.user.photoURL,
+            group: true,
+            fileMessage
+          }).then(() => true);
+      });
+  }
+
   sendFile(file: File): Observable<boolean> {
     return this.imageService.upload(file, 'files')
       .pipe(switchMap((url: string) => {
@@ -113,6 +155,17 @@ export class ChatService {
           return of(false);
         }
         return this.send(url, true);
+      }));
+  }
+
+  sendFileInGroup(file: File): Observable<boolean> {
+    return this.imageService.upload(file, 'group_files')
+      .pipe(switchMap((url: string) => {
+        if (!url) {
+          this.sendFileDone();
+          return of(false);
+        }
+        return this.sendInGroup(url, true);
       }));
   }
 

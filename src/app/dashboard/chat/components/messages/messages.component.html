@@ -1,7 +1,8 @@
 <mat-list class="messages" #list>
   <div *ngFor="let message of messages" class="messages__wrapper" [class.messages__wrapper--outcome]="message.outcome">
+    <p *ngIf="message.group && !message.outcome" matLine class="messages__author">{{ message.author }}</p>
     <mat-list-item class="messages__item" [class.messages__item--outcome]="message.outcome">
-      <img class="messages__item__img" [class.messages__item__img--outcome]="message.outcome" matListAvatar [src]="message.outcome ? currentUser.photoURL : userPhotoUrl" alt="Image">
+      <img class="messages__item__img" [class.messages__item__img--outcome]="message.outcome" matListAvatar [src]="message.outcome ? currentUser.photoURL : userPhotoUrl || message.photoURL" alt="Image">
       <ng-container *ngIf="message.fileMessage; else textMessage">
         <div class="messages__item--file">
           <img (click)="onImageClick(message.message)" [src]="message.message" alt="">

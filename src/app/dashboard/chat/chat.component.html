@@ -1,7 +1,12 @@
-<div class="chat" *ngIf="currentUser$ | async as currentUser" [class.chat--empty]="!user">
-  <ng-container *ngIf="user; else empty">
+<div class="chat" *ngIf="currentUser$ | async as currentUser" [class.chat--empty]="!user && !group">
+  <ng-container *ngIf="user || group; else empty">
     <div class="chat__user">
-      {{ user.displayName }}
+      <ng-container *ngIf="user">
+        {{ user.displayName }}
+      </ng-container>
+      <ng-container *ngIf="group">
+        {{ group.name }}
+      </ng-container>
       <mat-divider class="mt-5"></mat-divider>
     </div>
     <div
@@ -15,7 +20,7 @@
       [infiniteScrollThrottle]="200"
       (scrolledUp)="onGetMoreMessages()">
 
-      <app-messages [messages]="messages" [currentUser]="currentUser" [userPhotoUrl]="user.photoURL"></app-messages>
+      <app-messages [messages]="messages" [currentUser]="currentUser" [userPhotoUrl]="user?.photoURL"></app-messages>
     </div>
     <app-loader *ngIf="loader"></app-loader>
     <app-textbox (fileUpload)="onFileUpload($event)" (sendMessage)="onSendMessage($event)"></app-textbox>
