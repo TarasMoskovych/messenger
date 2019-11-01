@@ -59,7 +59,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
 
     if (this.group) {
-      this.chatService.sendInGroup(message).then(this.onSendDone.bind(this));
+      this.chatService.sendInGroup(message);
     }
   }
 
