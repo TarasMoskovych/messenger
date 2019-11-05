@@ -118,15 +118,18 @@ export class GroupService {
   }
 
   remove() {
-    // @TODO: Remove member of
+    const group = this.selectedGroup.name;
+
     return this.afs.collection(Collections.Groups, (ref: firebase.firestore.CollectionReference) => ref
-      .where('name', '==', this.selectedGroup.name)
+      .where('name', '==', group)
       .where('creator', '==', this.authService.isAuthorised()))
       .get()
       .pipe(
         switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
-          return snapshot.docs[0].ref.delete();
-        })
+          snapshot.docs[0].ref.delete();
+          return this.afs.doc(`${Collections.Groups}/${snapshot.docs[0].id}`).collection(Collections.Members).valueChanges();
+        }),
+        map((users: User[]) => this.removeMemberOfGroup(group, users))
       );
   }
 
@@ -193,5 +196,18 @@ export class GroupService {
       .where('name', '==', this.selectedGroup.name)
       .where('creator', '==', this.authService.isAuthorised()))
       .get();
+  }
+
+  private removeMemberOfGroup(groupName: string, users: User[]) {
+    for (const user of users) {
+      this.afs.collection(Collections.MemberOf).ref.where('email', '==', user.email).get()
+        .then((snapshot: firebase.firestore.QuerySnapshot) => {
+          this.afs.doc(`${Collections.MemberOf}/${snapshot.docs[0].id}`)
+            .collection(Collections.Groups).ref
+            .where('name', '==', groupName)
+            .get()
+            .then((groupSnapshot: firebase.firestore.QuerySnapshot) => groupSnapshot.docs.length && groupSnapshot.docs[0].ref.delete());
+        });
+    }
   }
 }
