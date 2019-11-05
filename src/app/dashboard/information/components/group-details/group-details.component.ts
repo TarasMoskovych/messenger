@@ -17,6 +17,8 @@ import { MembersComponent } from './../members/members.component';
 export class GroupDetailsComponent extends AbstractLightBox {
   @Input() group$: Observable<Group>;
   @Output() changeImage = new EventEmitter<File>();
+  @Output() closeGroup = new EventEmitter<void>();
+  @Output() removeGroup = new EventEmitter<void>();
 
   loading = false;
 
@@ -41,6 +43,14 @@ export class GroupDetailsComponent extends AbstractLightBox {
 
   onGroupClick(group: Group) {
     this.openImg({ email: group.conversationId, displayName: group.name, photoURL: group.image });
+  }
+
+  onCloseGroup() {
+    this.closeGroup.emit();
+  }
+
+  onRemoveGroup() {
+    this.removeGroup.emit();
   }
 
   onImageChange(file: File) {

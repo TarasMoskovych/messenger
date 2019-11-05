@@ -12,6 +12,11 @@
         <mat-icon aria-hidden="true">group_add</mat-icon>
       </button>
     </span>
+    <span matTooltip="Close Group">
+      <button mat-mini-fab color="warn" (click)="onCloseGroup()">
+        <mat-icon aria-hidden="true">close</mat-icon>
+      </button>
+    </span>
     <ng-container *ngIf="isOwner(group)">
       <span matTooltip="Change Photo">
         <button mat-mini-fab color="primary" (click)="fileInput.click()">
@@ -19,7 +24,7 @@
         </button>
       </span>
       <span matTooltip="Remove Group">
-        <button mat-mini-fab color="warn">
+        <button mat-mini-fab color="warn" (click)="onRemoveGroup()">
           <mat-icon aria-hidden="true">delete_forever</mat-icon>
         </button>
     </span>

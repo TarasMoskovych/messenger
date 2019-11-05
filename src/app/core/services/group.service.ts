@@ -14,7 +14,9 @@ import { Collections, Group, User } from './../../shared/models';
 })
 export class GroupService {
   private selectedGroupS = new Subject<Group>();
+  private reloadGroupsS = new Subject<void>();
 
+  reloadGroups$ = this.reloadGroupsS.asObservable();
   selectedGroup$ = this.selectedGroupS.asObservable();
   selectedGroup: Group;
 
@@ -115,6 +117,19 @@ export class GroupService {
       );
   }
 
+  remove() {
+    // @TODO: Remove member of
+    return this.afs.collection(Collections.Groups, (ref: firebase.firestore.CollectionReference) => ref
+      .where('name', '==', this.selectedGroup.name)
+      .where('creator', '==', this.authService.isAuthorised()))
+      .get()
+      .pipe(
+        switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
+          return snapshot.docs[0].ref.delete();
+        })
+      );
+  }
+
   removeMember(user: User) {
     return this.getCurrentGroupSnapshot()
       .pipe(
@@ -157,6 +172,10 @@ export class GroupService {
           return snapshot.docs[0].ref.update({ image: photoUrl });
         })
       );
+  }
+
+  reload() {
+    this.reloadGroupsS.next();
   }
 
   select(group: Group) {

@@ -17,6 +17,8 @@
       <app-group-details
         [group$]="group$"
         (changeImage)="onChangeImage($event)"
+        (closeGroup)="onCloseGroup()"
+        (removeGroup)="onRemoveGroup()"
       ></app-group-details>
     </ng-template>
   </mat-expansion-panel>
