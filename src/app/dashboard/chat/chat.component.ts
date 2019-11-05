@@ -90,10 +90,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.chatService.selectedUser$
       .pipe(takeUntil(this.destroy$))
       .subscribe((user: User) => {
+        this.user = user;
+
         if (!user) { return; }
 
         this.group = null;
-        this.user = user;
         this.reinitialize();
         this.onChatChanges();
     });
@@ -103,10 +104,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.groupService.selectedGroup$
       .pipe(takeUntil(this.destroy$))
       .subscribe((group: Group) => {
+        this.group = group;
+
         if (!group) { return; }
 
         this.user = null;
-        this.group = group;
         this.reinitialize();
         this.getMessages();
       });

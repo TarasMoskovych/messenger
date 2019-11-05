@@ -45,6 +45,7 @@ export class UserActionsComponent implements OnInit, OnDestroy {
     this.getFriends();
     this.getRequests();
     this.onSearchUser();
+    this.onReloadGroups();
     this.onCheckStatuses();
   }
 
@@ -59,6 +60,12 @@ export class UserActionsComponent implements OnInit, OnDestroy {
 
   onLoadRequests() {
     this.getUsersByRequests();
+  }
+
+  onReloadGroups() {
+    this.groupService.reloadGroups$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.getGroups());
   }
 
   onLoadGroups() {

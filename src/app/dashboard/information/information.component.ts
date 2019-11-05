@@ -49,6 +49,18 @@ export class InformationComponent implements OnInit {
       });
   }
 
+  onCloseGroup() {
+    this.groupService.close();
+  }
+
+  onRemoveGroup() {
+    this.groupService.remove()
+      .pipe(take(1))
+      .subscribe(() => this.groupService.reload());
+
+    this.groupService.close();
+  }
+
   onChangeImage(file: File) {
     this.groupService.changeImage(file)
       .pipe(take(1))

@@ -14,7 +14,9 @@ import { Collections, Group, User } from './../../shared/models';
 })
 export class GroupService {
   private selectedGroupS = new Subject<Group>();
+  private reloadGroupsS = new Subject<void>();
 
+  reloadGroups$ = this.reloadGroupsS.asObservable();
   selectedGroup$ = this.selectedGroupS.asObservable();
   selectedGroup: Group;
 
@@ -115,7 +117,27 @@ export class GroupService {
       );
   }
 
-  removeMember(user: User) {
+  remove(): Observable<void> {
+    const group = this.selectedGroup.name;
+    let groupRef: DocumentReference;
+
+    return this.afs.collection(Collections.Groups, (ref: firebase.firestore.CollectionReference) => ref
+      .where('name', '==', group)
+      .where('creator', '==', this.authService.isAuthorised()))
+      .get()
+      .pipe(
+        switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
+          groupRef = snapshot.docs[0].ref;
+          return this.afs.doc(`${Collections.Groups}/${snapshot.docs[0].id}`).collection(Collections.Members).valueChanges();
+        }),
+        map((users: User[]) => {
+          groupRef.delete();
+          this.removeMemberOfGroup(group, users);
+        })
+      );
+  }
+
+  removeMember(user: User): Observable<void> {
     return this.getCurrentGroupSnapshot()
       .pipe(
         switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
@@ -137,7 +159,7 @@ export class GroupService {
             .where('creator', '==', this.selectedGroup.creator)
             .get();
         }),
-        map((snapshot: firebase.firestore.QuerySnapshot) => snapshot.docs[0].ref.delete())
+        switchMap((snapshot: firebase.firestore.QuerySnapshot) => snapshot.docs[0].ref.delete())
       );
   }
 
@@ -159,12 +181,16 @@ export class GroupService {
       );
   }
 
-  select(group: Group) {
+  reload(): void {
+    this.reloadGroupsS.next();
+  }
+
+  select(group: Group): void {
     this.selectedGroup = group;
     this.selectedGroupS.next(group);
   }
 
-  close() {
+  close(): void {
     this.selectedGroupS.next(null);
     this.selectedGroup = null;
   }
@@ -174,5 +200,20 @@ export class GroupService {
       .where('name', '==', this.selectedGroup.name)
       .where('creator', '==', this.authService.isAuthorised()))
       .get();
+  }
+
+  private removeMemberOfGroup(groupName: string, users: User[]): void {
+    for (const user of users) {
+      this.afs.collection(Collections.MemberOf).ref.where('email', '==', user.email).get()
+        .then((snapshot: firebase.firestore.QuerySnapshot) => {
+          if (snapshot.empty) { return; }
+
+          this.afs.doc(`${Collections.MemberOf}/${snapshot.docs[0].id}`)
+            .collection(Collections.Groups).ref
+            .where('name', '==', groupName)
+            .get()
+            .then((groupSnapshot: firebase.firestore.QuerySnapshot) => groupSnapshot.docs.length && groupSnapshot.docs[0].ref.delete());
+        });
+    }
   }
 }
