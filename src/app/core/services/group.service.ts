@@ -117,8 +117,9 @@ export class GroupService {
       );
   }
 
-  remove() {
+  remove(): Observable<void> {
     const group = this.selectedGroup.name;
+    let groupRef: DocumentReference;
 
     return this.afs.collection(Collections.Groups, (ref: firebase.firestore.CollectionReference) => ref
       .where('name', '==', group)
@@ -126,14 +127,17 @@ export class GroupService {
       .get()
       .pipe(
         switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
-          snapshot.docs[0].ref.delete();
+          groupRef = snapshot.docs[0].ref;
           return this.afs.doc(`${Collections.Groups}/${snapshot.docs[0].id}`).collection(Collections.Members).valueChanges();
         }),
-        map((users: User[]) => this.removeMemberOfGroup(group, users))
+        map((users: User[]) => {
+          groupRef.delete();
+          this.removeMemberOfGroup(group, users);
+        })
       );
   }
 
-  removeMember(user: User) {
+  removeMember(user: User): Observable<void> {
     return this.getCurrentGroupSnapshot()
       .pipe(
         switchMap((snapshot: firebase.firestore.QuerySnapshot) => {
@@ -155,7 +159,7 @@ export class GroupService {
             .where('creator', '==', this.selectedGroup.creator)
             .get();
         }),
-        map((snapshot: firebase.firestore.QuerySnapshot) => snapshot.docs[0].ref.delete())
+        switchMap((snapshot: firebase.firestore.QuerySnapshot) => snapshot.docs[0].ref.delete())
       );
   }
 
@@ -177,16 +181,16 @@ export class GroupService {
       );
   }
 
-  reload() {
+  reload(): void {
     this.reloadGroupsS.next();
   }
 
-  select(group: Group) {
+  select(group: Group): void {
     this.selectedGroup = group;
     this.selectedGroupS.next(group);
   }
 
-  close() {
+  close(): void {
     this.selectedGroupS.next(null);
     this.selectedGroup = null;
   }
@@ -198,10 +202,12 @@ export class GroupService {
       .get();
   }
 
-  private removeMemberOfGroup(groupName: string, users: User[]) {
+  private removeMemberOfGroup(groupName: string, users: User[]): void {
     for (const user of users) {
       this.afs.collection(Collections.MemberOf).ref.where('email', '==', user.email).get()
         .then((snapshot: firebase.firestore.QuerySnapshot) => {
+          if (snapshot.empty) { return; }
+
           this.afs.doc(`${Collections.MemberOf}/${snapshot.docs[0].id}`)
             .collection(Collections.Groups).ref
             .where('name', '==', groupName)
