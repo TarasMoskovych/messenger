@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { FriendDetailsComponent, GroupDetailsComponent, MembersComponent } from './components';
+import { FriendDetailsComponent, GroupDetailsComponent, MembersComponent, NotificationsComponent } from './components';
 import { InformationComponent } from './information.component';
 
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -11,7 +11,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     InformationComponent,
     FriendDetailsComponent,
     GroupDetailsComponent,
-    MembersComponent
+    MembersComponent,
+    NotificationsComponent
   ],
   imports: [
     CommonModule,

@@ -8,6 +8,7 @@ export enum Collections {
   Members = 'members',
   Messages = 'messages',
   MyFriends = 'myfriends',
+  Notifications = 'notifications',
   Requests = 'requests',
   Status = 'status',
   Users = 'users',

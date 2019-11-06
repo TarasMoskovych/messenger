@@ -1,0 +1,9 @@
+<mat-list *ngIf="notifications$ | async as notifications">
+  <ng-container *ngFor="let notification of notifications">
+    <mat-list-item *ngIf="user && user.email !== notification.senderEmail || !user">
+      <img matListAvatar [src]="notification.sender.photoURL" alt="">
+      <h3 matLine>{{ notification.sender.displayName }}</h3>
+      <p matLine>sent you a message</p>
+    </mat-list-item>
+  </ng-container>
+</mat-list>

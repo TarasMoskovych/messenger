@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { ChatService, FriendsService, NotificationService, GroupService } from 'src/app/core/services';
+import { ChatService, FriendsService, InformationService, GroupService } from 'src/app/core/services';
 import { User, Group } from 'src/app/shared/models';
 import { FriendDetailsComponent, GroupDetailsComponent } from './components';
 
@@ -22,7 +22,7 @@ export class InformationComponent implements OnInit {
     private chatService: ChatService,
     private groupService: GroupService,
     private friendsService: FriendsService,
-    private notificationService: NotificationService
+    private informationService: InformationService
   ) { }
 
   ngOnInit() {
@@ -43,7 +43,7 @@ export class InformationComponent implements OnInit {
     this.friendsService.remove(friend)
       .pipe(take(1))
       .subscribe(() => {
-        this.notificationService.showMessage(`${friend.displayName} has been removed!`);
+        this.informationService.showMessage(`${friend.displayName} has been removed!`);
         this.friendsDetailsComponent.hideLoader();
         this.chatService.close();
       });

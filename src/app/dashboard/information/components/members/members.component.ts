@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRe
 import { Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { AuthService, FriendsService, GroupService, NotificationService } from 'src/app/core/services';
+import { AuthService, FriendsService, GroupService, InformationService } from 'src/app/core/services';
 import { User } from 'src/app/shared/models';
 
 @Component({
@@ -23,7 +23,7 @@ export class MembersComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private friendsService: FriendsService,
     private groupService: GroupService,
-    private notificationService: NotificationService,
+    private informationService: InformationService,
     private cdr: ChangeDetectorRef
   ) { }
 
@@ -71,7 +71,7 @@ export class MembersComponent implements OnInit, OnDestroy {
   }
 
   private showNotification(user: User, isAdded: boolean) {
-    this.notificationService
+    this.informationService
       .showMessage(`${user.displayName} was ${isAdded ? 'added to' : 'removed from' } ${this.groupService.selectedGroup.name}`);
   }
 

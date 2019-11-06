@@ -9,6 +9,6 @@ export interface Message {
   timestamp?: IDate;
 }
 
-interface IDate {
+export interface IDate {
   toDate: () => Date;
 }

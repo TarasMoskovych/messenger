@@ -8,7 +8,7 @@ import * as firebase from 'firebase/app';
 
 import { CoreModule } from './../core.module';
 import { ImageService } from './image.service';
-import { NotificationService } from './notification.service';
+import { InformationService } from './information.service';
 import { User, Collections } from 'src/app/shared/models';
 
 @Injectable({
@@ -21,7 +21,7 @@ export class UserService {
     private afauth: AngularFireAuth,
     private afs: AngularFirestore,
     private imageService: ImageService,
-    private notificationService: NotificationService
+    private informationService: InformationService
   ) {
     this.afauth.authState.subscribe((user: firebase.User) => {
       this.user$.next(user);
@@ -34,7 +34,7 @@ export class UserService {
     return this.afs.doc(`${Collections.Users}/${user.uid}`)
       .update({ displayName })
       .then(() => user.updateProfile({ displayName, photoURL: user.photoURL}))
-      .catch(e => this.notificationService.showError(e));
+      .catch(e => this.informationService.showError(e));
   }
 
   updateImage(file: File): Observable<void> {
