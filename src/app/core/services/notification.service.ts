@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentData, QuerySnapshot } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentData, QuerySnapshot, DocumentReference } from '@angular/fire/firestore';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -8,7 +8,7 @@ import * as firebase from 'firebase/app';
 import { CoreModule } from '../core.module';
 
 import { AuthService } from './auth.service';
-import { Collections, Notification, User } from './../../shared/models';
+import { Collections, Notification, NotificationTypes, User } from './../../shared/models';
 
 @Injectable({
   providedIn: CoreModule
@@ -30,10 +30,15 @@ export class NotificationService {
       .pipe(map((notifications: Notification[]) => notifications));
   }
 
-  add(user: User) {
-    const data = this.getData(user, this.authService.authState);
+  message(user: User): Promise<void> {
+    const sender = this.authService.authState;
+    const data = this.getData(user, sender);
 
-    this.getCollection(user, 'receiverEmail')
+    return this.afs.collection(Collections.Notifications).ref
+      .where('receiverEmail', '==', user.email)
+      .where('senderEmail', '==', sender.email)
+      .where('type', '==', NotificationTypes.Message)
+      .get()
       .then((snapshot: firebase.firestore.QuerySnapshot) => {
         if (!snapshot.empty) {
           snapshot.docs[0].ref.set(data);
@@ -41,6 +46,22 @@ export class NotificationService {
           this.afs.collection(Collections.Notifications).add(data);
         }
       });
+  }
+
+  addFriend(user: User): Promise<DocumentReference> {
+    return this.addNotification(user, NotificationTypes.AddFriend);
+  }
+
+  removeFriend(user: User): Promise<DocumentReference> {
+    return this.addNotification(user, NotificationTypes.RemoveFriend);
+  }
+
+  addToGroup(user: User, group: string) {
+    return this.addNotification(user, NotificationTypes.AddToGroup, group);
+  }
+
+  removeFromGroup(user: User, group: string) {
+    return this.addNotification(user, NotificationTypes.RemoveFromGroup, group);
   }
 
   clear(user: User): Promise<void> {
@@ -51,7 +72,7 @@ export class NotificationService {
       });
   }
 
-  setLength(value: number) {
+  setLength(value: number): void {
     this.lengthS.next(value);
   }
 
@@ -61,15 +82,21 @@ export class NotificationService {
       .get();
   }
 
-  private getData(user: User, user2: User): Notification {
+  private addNotification(user: User, type: string, group: string = ''): Promise<DocumentReference> {
+    return this.afs.collection(Collections.Notifications).add(this.getData(user, this.authService.authState, type, group));
+  }
+
+  private getData(user: User, user2: User, type = NotificationTypes.Message.toString(), group: string = ''): Notification {
     const sender: User = { email: user2.email, photoURL: user2.photoURL, displayName: user2.displayName };
+
     return {
       receiver: user,
       receiverEmail: user.email,
       sender,
       senderEmail: sender.email,
-      type: 'message',
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      type,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      group
     };
   }
 }

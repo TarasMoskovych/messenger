@@ -1,10 +1,9 @@
-import { NotificationService } from './../../core/services/notification.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { ChatService, FriendsService, InformationService, GroupService } from 'src/app/core/services';
-import { Notification, User, Group } from 'src/app/shared/models';
+import { ChatService, FriendsService, InformationService, NotificationService, GroupService } from 'src/app/core/services';
+import { Notification, NotificationTypes, User, Group } from 'src/app/shared/models';
 import { FriendDetailsComponent, GroupDetailsComponent } from './components';
 
 @Component({
@@ -48,6 +47,7 @@ export class InformationComponent implements OnInit {
       .pipe(take(1))
       .subscribe(() => {
         this.informationService.showMessage(`${friend.displayName} has been removed!`);
+        this.notificationService.removeFriend(friend);
         this.friendsDetailsComponent.hideLoader();
         this.chatService.close();
       });
@@ -72,7 +72,7 @@ export class InformationComponent implements OnInit {
   }
 
   onSelectNotification(notification: Notification) {
-    if (notification.type === 'message') {
+    if (notification.type === NotificationTypes.Message) {
       this.chatService.selectFriend(notification.sender);
       this.groupService.close();
     }

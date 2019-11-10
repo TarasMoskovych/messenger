@@ -104,7 +104,7 @@ export class ChatService {
           if (!snapshot.empty) {
             return addConversation(this.conversations.doc(snapshot.docs[0].data().id))
               .then(() => {
-                this.notificationService.add(this.selectedUser);
+                this.notificationService.message(this.selectedUser);
                 resolve(false);
               });
           }
@@ -123,7 +123,7 @@ export class ChatService {
                             .then(() => {
                               this.chats.doc(docId2).update({ id: conversationsDocRef.id });
                             }).then(() => {
-                              this.notificationService.add(this.selectedUser);
+                              this.notificationService.message(this.selectedUser);
                               resolve(true);
                             });
                         });

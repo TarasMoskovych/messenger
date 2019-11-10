@@ -1,9 +1,9 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input, OnDestroy, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-
-import { Notification, User } from 'src/app/shared/models';
-import { NotificationService } from 'src/app/core/services';
 import { takeUntil, throttleTime } from 'rxjs/operators';
+
+import { Notification, NotificationTypes, User } from 'src/app/shared/models';
+import { NotificationService, GroupService } from 'src/app/core/services';
 
 @Component({
   selector: 'app-notifications',
@@ -18,9 +18,14 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<boolean>();
 
   notifications: Notification[] = [];
+  notificationsTypes = NotificationTypes;
   user: User;
 
-  constructor(private notificationService: NotificationService, private cdr: ChangeDetectorRef) { }
+  constructor(
+    private groupService: GroupService,
+    private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
     this.onUserChange();
@@ -33,7 +38,11 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
 
   onNotificationClick(notification: Notification) {
-    this.selectNotification.emit(notification)
+    if (notification.type === NotificationTypes.Message) {
+      return this.selectNotification.emit(notification);
+    }
+
+    this.clearNotifications(notification.sender);
   }
 
   private onUserChange() {
@@ -61,15 +70,29 @@ export class NotificationsComponent implements OnInit, OnDestroy {
           this.notifications = notifications.filter((n: Notification) => n.senderEmail !== this.user.email);
         }
 
+        this.checkGroup();
         this.setLength();
         this.cdr.detectChanges();
       });
   }
 
+  private checkGroup() {
+    const group = this.notifications.find((n: Notification) => {
+      return n.type === NotificationTypes.RemoveFromGroup &&
+        this.groupService.selectedGroup && n.group === this.groupService.selectedGroup.name;
+    });
+
+    if (group) { this.groupService.close(); }
+  }
+
   private clearNotifications(user: User) {
     const predicate = this.notifications.find((n: Notification) => n.senderEmail === user.email);
 
-    if (predicate) { this.notificationService.clear(user); }
+    if (predicate) {
+      this.notificationService.clear(user);
+      this.notifications = this.notifications.filter((n: Notification) => n.senderEmail !== user.email);
+      this.setLength();
+    }
   }
 
   private setLength() {

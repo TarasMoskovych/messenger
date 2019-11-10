@@ -2,7 +2,15 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { take, takeUntil, debounceTime, distinctUntilChanged, throttleTime } from 'rxjs/operators';
 
-import { ChatService, GroupService, FriendsService, InformationService, RequestsService, UserService } from 'src/app/core/services';
+import {
+  ChatService,
+  GroupService,
+  FriendsService,
+  InformationService,
+  RequestsService,
+  UserService,
+  NotificationService
+} from 'src/app/core/services';
 import { appConfig } from 'src/app/configs';
 import { User, Request, Status, Group } from 'src/app/shared/models';
 
@@ -35,6 +43,7 @@ export class UserActionsComponent implements OnInit, OnDestroy {
     private chatService: ChatService,
     private groupService: GroupService,
     private informationService: InformationService,
+    private notificationService: NotificationService,
     private friendsService: FriendsService,
     private requestService: RequestsService,
     private userService: UserService
@@ -87,6 +96,7 @@ export class UserActionsComponent implements OnInit, OnDestroy {
       this.subLoading = false;
       this.users = [ ...this.users.filter((u: User) => user.email !== u.email)];
       this.toggleAddFriendsPanel();
+      this.notificationService.addFriend(user);
     });
   }
 
