@@ -6,7 +6,7 @@ import { switchMap } from 'rxjs/operators';
 
 import { CoreModule } from '../core.module';
 import { HashService } from './hash.service';
-import { NotificationService } from './notification.service';
+import { InformationService } from './information.service';
 
 @Injectable({
   providedIn: CoreModule
@@ -16,7 +16,7 @@ export class ImageService {
   constructor(
     private storage: AngularFireStorage,
     private hashService: HashService,
-    private notificationService: NotificationService
+    private informationService: InformationService
   ) { }
 
   upload(file: File, folder = 'images', name = `/image_${this.hashService.generateHash()}`): Observable<string> {
@@ -42,6 +42,6 @@ export class ImageService {
   }
 
   private showNotification() {
-    this.notificationService.showMessage('File type is not supported!');
+    this.informationService.showMessage('File type is not supported!');
   }
 }

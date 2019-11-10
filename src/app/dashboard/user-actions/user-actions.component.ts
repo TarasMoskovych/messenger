@@ -2,7 +2,15 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { take, takeUntil, debounceTime, distinctUntilChanged, throttleTime } from 'rxjs/operators';
 
-import { ChatService, GroupService, FriendsService, NotificationService, RequestsService, UserService } from 'src/app/core/services';
+import {
+  ChatService,
+  GroupService,
+  FriendsService,
+  InformationService,
+  RequestsService,
+  UserService,
+  NotificationService
+} from 'src/app/core/services';
 import { appConfig } from 'src/app/configs';
 import { User, Request, Status, Group } from 'src/app/shared/models';
 
@@ -28,13 +36,13 @@ export class UserActionsComponent implements OnInit, OnDestroy {
   groups: Group[];
 
   loadedGroups = false;
-  loadedUsers = false;
   loadedFriends = false;
   loadedAllRequests = false;
 
   constructor(
     private chatService: ChatService,
     private groupService: GroupService,
+    private informationService: InformationService,
     private notificationService: NotificationService,
     private friendsService: FriendsService,
     private requestService: RequestsService,
@@ -55,7 +63,7 @@ export class UserActionsComponent implements OnInit, OnDestroy {
   }
 
   onLoadUsers() {
-    if (!this.loadedUsers && this.loadedFriends && this.loadedAllRequests) { this.getUsers(); }
+    if (this.loadedFriends && this.loadedAllRequests) { this.getUsers(); }
   }
 
   onLoadRequests() {
@@ -75,7 +83,7 @@ export class UserActionsComponent implements OnInit, OnDestroy {
   onAddFriend(user: User) {
     this.subLoading = true;
     this.requestService.add(user.email).then(() => {
-      this.notificationService.showMessage(`Request is sent to ${user.displayName}.`, 'Okay');
+      this.informationService.showMessage(`Request is sent to ${user.displayName}.`, 'Okay');
       this.subLoading = false;
       user.receiver = true;
     });
@@ -84,17 +92,18 @@ export class UserActionsComponent implements OnInit, OnDestroy {
   onAcceptRequest(user: User) {
     this.subLoading = true;
     this.requestService.accept(user).then(() => {
-      this.notificationService.showMessage(`${user.displayName} is added`, 'Okay');
+      this.informationService.showMessage(`${user.displayName} is added`, 'Okay');
       this.subLoading = false;
       this.users = [ ...this.users.filter((u: User) => user.email !== u.email)];
       this.toggleAddFriendsPanel();
+      this.notificationService.addFriend(user);
     });
   }
 
   onDeclineRequest(user: User) {
     this.subLoading = true;
     this.requestService.decline(user).then(() => {
-      this.notificationService.showMessage(`${user.displayName} is ignored`, 'Okay');
+      this.informationService.showMessage(`${user.displayName} is ignored`, 'Okay');
       this.users.forEach((u: User) => {
         if (u.email === user.email) {
           u.sender = false;
@@ -122,7 +131,7 @@ export class UserActionsComponent implements OnInit, OnDestroy {
       .pipe(take(1))
       .subscribe(() => {
         this.getGroups();
-        this.notificationService.showMessage(`${name} was created.`);
+        this.informationService.showMessage(`${name} was created.`);
       });
   }
 
@@ -193,7 +202,6 @@ export class UserActionsComponent implements OnInit, OnDestroy {
         this.filterUsersByFriends(users);
         this.filterUsersByRequests();
         this.toggleAddFriendsPanel();
-        this.loadedUsers = true;
       });
   }
 

@@ -7,6 +7,7 @@ import { appConfig } from 'src/app/configs';
 import { AuthService } from './auth.service';
 
 import { ImageService } from './image.service';
+import { NotificationService } from './notification.service';
 import { Collections, Group, User } from './../../shared/models';
 
 @Injectable({
@@ -23,7 +24,8 @@ export class GroupService {
   constructor(
     private afs: AngularFirestore,
     private authService: AuthService,
-    private imageService: ImageService
+    private imageService: ImageService,
+    private notificationService: NotificationService,
   ) { }
 
   getAll(): Observable<DocumentData[]> {
@@ -193,6 +195,7 @@ export class GroupService {
   close(): void {
     this.selectedGroupS.next(null);
     this.selectedGroup = null;
+    this.reload();
   }
 
   private getCurrentGroupSnapshot(): Observable<QuerySnapshot<DocumentData>> {
@@ -212,7 +215,12 @@ export class GroupService {
             .collection(Collections.Groups).ref
             .where('name', '==', groupName)
             .get()
-            .then((groupSnapshot: firebase.firestore.QuerySnapshot) => groupSnapshot.docs.length && groupSnapshot.docs[0].ref.delete());
+            .then((groupSnapshot: firebase.firestore.QuerySnapshot) => {
+              if (groupSnapshot.docs.length) {
+                this.notificationService.removeFromGroup(user, groupName);
+                groupSnapshot.docs[0].ref.delete();
+              }
+            });
         });
     }
   }

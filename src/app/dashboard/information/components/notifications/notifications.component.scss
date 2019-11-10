@@ -1,0 +1,13 @@
+@import './../../../../scss/variables';
+
+.notifications {
+
+  &__item {
+    transition: .3s;
+
+    &:hover {
+      background: darken($grey, 5);
+      cursor: pointer;
+    }
+  }
+}

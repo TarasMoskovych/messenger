@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { ChatService, FriendsService, NotificationService, GroupService } from 'src/app/core/services';
-import { User, Group } from 'src/app/shared/models';
+import { ChatService, FriendsService, InformationService, NotificationService, GroupService } from 'src/app/core/services';
+import { Notification, NotificationTypes, User, Group } from 'src/app/shared/models';
 import { FriendDetailsComponent, GroupDetailsComponent } from './components';
 
 @Component({
@@ -17,17 +17,20 @@ export class InformationComponent implements OnInit {
 
   friend$: Observable<User>;
   group$: Observable<Group>;
+  notifications$: Observable<number>;
 
   constructor(
     private chatService: ChatService,
     private groupService: GroupService,
     private friendsService: FriendsService,
+    private informationService: InformationService,
     private notificationService: NotificationService
   ) { }
 
   ngOnInit() {
     this.getFriendInfo();
     this.getGroupInfo();
+    this.getNotifications();
   }
 
   onCloseChat() {
@@ -43,7 +46,8 @@ export class InformationComponent implements OnInit {
     this.friendsService.remove(friend)
       .pipe(take(1))
       .subscribe(() => {
-        this.notificationService.showMessage(`${friend.displayName} has been removed!`);
+        this.informationService.showMessage(`${friend.displayName} has been removed!`);
+        this.notificationService.removeFriend(friend);
         this.friendsDetailsComponent.hideLoader();
         this.chatService.close();
       });
@@ -67,12 +71,23 @@ export class InformationComponent implements OnInit {
       .subscribe(() => this.groupDetailsComponent.hideLoader());
   }
 
+  onSelectNotification(notification: Notification) {
+    if (notification.type === NotificationTypes.Message) {
+      this.chatService.selectFriend(notification.sender);
+      this.groupService.close();
+    }
+  }
+
   private getFriendInfo() {
     this.friend$ = this.chatService.selectedUser$;
   }
 
   private getGroupInfo() {
     this.group$ = this.groupService.selectedGroup$;
+  }
+
+  private getNotifications() {
+    this.notifications$ = this.notificationService.length$;
   }
 
 }

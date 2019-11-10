@@ -6,7 +6,7 @@ import { auth } from 'firebase/app';
 
 import { CoreModule } from '../core.module';
 import { User, Collections } from 'src/app/shared/models';
-import { NotificationService } from './notification.service';
+import { InformationService } from './information.service';
 import { appConfig } from 'src/app/configs';
 
 @Injectable({
@@ -23,7 +23,7 @@ export class AuthService {
     private afauth: AngularFireAuth,
     private afs: AngularFirestore,
     private router: Router,
-    private notificationService: NotificationService
+    private informationService: InformationService
   ) {
     this.afauth.authState.subscribe(user => {
       this._authState = user;
@@ -35,7 +35,7 @@ export class AuthService {
   register(user: User): Promise<void> {
     return this.afauth.auth
       .createUserWithEmailAndPassword(user.email, user.password)
-      .catch(e => this.notificationService.showError(e))
+      .catch(e => this.informationService.showError(e))
       .then((data) => {
         this._authState = data;
         this.afauth.auth.currentUser.updateProfile({
@@ -63,7 +63,7 @@ export class AuthService {
         } else {
           this.emailVerifiedErrorHandler();
         }
-      }).catch(e => this.notificationService.showError(e));
+      }).catch(e => this.informationService.showError(e));
   }
 
   loginWithGoogle(): Promise<void> {
@@ -131,7 +131,7 @@ export class AuthService {
   }
 
   private emailVerifiedErrorHandler() {
-    this.notificationService.showMessage('Your account is inactive. Please, confirm Your email!');
+    this.informationService.showMessage('Your account is inactive. Please, confirm Your email!');
   }
 
   private saveSessionToken(token: string) {

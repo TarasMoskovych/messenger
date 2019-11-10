@@ -12,6 +12,7 @@ import { Collections, Chat, Message, User } from './../../shared/models';
 import { ImageService } from './image.service';
 import { GroupService } from './group.service';
 import { HashService } from './hash.service';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: CoreModule
@@ -34,7 +35,8 @@ export class ChatService {
     private authService: AuthService,
     private groupService: GroupService,
     private imageService: ImageService,
-    private hashService: HashService
+    private hashService: HashService,
+    private notificationService: NotificationService
   ) { }
 
   getAll(count: number): Observable<Message[]> {
@@ -101,7 +103,10 @@ export class ChatService {
 
           if (!snapshot.empty) {
             return addConversation(this.conversations.doc(snapshot.docs[0].data().id))
-              .then(() => resolve(false));
+              .then(() => {
+                this.notificationService.message(this.selectedUser);
+                resolve(false);
+              });
           }
 
           populateChats({ me: this.authService.isAuthorised(), friend: this.selectedUser.email })
@@ -117,7 +122,10 @@ export class ChatService {
                           this.chats.doc(docId1).update({ id: conversationsDocRef.id})
                             .then(() => {
                               this.chats.doc(docId2).update({ id: conversationsDocRef.id });
-                            }).then(() => resolve(true));
+                            }).then(() => {
+                              this.notificationService.message(this.selectedUser);
+                              resolve(true);
+                            });
                         });
                     });
                 });

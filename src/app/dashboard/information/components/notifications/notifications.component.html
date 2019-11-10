@@ -1,0 +1,13 @@
+<mat-list *ngIf="notifications.length" class="notifications">
+  <ng-container *ngFor="let notification of notifications">
+    <mat-list-item class="notifications__item" (click)="onNotificationClick(notification)">
+      <img matListAvatar [src]="notification.sender.photoURL" alt="">
+      <h3 matLine>{{ notification.sender.displayName }}</h3>
+      <p *ngIf="notification.type === notificationsTypes.Message" matLine>sent you a message</p>
+      <p *ngIf="notification.type === notificationsTypes.AddFriend" matLine>added you to friends</p>
+      <p *ngIf="notification.type === notificationsTypes.RemoveFriend" matLine>removed you from friends</p>
+      <p *ngIf="notification.type === notificationsTypes.AddToGroup" matLine>added you to group {{ notification.group }}</p>
+      <p *ngIf="notification.type === notificationsTypes.RemoveFromGroup" matLine>removed you from group {{ notification.group }}</p>
+    </mat-list-item>
+  </ng-container>
+</mat-list>

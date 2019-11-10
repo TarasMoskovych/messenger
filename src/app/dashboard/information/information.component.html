@@ -23,4 +23,19 @@
     </ng-template>
   </mat-expansion-panel>
 
+  <mat-expansion-panel hideToggle="true" class="notifications-panel">
+    <mat-expansion-panel-header class="notifications">
+      Notifications
+      <ng-container *ngIf="notifications$ | async as length">
+        <mat-icon *ngIf="length > 0" [matBadge]="length" matBadgeColor="warn">notification_important</mat-icon>
+      </ng-container>
+    </mat-expansion-panel-header>
+    <mat-panel-description>
+      <app-notifications
+        [user$]="friend$"
+        (selectNotification)="onSelectNotification($event)"
+      ></app-notifications>
+    </mat-panel-description>
+  </mat-expansion-panel>
+
 </mat-accordion>
