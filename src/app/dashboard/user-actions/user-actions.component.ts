@@ -28,7 +28,6 @@ export class UserActionsComponent implements OnInit, OnDestroy {
   groups: Group[];
 
   loadedGroups = false;
-  loadedUsers = false;
   loadedFriends = false;
   loadedAllRequests = false;
 
@@ -55,7 +54,7 @@ export class UserActionsComponent implements OnInit, OnDestroy {
   }
 
   onLoadUsers() {
-    if (!this.loadedUsers && this.loadedFriends && this.loadedAllRequests) { this.getUsers(); }
+    if (this.loadedFriends && this.loadedAllRequests) { this.getUsers(); }
   }
 
   onLoadRequests() {
@@ -193,7 +192,6 @@ export class UserActionsComponent implements OnInit, OnDestroy {
         this.filterUsersByFriends(users);
         this.filterUsersByRequests();
         this.toggleAddFriendsPanel();
-        this.loadedUsers = true;
       });
   }
 

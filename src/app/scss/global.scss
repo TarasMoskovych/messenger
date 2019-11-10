@@ -48,12 +48,25 @@ body {
     }
   }
 
+  .notifications-panel,
   .groups-panel,
   .friends-panel {
     .mat-expansion-panel-body {
       padding-left: 0;
       padding-right: 0;
     }
+  }
+
+  .notifications-panel {
+    .mat-expansion-panel-header-description {
+      margin-right: 0
+    }
+  }
+
+  .notifications .mat-content {
+    align-items: center;
+    overflow: visible;
+    padding: 15px 0;
   }
 
   .scrollbar::-webkit-scrollbar-track {

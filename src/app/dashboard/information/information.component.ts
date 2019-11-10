@@ -1,9 +1,10 @@
+import { NotificationService } from './../../core/services/notification.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { ChatService, FriendsService, InformationService, GroupService } from 'src/app/core/services';
-import { User, Group } from 'src/app/shared/models';
+import { Notification, User, Group } from 'src/app/shared/models';
 import { FriendDetailsComponent, GroupDetailsComponent } from './components';
 
 @Component({
@@ -17,17 +18,20 @@ export class InformationComponent implements OnInit {
 
   friend$: Observable<User>;
   group$: Observable<Group>;
+  notifications$: Observable<number>;
 
   constructor(
     private chatService: ChatService,
     private groupService: GroupService,
     private friendsService: FriendsService,
-    private informationService: InformationService
+    private informationService: InformationService,
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit() {
     this.getFriendInfo();
     this.getGroupInfo();
+    this.getNotifications();
   }
 
   onCloseChat() {
@@ -67,12 +71,23 @@ export class InformationComponent implements OnInit {
       .subscribe(() => this.groupDetailsComponent.hideLoader());
   }
 
+  onSelectNotification(notification: Notification) {
+    if (notification.type === 'message') {
+      this.chatService.selectFriend(notification.sender);
+      this.groupService.close();
+    }
+  }
+
   private getFriendInfo() {
     this.friend$ = this.chatService.selectedUser$;
   }
 
   private getGroupInfo() {
     this.group$ = this.groupService.selectedGroup$;
+  }
+
+  private getNotifications() {
+    this.notifications$ = this.notificationService.length$;
   }
 
 }
