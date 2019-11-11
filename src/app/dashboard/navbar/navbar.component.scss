@@ -6,7 +6,11 @@
     justify-content: space-between;
   }
 
-  &__logout {
+  &__buttons-wrapper {
+    display: flex;
+  }
+
+  &__button {
     cursor: pointer;
 
     &:hover {

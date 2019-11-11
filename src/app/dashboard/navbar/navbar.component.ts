@@ -9,11 +9,16 @@ import { AuthService } from 'src/app/core/services';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavbarComponent {
+  showButtons = navigator.userAgent.toLowerCase().includes(' electron/');
 
   constructor(private authService: AuthService) { }
 
   logout() {
     this.authService.logout();
+  }
+
+  close() {
+    window.close();
   }
 
 }
