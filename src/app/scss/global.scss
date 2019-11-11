@@ -3,6 +3,7 @@
 body {
   margin: 0;
   padding: 0;
+  -webkit-app-region: drag;
 
   .lb-data {
 
@@ -69,6 +70,10 @@ body {
     padding: 15px 0;
   }
 
+  .no-drag {
+    -webkit-app-region: no-drag;
+  }
+
   .scrollbar::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     border-radius: 10px;
@@ -86,4 +91,9 @@ body {
     background-color: $primary;
     height: 15%;
   }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  background: transparent;
+  width: 0;
 }

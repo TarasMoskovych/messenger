@@ -39,8 +39,8 @@ export class LoginComponent extends BaseAuth implements OnInit {
 
   private buildForm() {
     this.form = new FormGroup({
-      email: new FormControl(this.authService.user.email, [Validators.required, Validators.email]),
-      password: new FormControl(this.authService.user.password, [Validators.required, Validators.minLength(6)])
+      email: new FormControl(this.authService.user && this.authService.user.email || null, [Validators.required, Validators.email]),
+      password: new FormControl(this.authService.user && this.authService.user.password || null, [Validators.required, Validators.minLength(6)])
     });
   }
 

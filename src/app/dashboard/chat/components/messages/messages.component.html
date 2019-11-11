@@ -1,4 +1,4 @@
-<mat-list class="messages" #list>
+<mat-list class="messages no-drag" #list>
   <div *ngFor="let message of messages" class="messages__wrapper" [class.messages__wrapper--outcome]="message.outcome">
     <p *ngIf="message.group && !message.outcome" matLine class="messages__author">{{ message.author }}</p>
     <mat-list-item class="messages__item" [class.messages__item--outcome]="message.outcome">
