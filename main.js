@@ -8,11 +8,12 @@ const Listeners = require('./electron/listeners.ipc');
 let window = null;
 
 function createWindow() {
-  log.info('create window');
+  log.info('Create window');
 
   window = new BrowserWindow({
     width: 800,
     height: 600,
+    // fullscreen: true,
     frame: false,
     resizable: true,
     webPreferences: {

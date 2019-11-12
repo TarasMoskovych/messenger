@@ -7,7 +7,12 @@ class Listeners {
   static init(browserWindow) {
     this.window = browserWindow;
 
+    this._initWindowState();
     this._initFrameListeners();
+  }
+
+  static _initWindowState() {
+    this.window.webContents.once('dom-ready', this._emitWindowState.bind(this));
   }
 
   static _initFrameListeners() {
@@ -28,6 +33,9 @@ class Listeners {
     });
   }
 
+  static _emitWindowState() {
+    this.window.webContents.send('window:state', this.window.isFullScreen());
+  }
 }
 
 module.exports = Listeners;

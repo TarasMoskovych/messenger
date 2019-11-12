@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
 
 @Component({
@@ -7,23 +7,38 @@ import { ElectronService } from 'ngx-electron';
   styleUrls: ['./frame-buttons.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FrameButtonsComponent {
+export class FrameButtonsComponent implements OnInit {
   @Input() primary = false;
 
   isElectronApp = this.electronService.isElectronApp;
+  fullScreen = false;
 
-  constructor(private electronService: ElectronService) { }
+  constructor(private electronService: ElectronService, private cdr: ChangeDetectorRef) { }
+
+  ngOnInit() {
+    this.onWindowStateInit();
+  }
 
   onMinimize() {
     this.emitFrameAction('minimize');
   }
 
   onMaximize() {
+    this.fullScreen = !this.fullScreen;
     this.emitFrameAction('maximize');
   }
 
   onClose() {
     this.emitFrameAction('close');
+  }
+
+  private onWindowStateInit() {
+    if (this.isElectronApp) {
+      this.electronService.ipcRenderer.on('window:state', (e, fullScreen: boolean) => {
+        this.fullScreen = fullScreen;
+        this.cdr.detectChanges();
+      });
+    }
   }
 
   private emitFrameAction(type: string) {
