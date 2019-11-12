@@ -9,6 +9,7 @@ function createWindow() {
     width: 800,
     height: 600,
     frame: false,
+    resizable: true,
   });
 
   window.loadURL(
