@@ -1,15 +1,23 @@
 const { app, BrowserWindow } = require('electron');
+const log = require('electron-log');
 const url = require('url');
 const path = require('path');
+
+const Listeners = require('./electron/listeners.ipc');
 
 let window = null;
 
 function createWindow() {
+  log.info('create window');
+
   window = new BrowserWindow({
     width: 800,
     height: 600,
     frame: false,
     resizable: true,
+    webPreferences: {
+      nodeIntegration: true,
+    },
   });
 
   window.loadURL(
@@ -21,6 +29,9 @@ function createWindow() {
   );
 
   window.webContents.openDevTools();
+
+  // Init custom listeners
+  Listeners.init(window);
 
   // Emitted when the window is closed.
   window.on('closed', () => window = null);
@@ -44,4 +55,4 @@ app.on('activate', () => {
   if (!window) { createWindow(); }
 });
 
-process.on('uncaughtException', error => console.error(error));
+process.on('uncaughtException', error => log.error(error));

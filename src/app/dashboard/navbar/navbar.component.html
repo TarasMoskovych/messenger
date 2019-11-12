@@ -2,12 +2,8 @@
   <mat-toolbar color="primary" class="navbar__toolbar">
     <span>Messenger</span>
     <div class="navbar__buttons-wrapper no-drag">
-      <mat-icon (click)="logout()" class="navbar__button" aria-label="Logout">power_settings_new</mat-icon>
-      <div *ngIf="showButtons" class="navbar__buttons-wrapper">
-        <mat-icon class="navbar__button ml-15">minimize</mat-icon>
-        <mat-icon class="navbar__button">crop_din</mat-icon>
-        <mat-icon (click)="close()" class="navbar__button">close</mat-icon>
-      </div>
+      <mat-icon *ngIf="!isElectronApp" (click)="logout()" class="navbar__button" aria-label="Logout">power_settings_new</mat-icon>
+      <app-frame-buttons></app-frame-buttons>
     </div>
   </mat-toolbar>
 </div>

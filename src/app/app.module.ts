@@ -9,6 +9,8 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 
+import { NgxElectronModule } from 'ngx-electron';
+
 import { firebaseConfig } from './configs';
 import { AppComponent } from './app.component';
 
@@ -29,6 +31,7 @@ import { CoreModule } from './core/core.module';
     AngularFirestoreModule,
     AngularFireStorageModule,
     AngularFireAuthModule,
+    NgxElectronModule,
     AuthModule,
     AppRoutingModule
   ],

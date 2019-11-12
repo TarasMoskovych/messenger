@@ -26,7 +26,7 @@
           <mat-icon aria-hidden="true">check</mat-icon>
         </button>
       </span>
-      <span *ngIf="!editing" matTooltip="Change Photo">
+      <span *ngIf="!editing" matTooltip="Change Photo" class="mr-5">
         <button mat-mini-fab color="primary" (click)="fileInput.click()">
           <mat-icon aria-hidden="true">perm_contact_calendar</mat-icon>
         </button>
@@ -34,6 +34,11 @@
       <span *ngIf="editing" matTooltip="Cancel">
         <button mat-mini-fab color="warn" (click)="cancel()">
           <mat-icon aria-hidden="true">close</mat-icon>
+        </button>
+      </span>
+      <span *ngIf="!editing && isElectronApp" matTooltip="Logout">
+        <button mat-mini-fab color="warn" (click)="logout()">
+          <mat-icon aria-hidden="true">power_settings_new</mat-icon>
         </button>
       </span>
       <input #fileInput type="file" (change)="onUpdatePhoto(fileInput.files[0])" style="display: none;">

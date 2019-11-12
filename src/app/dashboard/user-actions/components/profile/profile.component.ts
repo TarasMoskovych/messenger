@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { Lightbox } from 'ngx-lightbox';
+import { ElectronService } from 'ngx-electron';
 
 import { AbstractLightBox } from 'src/app/dashboard/classes';
-import { UserService } from 'src/app/core/services';
+import { UserService, AuthService } from 'src/app/core/services';
 import { User } from 'src/app/shared/models';
 import { take } from 'rxjs/operators';
 
@@ -14,6 +15,7 @@ import { take } from 'rxjs/operators';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent extends AbstractLightBox implements OnInit {
+  isElectronApp = this.electronService.isElectronApp;
   form: FormGroup;
   editing = false;
   updateProfile = false;
@@ -22,7 +24,12 @@ export class ProfileComponent extends AbstractLightBox implements OnInit {
   selectedImage: File;
   user$: BehaviorSubject<User>;
 
-  constructor(private userService: UserService, protected lightbox: Lightbox) {
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+    private electronService: ElectronService,
+    protected lightbox: Lightbox
+  ) {
     super(lightbox);
   }
 
@@ -61,6 +68,10 @@ export class ProfileComponent extends AbstractLightBox implements OnInit {
   cancel() {
     this.loading = false;
     this.editing = false;
+  }
+
+  logout() {
+    this.authService.logout();
   }
 
   private buildForm(displayName: string) {

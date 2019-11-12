@@ -1,0 +1,5 @@
+<div class="frame-buttons no-drag" *ngIf="isElectronApp">
+  <mat-icon (click)="onMinimize()" class="frame-buttons__btn" [color]="primary ? 'primary' : ''">minimize</mat-icon>
+  <mat-icon (click)="onMaximize()" class="frame-buttons__btn" [color]="primary ? 'primary' : ''">crop_din</mat-icon>
+  <mat-icon (click)="onClose()" class="frame-buttons__btn" [color]="primary ? 'primary' : ''">close</mat-icon>
+</div>

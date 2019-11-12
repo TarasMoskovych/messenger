@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ElectronService } from 'ngx-electron';
 
 import { AuthService } from 'src/app/core/services';
 
@@ -9,16 +10,15 @@ import { AuthService } from 'src/app/core/services';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavbarComponent {
-  showButtons = navigator.userAgent.toLowerCase().includes(' electron/');
+  isElectronApp = this.electronService.isElectronApp;
 
-  constructor(private authService: AuthService) { }
+  constructor(
+    private electronService: ElectronService,
+    private authService: AuthService,
+  ) { }
 
   logout() {
     this.authService.logout();
-  }
-
-  close() {
-    window.close();
   }
 
 }
