@@ -10,43 +10,46 @@ import { ElectronService } from 'ngx-electron';
 export class FrameButtonsComponent implements OnInit {
   @Input() primary = false;
 
+  private window: Electron.BrowserWindow = null;
+
   isElectronApp = this.electronService.isElectronApp;
   fullScreen = false;
 
   constructor(private electronService: ElectronService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.onWindowStateInit();
+    if (this.isElectronApp) { this.electronOnInit(); }
+  }
+
+  electronOnInit() {
+    this.getRemoteWindow();
+    this.onWindowChange();
   }
 
   onMinimize() {
-    this.emitFrameAction('minimize');
+    this.window && this.window.minimize();
   }
 
   onMaximize() {
-    this.fullScreen = !this.fullScreen;
-    this.emitFrameAction('maximize');
+    if (this.window) {
+      this.window.setFullScreen(!this.window.isFullScreen());
+      this.fullScreen = this.window.isFullScreen();
+    }
   }
 
   onClose() {
-    this.emitFrameAction('close');
+    this.window && this.window.close();
   }
 
-  private onWindowStateInit() {
-    if (this.isElectronApp) {
-      this.electronService.ipcRenderer.on('window:state', (e, fullScreen: boolean) => {
-        this.fullScreen = fullScreen;
-        this.cdr.detectChanges();
-      });
-    }
+  private getRemoteWindow() {
+    this.window = this.electronService.remote.getCurrentWindow();
+    this.fullScreen = this.window.isFullScreen();
   }
 
-  private emitFrameAction(type: string) {
-    if (this.isElectronApp) {
-      this.electronService.ipcRenderer.send('frame:actions', { type });
-    } else {
-      console.warn('Not electron application!');
-    }
+  private onWindowChange() {
+    this.electronService.ipcRenderer.on('window:change', (e, isFullScreen: boolean) => {
+      this.fullScreen = isFullScreen;
+      this.cdr.detectChanges();
+    });
   }
-
 }
