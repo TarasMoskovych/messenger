@@ -1,9 +1,12 @@
 const { app, BrowserWindow } = require('electron');
+const axios = require('axios');
 const log = require('electron-log');
 const url = require('url');
 const path = require('path');
+const electronGoogleOauth = require( 'electron-google-oauth');
 
 const Listeners = require('./electron/listeners.ipc');
+const authConfig = require('./electron/auth.config');
 
 let window = null;
 
@@ -34,6 +37,10 @@ function createWindow() {
   // Init custom listeners
   Listeners.init(window);
 
+  getToken()
+    .then(getUserData)
+    .then(data => log.info(data));
+
   // Emitted when the window is closed.
   window.on('closed', () => window = null);
 }
@@ -57,3 +64,26 @@ app.on('activate', () => {
 });
 
 process.on('uncaughtException', error => log.error(error));
+
+async function getToken() {
+  const googleOauth = electronGoogleOauth({
+    'use-content-size': true,
+    center: true,
+    show: true,
+    resizable: false,
+    'always-on-top': true,
+    'standard-window': true,
+    'auto-hide-menu-bar': true,
+    'node-integration': false
+  });
+
+  return await googleOauth.getAccessToken(...authConfig);
+}
+
+function getUserData({ access_token }) {
+  return axios.get('https://www.googleapis.com/oauth2/v1/userinfo', {
+    params: {
+      access_token
+    }
+  }).then(response => response.data);
+}
