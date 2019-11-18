@@ -6,7 +6,7 @@ import { Directive, Output, EventEmitter, HostBinding, HostListener } from '@ang
 export class DragAndDropDirective {
   @Output() onFileDropped = new EventEmitter<any>();
 
-  @HostBinding('style.outline') private outline = 'none';
+  @HostBinding('style.outline') outline = 'none';
 
   //Dragover listener
   @HostListener('dragover', ['$event']) onDragOver(evt) {

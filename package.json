@@ -1,6 +1,6 @@
 {
   "name": "messenger",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "main": "main.js",
   "scripts": {
     "ng": "ng",
@@ -10,7 +10,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "electron": "ng build --base-href ./ && npm run electron:serve",
-    "electron:serve": "electron ."
+    "electron:serve": "electron .",
+    "package": "ng build --prod --base-href ./ && electron-packager . messenger --overwrite --asar=true --no-prune"
   },
   "private": true,
   "dependencies": {
@@ -52,6 +53,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
     "codelyzer": "^5.0.0",
+    "electron-packager": "^14.1.0",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.1.0",

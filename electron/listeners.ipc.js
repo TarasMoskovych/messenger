@@ -30,7 +30,7 @@ class Listeners {
   }
 
   static _emitToken(data) {
-    this.window.webContents.send('google:sign_in', { id_token: data.id_token, access_token: data.access_token });
+    this.window.webContents.send('google:sign_in', data);
   }
 }
 
