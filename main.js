@@ -15,6 +15,7 @@ function createWindow() {
     // fullscreen: true,
     frame: false,
     resizable: true,
+    icon: path.join(__dirname, 'resources/icon.png'),
     webPreferences: {
       nodeIntegration: true,
     },

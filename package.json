@@ -1,6 +1,15 @@
 {
   "name": "messenger",
   "version": "1.0.0",
+  "description": "Chat application using Angular + Firebase",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TarasMoskovych/messenger"
+  },
+  "author": {
+    "name": "Taras Moskovych",
+    "email": "moskovych.taras@gmail.com"
+  },
   "main": "main.js",
   "scripts": {
     "ng": "ng",
@@ -11,7 +20,8 @@
     "e2e": "ng e2e",
     "electron": "ng build --base-href ./ && npm run electron:serve",
     "electron:serve": "electron .",
-    "package": "ng build --prod --base-href ./ && electron-packager . messenger --overwrite --asar=true --no-prune"
+    "package": "ng build --prod --base-href ./ && electron-packager . messenger --icon=resources/icon.png --overwrite --asar=true --no-prune --out=builds",
+    "package:debian": "npm run package && electron-installer-debian --config debian.json"
   },
   "private": true,
   "dependencies": {
@@ -53,6 +63,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
     "codelyzer": "^5.0.0",
+    "electron-installer-debian": "^2.0.1",
     "electron-packager": "^14.1.0",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
