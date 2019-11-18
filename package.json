@@ -28,7 +28,6 @@
     "@angular/router": "~8.2.3",
     "@ctrl/ngx-emoji-mart": "^1.0.1",
     "@types/lodash": "^4.14.144",
-    "axios": "^0.19.0",
     "electron": "^7.1.1",
     "electron-google-oauth": "^2.0.0",
     "electron-log": "^3.0.9",
