@@ -1,5 +1,4 @@
 const { app, BrowserWindow } = require('electron');
-const log = require('electron-log');
 const url = require('url');
 const path = require('path');
 const Listeners = require('./electron/listeners.ipc');
@@ -7,8 +6,6 @@ const Listeners = require('./electron/listeners.ipc');
 let window = null;
 
 function createWindow() {
-  log.info('Create window');
-
   window = new BrowserWindow({
     width: 800,
     height: 600,
