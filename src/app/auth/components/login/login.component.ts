@@ -1,6 +1,5 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 
 import { AuthService } from 'src/app/core/services';
 import { BaseAuth } from './../auth.base';
@@ -11,7 +10,7 @@ import { BaseAuth } from './../auth.base';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent extends BaseAuth implements OnInit {
-  constructor(private ngZone: NgZone, private router: Router, private authService: AuthService) {
+  constructor(private authService: AuthService) {
     super();
   }
 
@@ -25,28 +24,19 @@ export class LoginComponent extends BaseAuth implements OnInit {
     this.authService
       .login(this.form.value)
       .finally(() => {
-        this.onAuthSuccess();
         this.enableForm();
         this.hideLoader();
       });
   }
 
   onLoginWithGoogle() {
-    this.authService
-      .loginWithGoogle()
-      .finally(this.onAuthSuccess.bind(this));
+    this.authService.loginWithGoogle();
   }
 
   private buildForm() {
     this.form = new FormGroup({
-      email: new FormControl(this.authService.user.email, [Validators.required, Validators.email]),
-      password: new FormControl(this.authService.user.password, [Validators.required, Validators.minLength(6)])
+      email: new FormControl(this.authService.user && this.authService.user.email || null, [Validators.required, Validators.email]),
+      password: new FormControl(this.authService.user && this.authService.user.password || null, [Validators.required, Validators.minLength(6)])
     });
-  }
-
-  private onAuthSuccess() {
-    if (this.authService.authState) {
-      this.ngZone.run(() => this.router.navigate(['dashboard']));
-    }
   }
 }

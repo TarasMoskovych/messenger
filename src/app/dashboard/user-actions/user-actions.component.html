@@ -1,6 +1,6 @@
 <mat-accordion multi="true">
 
-  <mat-expansion-panel>
+  <mat-expansion-panel class="no-drag">
     <mat-expansion-panel-header>
       My Profile
     </mat-expansion-panel-header>
@@ -9,7 +9,7 @@
     </ng-template>
   </mat-expansion-panel>
 
-  <mat-expansion-panel class="add-friends-panel" (afterExpand)="onLoadUsers()">
+  <mat-expansion-panel class="add-friends-panel no-drag" (afterExpand)="onLoadUsers()">
     <mat-expansion-panel-header>
       Add Friends
     </mat-expansion-panel-header>
@@ -31,7 +31,7 @@
     </ng-template>
   </mat-expansion-panel>
 
-  <mat-expansion-panel class="friends-panel" expanded="true">
+  <mat-expansion-panel class="friends-panel no-drag" expanded="true">
     <mat-expansion-panel-header>
       Friends
     </mat-expansion-panel-header>
@@ -48,7 +48,7 @@
     </ng-template>
   </mat-expansion-panel>
 
-  <mat-expansion-panel class="groups-panel" (afterExpand)="onLoadGroups()">
+  <mat-expansion-panel class="groups-panel no-drag" (afterExpand)="onLoadGroups()">
     <mat-expansion-panel-header>
       Groups
     </mat-expansion-panel-header>
@@ -64,7 +64,7 @@
     </ng-template>
   </mat-expansion-panel>
 
-  <mat-expansion-panel class="requests-panel" (afterExpand)="onLoadRequests()">
+  <mat-expansion-panel class="requests-panel no-drag" (afterExpand)="onLoadRequests()">
     <mat-expansion-panel-header>
       Requests
     </mat-expansion-panel-header>

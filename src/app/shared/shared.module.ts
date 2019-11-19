@@ -10,12 +10,13 @@ import { LightboxModule } from 'ngx-lightbox';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { MaterialModule } from './../material/material.module';
-import { LoaderComponent, InputBoxComponent } from './components';
+import { FrameButtonsComponent, LoaderComponent, InputBoxComponent } from './components';
 import { RelativeDatePipe, SmartDatePipe } from './pipes';
 import { DragAndDropDirective } from './directives';
 
 @NgModule({
   declarations: [
+    FrameButtonsComponent,
     LoaderComponent,
     InputBoxComponent,
     RelativeDatePipe,
@@ -43,6 +44,7 @@ import { DragAndDropDirective } from './directives';
     NgxSkeletonLoaderModule,
     LightboxModule,
     InfiniteScrollModule,
+    FrameButtonsComponent,
     LoaderComponent,
     InputBoxComponent,
     RelativeDatePipe,

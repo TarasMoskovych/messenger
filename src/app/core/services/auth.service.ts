@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { auth } from 'firebase/app';
+import { ElectronService } from 'ngx-electron';
 
 import { CoreModule } from '../core.module';
 import { User, Collections } from 'src/app/shared/models';
@@ -23,7 +24,9 @@ export class AuthService {
     private afauth: AngularFireAuth,
     private afs: AngularFirestore,
     private router: Router,
-    private informationService: InformationService
+    private ngZone: NgZone,
+    private informationService: InformationService,
+    private electronService: ElectronService
   ) {
     this.afauth.authState.subscribe(user => {
       this._authState = user;
@@ -54,7 +57,7 @@ export class AuthService {
   login(user: User): Promise<void> {
     return this.afauth.auth
       .signInWithEmailAndPassword(user.email, user.password)
-      .then(data => {
+      .then((data: auth.UserCredential) => {
         this._authState = data.user;
 
         if (this._authState.emailVerified) {
@@ -63,18 +66,18 @@ export class AuthService {
         } else {
           this.emailVerifiedErrorHandler();
         }
-      }).catch(e => this.informationService.showError(e));
+      })
+      .then(this.onAuthSuccess.bind(this))
+      .catch(e => this.informationService.showError(e));
   }
 
-  loginWithGoogle(): Promise<void> {
+  loginWithGoogle(): Promise<boolean> {
+    if (this.electronService.isElectronApp) { return this.onSignInWithCredential(); }
+
     return this.afauth.auth
       .signInWithPopup(new auth.GoogleAuthProvider())
-      .then(data => {
-        this._authState = data.user;
-        this.saveSessionToken(data.user.email);
-        this.setUserData({ email: this._authState.email, displayName: this._authState.displayName }, this._authState.photoURL);
-        this.updateUserStatus('online');
-      });
+      .then(this.onGoogleAuthDone.bind(this))
+      .then(this.onAuthSuccess.bind(this));
   }
 
   logout(): Promise<void> {
@@ -140,5 +143,31 @@ export class AuthService {
 
   private clearSessionToken() {
     window.sessionStorage.removeItem('authorized');
+  }
+
+  private onSignInWithCredential() {
+    this.electronService.ipcRenderer.send('google:get_token');
+
+    this.electronService.ipcRenderer.on('google:sign_in', (e, token) => {
+      return auth()
+        .signInWithCredential(auth.GoogleAuthProvider.credential(null, token.access_token))
+        .then(this.onGoogleAuthDone.bind(this))
+        .then(this.onAuthSuccess.bind(this));
+    });
+
+    return Promise.resolve(false);
+  }
+
+  private onGoogleAuthDone(data: auth.UserCredential) {
+    this._authState = data.user;
+    this.saveSessionToken(data.user.email);
+    this.setUserData({ email: this._authState.email, displayName: this._authState.displayName }, this._authState.photoURL);
+    this.updateUserStatus('online');
+  }
+
+  private onAuthSuccess() {
+    if (this.authState && this.authState.emailVerified) {
+      this.ngZone.run(() => this.router.navigate(['dashboard']));
+    }
   }
 }

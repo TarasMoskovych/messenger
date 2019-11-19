@@ -1,6 +1,6 @@
 <mat-accordion multi="true">
 
-  <mat-expansion-panel expanded="true">
+  <mat-expansion-panel expanded="true" class="no-drag">
     <mat-expansion-panel-header>
       Friend Information
     </mat-expansion-panel-header>
@@ -9,7 +9,7 @@
     </ng-template>
   </mat-expansion-panel>
 
-  <mat-expansion-panel expanded="true">
+  <mat-expansion-panel expanded="true" class="no-drag">
     <mat-expansion-panel-header>
       Group Information
     </mat-expansion-panel-header>
@@ -23,7 +23,7 @@
     </ng-template>
   </mat-expansion-panel>
 
-  <mat-expansion-panel hideToggle="true" class="notifications-panel">
+  <mat-expansion-panel hideToggle="true" class="notifications-panel no-drag">
     <mat-expansion-panel-header class="notifications">
       Notifications
       <ng-container *ngIf="notifications$ | async as length">

@@ -1,0 +1,23 @@
+@import './../../../scss/variables';
+
+.frame-buttons {
+  display: flex;
+
+  &__btn {
+    cursor: pointer;
+
+    .blue {
+      color: $primary;
+    }
+
+    &:hover {
+      color: lighten($primary, 40);
+    }
+
+    &--minimize {
+      position: relative;
+      top: -7px;
+    }
+  }
+
+}

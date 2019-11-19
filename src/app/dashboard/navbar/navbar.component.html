@@ -1,6 +1,9 @@
 <div class="navbar">
   <mat-toolbar color="primary" class="navbar__toolbar">
     <span>Messenger</span>
-    <mat-icon (click)="logout()" class="navbar__logout" aria-label="Logout">power_settings_new</mat-icon>
+    <div class="navbar__buttons-wrapper no-drag">
+      <mat-icon *ngIf="!isElectronApp" (click)="logout()" class="navbar__button" aria-label="Logout">power_settings_new</mat-icon>
+      <app-frame-buttons></app-frame-buttons>
+    </div>
   </mat-toolbar>
 </div>

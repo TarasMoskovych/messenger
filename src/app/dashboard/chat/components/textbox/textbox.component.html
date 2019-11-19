@@ -1,4 +1,4 @@
-<div class="textbox" appDragDrop (onFileDropped)="onFileDropped($event)">
+<div class="textbox no-drag" appDragDrop (onFileDropped)="onFileDropped($event)">
   <emoji-mart class="emoji-mart" perLine="10" set="emojione" (emojiSelect)="onAddEmoji($event)" *ngIf="showEmojiPicker"></emoji-mart>
   <div class="textbox__wrapper">
     <mat-icon class="emoji-icon" color="primary" (click)="toggleEmojiPicker()">{{ showEmojiPicker ? 'keyboard_arrow_down' : 'mood' }}</mat-icon>

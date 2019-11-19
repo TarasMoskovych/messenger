@@ -1,0 +1,15 @@
+{
+  "dest": "builds/",
+  "arch": "amd64",
+  "src": "builds/messenger-linux-x64",
+  "icon": "resources/icon.png",
+  "categories": [
+    "Utility"
+  ],
+  "lintianOverrides": [
+    "changelog-file-missing-in-native-package"
+  ],
+  "options": {
+    "productName": "Messenger"
+  }
+}
