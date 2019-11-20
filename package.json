@@ -22,7 +22,8 @@
     "electron:serve": "electron .",
     "package": "ng build --prod --base-href ./ && electron-packager . messenger --icon=resources/icon.png --overwrite --asar=true --no-prune --out=builds",
     "package:debian": "npm run package && electron-installer-debian --config build.debian.json",
-    "package:windows": "npm run package && node build.windows.js"
+    "package:windows": "npm run package && node build.windows.js",
+    "deploy": "firebase login && ng build --prod && firebase deploy"
   },
   "private": true,
   "dependencies": {
