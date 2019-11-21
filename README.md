@@ -13,8 +13,8 @@ Desktop installers can be found [here](https://drive.google.com/drive/folders/1P
 4. Add friends (with live-search)
 5. Accept/Decline friends requests
 6. Groups (create, remove, manage members of a group)
-7. Chatting with friend and in group (emoji, send images + drag-and-drop)
-8. Electron integration for desktop application (windows and linux installers)
+7. Chatting with friend and in a group (emoji, send images + drag-and-drop)
+8. Electron integration for a desktop application (windows and linux installers)
 
 ## Installation
 
@@ -34,9 +34,9 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
-Run `package:debian` to create debian installer.
+Run `npm run package:debian` to create debian installer.
 
-Run `package:windows` to create windows installer.
+Run `npm run package:windows` to create windows installer.
 
 ## Further help
 
