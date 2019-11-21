@@ -1,6 +1,26 @@
 # Messenger
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.0.
+Messenger is a web/desktop chat application using Angular + Firebase.
+
+See demo [https://messenger-ng.firebaseapp.com](https://messenger-ng.firebaseapp.com)
+
+Desktop installers can be found [here](https://drive.google.com/drive/folders/1PlfF3_yuENOTFR_v4QPqkDnmEc4HlRid)
+
+## Features
+1. Registration with confirm email functionality
+2. Authentication (by `email` + `password`, and by `google` sign in)
+3. My account (edit name and profile photo)
+4. Add friends (with live-search)
+5. Accept/Decline friends requests
+6. Groups (create, remove, manage members of a group)
+7. Chatting with friend and in group (emoji, send images + drag-and-drop)
+8. Electron integration for desktop application (windows and linux installers)
+
+## Installation
+
+Paste into `src/app/configs/firebase.config.ts` your firebase credentials.
+
+Paste into `electron/auth.config.js` your desktop project credentials.
 
 ## Development server
 
@@ -14,13 +34,9 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
-## Running unit tests
+Run `package:debian` to create debian installer.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+Run `package:windows` to create windows installer.
 
 ## Further help
 
