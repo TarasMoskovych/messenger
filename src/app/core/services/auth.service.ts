@@ -31,7 +31,7 @@ export class AuthService {
     this.afauth.authState.subscribe(user => {
       this._authState = user;
       this._user = user;
-      console.log(this._authState);
+        // console.log(this._authState);
     });
   }
 
