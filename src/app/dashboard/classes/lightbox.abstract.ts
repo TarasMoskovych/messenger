@@ -17,7 +17,7 @@ export abstract class AbstractLightBox {
       this.cache[user.email] = [{ src: user.photoURL, thumb: '', caption: user.displayName, }];
     }
 
-    this.lightbox.open(this.cache[user.email], 0);
+    this.lightbox.open(this.cache[user.email], 0, { disableScrolling: true });
   }
 
 }

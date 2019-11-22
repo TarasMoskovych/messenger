@@ -91,6 +91,11 @@ body {
     background-color: $primary;
     height: 15%;
   }
+
+  .lightbox,
+  .lightboxOverlay {
+    -webkit-app-region: no-drag;
+  }
 }
 
 .no-scrollbar::-webkit-scrollbar {
