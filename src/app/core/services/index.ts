@@ -8,3 +8,4 @@ export * from './chat.service';
 export * from './hash.service';
 export * from './group.service';
 export * from './rtc.service';
+export * from './channel.service';

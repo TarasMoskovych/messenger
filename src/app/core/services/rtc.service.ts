@@ -11,7 +11,6 @@ import { UserService } from './user.service';
 export class RtcService {
   private dispatchRemote = new Subject<{ calls: string[], cb: () => void }>();
   private callEnd = new Subject<boolean>();
-
   private client: AgoraClient;
   private localStream: Stream;
   private initialized = false;

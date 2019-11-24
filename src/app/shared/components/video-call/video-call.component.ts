@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { RtcService } from './../../../core/services';
+import { ChannelService, RtcService } from './../../../core/services';
 import { User } from './../../models';
 
 @Component({
@@ -15,20 +15,22 @@ export class VideoCallComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<boolean>();
 
   localCall = this.rtcService.localCallId;
-
+  outcome = true;
   remoteCalls: string[] = [];
   muted = false;
+  showCall = true;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public user: User,
+    @Inject(MAT_DIALOG_DATA) public data: { user: User, channel: string, outcome: boolean },
     private rtcService: RtcService,
-    private dialogRef: MatDialogRef<VideoCallComponent>
+    private dialogRef: MatDialogRef<VideoCallComponent>,
+    private channelService: ChannelService
   ) { }
 
   ngOnInit() {
-    this.onCallEnd();
+    this.onClose();
     this.onRemote();
-    this.rtcService.call();
+    this.call();
   }
 
   ngOnDestroy() {
@@ -41,11 +43,29 @@ export class VideoCallComponent implements OnInit, OnDestroy {
     this.rtcService.mute(this.muted);
   }
 
+  onAcceptCall() {
+    this.rtcService.call(this.data.channel);
+    this.outcome = true;
+  }
+
   onEndCall() {
     this.rtcService.endCall().then(() => this.dialogRef.close());
   }
 
-  private onCallEnd() {
+  private call() {
+    if (this.data.outcome) {
+      this.channelService.update(this.data.user.email, this.data.channel)
+        .then(() => this.rtcService.call(this.data.channel));
+    } else {
+      this.outcome = false;
+    }
+  }
+
+  private onClose() {
+    this.dialogRef.beforeClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.channelService.delete());
+
     this.rtcService.callEnd$
       .pipe(takeUntil(this.destroy$))
       .subscribe((end: boolean) => {
@@ -59,6 +79,7 @@ export class VideoCallComponent implements OnInit, OnDestroy {
       .subscribe((data: { calls: string[], cb: () => void }) => {
         this.remoteCalls = data.calls;
         setTimeout(data.cb, 1000);
+        this.showCall = false;
       });
   }
 }
