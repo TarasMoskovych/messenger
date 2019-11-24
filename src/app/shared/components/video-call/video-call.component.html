@@ -1,0 +1,18 @@
+<div class="video-call">
+  <div class="video-call__main">
+    <div [id]="localCall" class="video-call__local"></div>
+    <div [id]="remoteCalls[0]" class="video-call__remote"></div>
+  </div>
+  <div class="video-call__actions">
+    <span [matTooltip]="muted ? 'Enable microphone' : 'Disable microphone'" class="mr-5">
+      <button mat-mini-fab color="primary" (click)="onMute()">
+        <mat-icon aria-hidden="true">{{ muted ? 'mic_off' : 'mic' }}</mat-icon>
+      </button>
+    </span>
+    <span matTooltip="End Call">
+      <button mat-mini-fab color="warn" (click)="onEndCall()">
+        <mat-icon aria-hidden="true">call_end</mat-icon>
+      </button>
+    </span>
+  </div>
+</div>

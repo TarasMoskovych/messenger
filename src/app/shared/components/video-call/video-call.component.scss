@@ -1,0 +1,36 @@
+@import './../../../scss/variables';
+
+.video-call {
+  background: url('./../../../../assets/img/chat.jpg');
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+
+  &__main {
+    flex: 1 1 auto;
+    height: 100%;
+  }
+
+  &__local {
+    border-radius: 10px;
+    bottom: 1rem;
+    height: 25vh;
+    position: absolute;
+    right: 1rem;
+    width: 20vw;
+    z-index: 1;
+  }
+
+  &__remote {
+    height: 100%;
+    width: 100%;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+  }
+}

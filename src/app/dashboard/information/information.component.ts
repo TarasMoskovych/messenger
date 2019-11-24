@@ -1,10 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { ChatService, FriendsService, InformationService, NotificationService, GroupService } from 'src/app/core/services';
+import { ChatService, FriendsService, InformationService, NotificationService, GroupService, RtcService } from 'src/app/core/services';
 import { Notification, NotificationTypes, User, Group } from 'src/app/shared/models';
 import { FriendDetailsComponent, GroupDetailsComponent } from './components';
+import { VideoCallComponent } from './../../shared/components';
 
 @Component({
   selector: 'app-information',
@@ -20,17 +22,20 @@ export class InformationComponent implements OnInit {
   notifications$: Observable<number>;
 
   constructor(
+    private dialog: MatDialog,
     private chatService: ChatService,
     private groupService: GroupService,
     private friendsService: FriendsService,
     private informationService: InformationService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private rtcService: RtcService
   ) { }
 
   ngOnInit() {
     this.getFriendInfo();
     this.getGroupInfo();
     this.getNotifications();
+    this.rtcService.init();
   }
 
   onCloseChat() {
@@ -38,7 +43,11 @@ export class InformationComponent implements OnInit {
   }
 
   onCall(user: User) {
-    console.log(user);
+    this.dialog.open(VideoCallComponent, {
+      data: user,
+      disableClose: true,
+      panelClass: 'video-call-modal'
+    });
   }
 
   onRemoveFriend(friend: User) {

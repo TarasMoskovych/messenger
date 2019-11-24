@@ -1,16 +1,16 @@
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-import { NgModule } from '@angular/core';
 
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 
+import { NgxAgoraModule } from 'ngx-agora';
 import { NgxElectronModule } from 'ngx-electron';
 
-import { firebaseConfig } from './configs';
+import { agoraConfig, firebaseConfig } from './configs';
 import { AppComponent } from './app.component';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -31,6 +31,7 @@ import { CoreModule } from './core/core.module';
     AngularFireStorageModule,
     AngularFireAuthModule,
     NgxElectronModule,
+    NgxAgoraModule.forRoot(agoraConfig),
     AuthModule,
     AppRoutingModule
   ],
