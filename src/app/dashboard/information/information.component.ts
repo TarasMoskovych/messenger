@@ -118,7 +118,8 @@ export class InformationComponent implements OnInit, OnDestroy {
     this.channelService.get()
       .pipe(takeUntil(this.destroy$))
       .subscribe((channel: Channel) => {
-        if (channel) { this.openVideoCallDialog({ user: null, channel: channel.id, outcome: false }); }
+        if (channel) { return this.openVideoCallDialog({ user: channel.user, channel: channel.id, outcome: false }); }
+        this.rtcService.dispatchCallEnd();
       });
   }
 

@@ -54,7 +54,7 @@ export class VideoCallComponent implements OnInit, OnDestroy {
 
   private call() {
     if (this.data.outcome) {
-      this.channelService.update(this.data.user.email, this.data.channel)
+      this.channelService.update(this.data.user, this.data.channel)
         .then(() => this.rtcService.call(this.data.channel));
     } else {
       this.outcome = false;
@@ -64,7 +64,10 @@ export class VideoCallComponent implements OnInit, OnDestroy {
   private onClose() {
     this.dialogRef.beforeClosed()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.channelService.delete());
+      .subscribe(() => {
+        this.channelService.delete(this.data.user.email);
+        this.channelService.delete();
+      });
 
     this.rtcService.callEnd$
       .pipe(takeUntil(this.destroy$))

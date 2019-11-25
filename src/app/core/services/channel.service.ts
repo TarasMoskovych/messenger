@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { CoreModule } from '../core.module';
 
 import { AuthService } from './auth.service';
-import { Collections, Channel } from './../../shared/models';
+import { Collections, Channel, User } from './../../shared/models';
 
 @Injectable({
   providedIn: CoreModule
@@ -21,12 +21,15 @@ export class ChannelService {
     return this.afs.doc<Channel>(`${Collections.Channels}/${this.authService.isAuthorised()}`).valueChanges();
   }
 
-  update(email: string, channel: string): Promise<void> {
-    return this.afs.doc(`${Collections.Channels}/${email}`).set({ id: channel });
+  update(user: User, channel: string): Promise<void> {
+    const { displayName, photoURL, email } = this.authService.user;
+    const initiator: User = { displayName, photoURL, email };
+
+    return this.afs.doc(`${Collections.Channels}/${user.email}`).set({ id: channel, user: initiator });
   }
 
-  delete(): Promise<void> {
-    return this.afs.doc<Channel>(`${Collections.Channels}/${this.authService.isAuthorised()}`).delete();
+  delete(email: string = this.authService.isAuthorised()): Promise<void> {
+    return this.afs.doc<Channel>(`${Collections.Channels}/${email}`).delete();
   }
 
 }

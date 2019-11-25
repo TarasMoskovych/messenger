@@ -58,6 +58,10 @@ export class RtcService {
     enabled ? this.localStream.muteAudio() : this.localStream.unmuteAudio();
   }
 
+  dispatchCallEnd() {
+    this.callEnd.next(true);
+  }
+
   private initRTC() {
     this.client = this.ngxAgoraService.createClient({ mode: 'rtc', codec: 'h264' });
     this.localStream = this.ngxAgoraService.createStream({ streamID: this.uid, audio: true, video: true, screen: false });
@@ -123,7 +127,7 @@ export class RtcService {
         this.remoteCalls = this.remoteCalls.filter(call => call !== `${this.getRemoteId(stream)}`);
         this.dispatchRemote.next({ calls: this.remoteCalls, cb: () => console.log(`${evt.uid} left from this channel`) });
         this.endCall();
-        this.callEnd.next(true);
+        this.dispatchCallEnd();
       }
     });
   }

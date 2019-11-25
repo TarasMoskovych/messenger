@@ -75,7 +75,8 @@ body {
   }
 
   .video-call-modal {
-    height: 95%;
+    height: 100%;
+    max-width: 100% !important;
     width: 100%;
 
     .mat-dialog-container {
