@@ -78,6 +78,7 @@ body {
     height: 100%;
     max-width: 100% !important;
     width: 100%;
+    -webkit-app-region: no-drag;
 
     .mat-dialog-container {
       padding: 0;
