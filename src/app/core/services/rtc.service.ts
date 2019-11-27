@@ -138,6 +138,8 @@ export class RtcService {
   }
 
   private initLocalStream(onSuccess?: () => any): void {
+    this.remoteCalls = [];
+
     this.localStream.init(
       () => {
          this.localStream.play(this.localCallId);
