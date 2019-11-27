@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 
 import { CoreModule } from '../core.module';
 import { UserService } from './user.service';
+import { InformationService } from './information.service';
 
 @Injectable({
   providedIn: CoreModule
@@ -22,6 +23,7 @@ export class RtcService {
   remote$ = this.dispatchRemote.asObservable();
 
   constructor(
+    private informationService: InformationService,
     private userService: UserService,
     private ngxAgoraService: NgxAgoraService
   ) { }
@@ -39,7 +41,7 @@ export class RtcService {
   }
 
   call(channel: string = 'channel_default') {
-    this.initLocalStream(() => this.join(channel, uid => this.publish(), error => console.error(error)));
+    this.initLocalStream(() => this.join(channel, uid => this.publish()));
   }
 
   endCall() {
@@ -75,12 +77,11 @@ export class RtcService {
   }
 
   private publish(): void {
-    this.client.publish(this.localStream, err => console.error('publish local stream error: ' + err));
+    this.client.publish(this.localStream);
   }
 
   private initLocalStreamHandlers(): void {
-    this.localStream.on(StreamEvent.MediaAccessAllowed, () => console.log('access_allowed'));
-    this.localStream.on(StreamEvent.MediaAccessDenied, () => console.log('access_denied'));
+    this.localStream.on(StreamEvent.MediaAccessDenied, () => this.informationService.showMessage('Access Denied, please allow camera and microphone to turn on'));
   }
 
   private initClientHandlers(): void {
@@ -97,7 +98,7 @@ export class RtcService {
     this.client.on(ClientEvent.RemoteStreamAdded, evt => {
       const stream = evt.stream as Stream;
 
-      this.client.subscribe(stream, { audio: true, video: true }, err => console.error('subscribe stream failed', err));
+      this.client.subscribe(stream, { audio: true, video: true });
     });
 
     this.client.on(ClientEvent.RemoteStreamSubscribed, evt => {
