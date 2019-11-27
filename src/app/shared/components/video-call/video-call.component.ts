@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { ChannelService, RtcService } from './../../../core/services';
+import { AudioService, ChannelService, RtcService } from './../../../core/services';
 import { User } from './../../models';
 
 @Component({
@@ -24,7 +24,8 @@ export class VideoCallComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: { user: User, channel: string, outcome: boolean },
     private rtcService: RtcService,
     private dialogRef: MatDialogRef<VideoCallComponent>,
-    private channelService: ChannelService
+    private channelService: ChannelService,
+    private audioService: AudioService
   ) { }
 
   ngOnInit() {
@@ -54,9 +55,11 @@ export class VideoCallComponent implements OnInit, OnDestroy {
 
   private call() {
     if (this.data.outcome) {
+      this.audioService.outcomeCallPlay();
       this.channelService.update(this.data.user, this.data.channel)
         .then(() => this.rtcService.call(this.data.channel));
     } else {
+      this.audioService.incomeCallPlay();
       this.outcome = false;
     }
   }
@@ -65,6 +68,7 @@ export class VideoCallComponent implements OnInit, OnDestroy {
     this.dialogRef.beforeClosed()
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
+        this.audioStop();
         this.channelService.delete(this.data.user.email);
         this.channelService.delete();
       });
@@ -72,6 +76,8 @@ export class VideoCallComponent implements OnInit, OnDestroy {
     this.rtcService.callEnd$
       .pipe(takeUntil(this.destroy$))
       .subscribe((end: boolean) => {
+        this.audioStop();
+
         if (end) { this.dialogRef.close(); }
       });
   }
@@ -82,7 +88,14 @@ export class VideoCallComponent implements OnInit, OnDestroy {
       .subscribe((data: { calls: string[], cb: () => void }) => {
         this.remoteCalls = data.calls;
         setTimeout(data.cb, 1000);
+
+        this.audioStop();
         this.showCall = false;
       });
+  }
+
+  private audioStop() {
+    this.audioService.incomeCallStop();
+    this.audioService.outcomeCallStop();
   }
 }
