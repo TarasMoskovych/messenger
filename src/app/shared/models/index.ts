@@ -1,3 +1,4 @@
+export * from './channel.model';
 export * from './chat.model';
 export * from './collections.model';
 export * from './group.model';

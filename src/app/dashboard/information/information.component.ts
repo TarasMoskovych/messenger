@@ -1,36 +1,60 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Observable, Subject } from 'rxjs';
+import { take, takeUntil } from 'rxjs/operators';
 
-import { ChatService, FriendsService, InformationService, NotificationService, GroupService } from 'src/app/core/services';
-import { Notification, NotificationTypes, User, Group } from 'src/app/shared/models';
+import {
+  ChatService,
+  FriendsService,
+  InformationService,
+  NotificationService,
+  GroupService,
+  RtcService,
+  HashService,
+  ChannelService
+} from 'src/app/core/services';
+import { Notification, NotificationTypes, User, Group, Channel } from 'src/app/shared/models';
 import { FriendDetailsComponent, GroupDetailsComponent } from './components';
+import { VideoCallComponent } from './../../shared/components';
 
 @Component({
   selector: 'app-information',
   templateUrl: './information.component.html',
   styleUrls: ['./information.component.scss']
 })
-export class InformationComponent implements OnInit {
+export class InformationComponent implements OnInit, OnDestroy {
   @ViewChild(FriendDetailsComponent, { static: false }) private friendsDetailsComponent: FriendDetailsComponent;
   @ViewChild(GroupDetailsComponent, { static: false }) private groupDetailsComponent: GroupDetailsComponent;
+
+  private destroy$ = new Subject<boolean>();
 
   friend$: Observable<User>;
   group$: Observable<Group>;
   notifications$: Observable<number>;
 
   constructor(
+    private dialog: MatDialog,
     private chatService: ChatService,
     private groupService: GroupService,
+    private channelService: ChannelService,
     private friendsService: FriendsService,
     private informationService: InformationService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private rtcService: RtcService,
+    private hashService: HashService
   ) { }
 
   ngOnInit() {
     this.getFriendInfo();
     this.getGroupInfo();
     this.getNotifications();
+    this.onChannelChange();
+    this.rtcService.init();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   onCloseChat() {
@@ -38,7 +62,7 @@ export class InformationComponent implements OnInit {
   }
 
   onCall(user: User) {
-    console.log(user);
+    this.openVideoCallDialog({ user, channel: this.hashService.generateHash(), outcome: true });
   }
 
   onRemoveFriend(friend: User) {
@@ -90,4 +114,20 @@ export class InformationComponent implements OnInit {
     this.notifications$ = this.notificationService.length$;
   }
 
+  private onChannelChange() {
+    this.channelService.get()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((channel: Channel) => {
+        if (channel) { return this.openVideoCallDialog({ user: channel.user, channel: channel.id, outcome: false }); }
+        this.rtcService.dispatchCallEnd();
+      });
+  }
+
+  private openVideoCallDialog(data: { user: User, channel: string, outcome: boolean }) {
+    this.dialog.open(VideoCallComponent, {
+      data,
+      disableClose: true,
+      panelClass: 'video-call-modal'
+    });
+  }
 }

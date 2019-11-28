@@ -1,4 +1,5 @@
 export enum Collections {
+  Channels = 'channels',
   Chats = 'chats',
   Conversations = 'conversations',
   Friends = 'friends',

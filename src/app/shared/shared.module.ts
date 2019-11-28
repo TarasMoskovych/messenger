@@ -10,7 +10,7 @@ import { LightboxModule } from 'ngx-lightbox';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { MaterialModule } from './../material/material.module';
-import { FrameButtonsComponent, LoaderComponent, InputBoxComponent } from './components';
+import { FrameButtonsComponent, LoaderComponent, InputBoxComponent, VideoCallComponent } from './components';
 import { RelativeDatePipe, SmartDatePipe } from './pipes';
 import { DragAndDropDirective } from './directives';
 
@@ -21,7 +21,8 @@ import { DragAndDropDirective } from './directives';
     InputBoxComponent,
     RelativeDatePipe,
     SmartDatePipe,
-    DragAndDropDirective
+    DragAndDropDirective,
+    VideoCallComponent
   ],
   imports: [
     CommonModule,
@@ -47,6 +48,7 @@ import { DragAndDropDirective } from './directives';
     FrameButtonsComponent,
     LoaderComponent,
     InputBoxComponent,
+    VideoCallComponent,
     RelativeDatePipe,
     SmartDatePipe,
     PickerModule,

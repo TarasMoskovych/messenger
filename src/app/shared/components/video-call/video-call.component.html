@@ -1,0 +1,34 @@
+<div *ngIf="data.user && showCall" class="video-call-user">
+  <div class="video-call-user__animation">
+    <img class="video-call-user__img" [src]="data.user.photoURL" alt="">
+  </div>
+  <p class="video-call-user__title">
+    <ng-container *ngIf="data.outcome; else income">
+      Calling to {{ data.user.displayName }}
+    </ng-container>
+    <ng-template #income>
+      {{ data.user.displayName }} is calling
+    </ng-template>
+  </p>
+</div>
+<div class="video-call">
+  <div class="video-call__main">
+    <div [id]="localCall" class="video-call__local"></div>
+    <div [id]="remoteCalls[0]" class="video-call__remote"></div>
+  </div>
+  <div class="video-call__actions">
+    <span *ngIf="!outcome" matTooltip="Start conversation" @fadeOut>
+      <i class="video-call__phone-callback mr-5" (click)="onAcceptCall()"></i>
+    </span>
+    <span [matTooltip]="muted ? 'Enable microphone' : 'Disable microphone'" class="mr-5">
+      <button mat-mini-fab color="secondary" (click)="onMute()">
+        <mat-icon aria-hidden="true">{{ muted ? 'mic_off' : 'mic' }}</mat-icon>
+      </button>
+    </span>
+    <span matTooltip="End Call">
+      <button mat-mini-fab color="warn" (click)="onEndCall()">
+        <mat-icon aria-hidden="true">call_end</mat-icon>
+      </button>
+    </span>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 # Messenger
 
-Messenger is a web/desktop chat application using Angular + Firebase.
+Messenger is a web/desktop chat application using [Angular](https://angular.io) + [Firebase](https://firebase.google.com)
 
 See demo [https://messenger-ng.firebaseapp.com](https://messenger-ng.firebaseapp.com)
 
@@ -14,7 +14,8 @@ Desktop installers can be found [here](https://drive.google.com/drive/folders/1P
 5. Accept/Decline friends requests
 6. Groups (create, remove, manage members of a group)
 7. Chatting with friend and in a group (emoji, send images + drag-and-drop)
-8. Electron integration for a desktop application (windows and linux installers)
+8. [Electron](https://electronjs.org) integration for a desktop application (windows and linux installers)
+9. Video calls using [Agora SDK](https://www.agora.io/en)
 
 ## Installation
 

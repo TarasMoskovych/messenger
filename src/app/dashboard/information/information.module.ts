@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { FriendDetailsComponent, GroupDetailsComponent, MembersComponent, NotificationsComponent } from './components';
 import { InformationComponent } from './information.component';
+import { VideoCallComponent } from 'src/app/shared/components';
 
 import { SharedModule } from 'src/app/shared/shared.module';
 
@@ -19,7 +20,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     SharedModule
   ],
   entryComponents: [
-    MembersComponent
+    MembersComponent,
+    VideoCallComponent
   ],
   exports: [InformationComponent]
 })
