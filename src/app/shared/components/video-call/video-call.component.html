@@ -17,7 +17,7 @@
     <div [id]="remoteCalls[0]" class="video-call__remote"></div>
   </div>
   <div class="video-call__actions">
-    <span *ngIf="!outcome" matTooltip="Start conversation">
+    <span *ngIf="!outcome" matTooltip="Start conversation" @fadeOut>
       <i class="video-call__phone-callback mr-5" (click)="onAcceptCall()"></i>
     </span>
     <span [matTooltip]="muted ? 'Enable microphone' : 'Disable microphone'" class="mr-5">

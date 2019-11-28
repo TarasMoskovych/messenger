@@ -4,12 +4,14 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { AudioService, ChannelService, RtcService } from './../../../core/services';
+import { fadeOut } from '../../animations';
 import { User } from './../../models';
 
 @Component({
   selector: 'app-video-call',
   templateUrl: './video-call.component.html',
-  styleUrls: ['./video-call.component.scss']
+  styleUrls: ['./video-call.component.scss'],
+  animations: [fadeOut]
 })
 export class VideoCallComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<boolean>();
