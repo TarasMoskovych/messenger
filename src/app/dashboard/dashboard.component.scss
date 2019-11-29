@@ -13,6 +13,10 @@
     &--chat {
       height: calc(100vh - 65px);
       padding: 16px 0;
+
+      @media (max-width: $screen-xs-max) {
+        padding: 0;
+      }
     }
   }
 

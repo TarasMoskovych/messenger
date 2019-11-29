@@ -4,13 +4,17 @@
   width: 80%;
 
   &--google {
-    background: #fff url('./../../../../assets/img/google.svg') no-repeat 50px;
+    background: #fff url('./../../../../assets/img/google.svg') no-repeat 22%;
     background-size: 25px;
     border: 1px solid #E0E0E0;
     color: #272727;
 
     &:hover {
       background-color: #F3F3F3;
+    }
+
+    @media (max-width: 400px) {
+      background: none;
     }
   }
 }

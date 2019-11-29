@@ -12,6 +12,13 @@
   position: fixed;
   width: 50%;
 
+  @media (max-width: $screen-xs-max) {
+    margin: 0 16px;
+    height: calc(100vh - 60px);
+    position: initial;
+    width: calc(100% - 32px);
+  }
+
   &--empty {
     background-attachment: scroll;
     background-image: url('./../../../assets/img/chat.jpg');
@@ -23,6 +30,7 @@
     color: $primary;
     font-weight: 700;
     padding: 15px;
+    text-align: center;
   }
 
   &__user {
