@@ -1,5 +1,5 @@
 <div *ngIf="data.user && showCall" class="video-call-user">
-  <div class="video-call-user__animation">
+  <div class="video-call-user__block video-call-user__block--animated">
     <img class="video-call-user__img" [src]="data.user.photoURL" alt="">
   </div>
   <p class="video-call-user__title">
@@ -15,6 +15,16 @@
   <div class="video-call__main">
     <div [id]="localCall" class="video-call__local"></div>
     <div [id]="remoteCalls[0]" class="video-call__remote"></div>
+    <ng-container *ngIf="!videoAllowed && !showCall">
+      <div class="video-call-user">
+        <div class="video-call-user__block">
+          <img class="video-call-user__img" [src]="data.user.photoURL" alt="">
+        </div>
+        <p class="video-call-user__title">
+          {{ data.user.displayName }}
+        </p>
+      </div>
+    </ng-container>
   </div>
   <div class="video-call__actions">
     <span *ngIf="!outcome" matTooltip="Start conversation" @fadeOut>

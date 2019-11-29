@@ -21,6 +21,7 @@ export class VideoCallComponent implements OnInit, OnDestroy {
   remoteCalls: string[] = [];
   muted = false;
   showCall = true;
+  videoAllowed = this.rtcService.isVideoAllowed();
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { user: User, channel: string, outcome: boolean },

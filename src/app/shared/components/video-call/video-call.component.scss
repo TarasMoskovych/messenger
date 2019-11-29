@@ -16,15 +16,19 @@
     transform: translate(-50%, -55%);
     z-index: 1;
 
-    &__animation {
-      animation: play 2s ease infinite;
-      backface-visibility: hidden;
+    &__block {
       background: #fff;
       border-radius: 100%;
       border: solid 5px #fff;
       height: 180px;
       margin: 0 auto;
+      transform: scale(1);
       width: 180px;
+
+      &--animated {
+        animation: play 2s ease infinite;
+        backface-visibility: hidden;
+      }
     }
 
     &__img {

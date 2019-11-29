@@ -64,9 +64,17 @@ export class RtcService {
     this.callEnd.next(true);
   }
 
+  isVideoAllowed() {
+    return this.ngxAgoraService.videoDevices.length > 0;
+  }
+
+  isAudioAllowed() {
+    return this.ngxAgoraService.audioDevices.length > 0;
+  }
+
   private initRTC() {
     this.client = this.ngxAgoraService.createClient({ mode: 'rtc', codec: 'h264' });
-    this.localStream = this.ngxAgoraService.createStream({ streamID: this.uid, audio: true, video: true, screen: false });
+    this.localStream = this.ngxAgoraService.createStream({ streamID: this.uid, audio: this.isAudioAllowed(), video: this.isVideoAllowed(), screen: false });
 
     this.initClientHandlers();
     this.initLocalStreamHandlers();
@@ -145,7 +153,11 @@ export class RtcService {
          this.localStream.play(this.localCallId);
          if (onSuccess) { onSuccess(); }
       },
-      err => console.error('getUserMedia failed', err)
+      err => {
+        console.log(err);
+        this.informationService.showMessage('Stream initialization failed');
+        this.dispatchCallEnd();
+      }
     );
   }
 }
