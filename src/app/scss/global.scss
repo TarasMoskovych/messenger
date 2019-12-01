@@ -74,14 +74,29 @@ body {
     -webkit-app-region: no-drag;
   }
 
-  .video-call-modal {
-    height: 100%;
-    max-width: 100% !important;
-    width: 100%;
-    -webkit-app-region: no-drag;
+  .video-call {
 
-    .mat-dialog-container {
-      padding: 0;
+    &__local {
+      video {
+        z-index: 3;
+      }
+    }
+
+    &__remote {
+      video {
+        z-index: 2;
+      }
+    }
+
+    &-modal {
+      height: 100%;
+      max-width: 100% !important;
+      width: 100%;
+      -webkit-app-region: no-drag;
+
+      .mat-dialog-container {
+        padding: 0;
+      }
     }
   }
 

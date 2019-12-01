@@ -83,9 +83,10 @@ export class AuthService {
   logout(): Promise<void> {
     return this.updateUserStatus('offline')
       .then(() => {
-        this.afauth.auth.signOut();
         this.clearSessionToken();
         this.router.navigate(['login']);
+
+        setTimeout(() => this.afauth.auth.signOut(), 1000);
       });
   }
 

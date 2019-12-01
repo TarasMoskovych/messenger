@@ -74,7 +74,12 @@ export class RtcService {
 
   private initRTC() {
     this.client = this.ngxAgoraService.createClient({ mode: 'rtc', codec: 'h264' });
-    this.localStream = this.ngxAgoraService.createStream({ streamID: this.uid, audio: this.isAudioAllowed(), video: this.isVideoAllowed(), screen: false });
+    this.localStream = this.ngxAgoraService.createStream({
+      streamID: this.uid,
+      audio: this.isAudioAllowed(),
+      video: this.isVideoAllowed(),
+      screen: false
+    });
 
     this.initClientHandlers();
     this.initLocalStreamHandlers();
@@ -89,7 +94,8 @@ export class RtcService {
   }
 
   private initLocalStreamHandlers(): void {
-    this.localStream.on(StreamEvent.MediaAccessDenied, () => this.informationService.showMessage('Access Denied, please allow camera and microphone to turn on'));
+    this.localStream.on(StreamEvent.MediaAccessDenied,
+      () => this.informationService.showMessage('Access Denied, please allow camera and microphone to turn on'));
   }
 
   private initClientHandlers(): void {
@@ -156,7 +162,6 @@ export class RtcService {
       err => {
         console.log(err);
         this.informationService.showMessage('Stream initialization failed');
-        this.dispatchCallEnd();
       }
     );
   }

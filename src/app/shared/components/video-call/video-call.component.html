@@ -15,7 +15,7 @@
   <div class="video-call__main">
     <div [id]="localCall" class="video-call__local"></div>
     <div [id]="remoteCalls[0]" class="video-call__remote"></div>
-    <ng-container *ngIf="!videoAllowed && !showCall">
+    <ng-container *ngIf="!showCall">
       <div class="video-call-user">
         <div class="video-call-user__block">
           <img class="video-call-user__img" [src]="data.user.photoURL" alt="">
