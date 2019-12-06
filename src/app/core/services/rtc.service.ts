@@ -31,6 +31,7 @@ export class RtcService {
   init() {
     if (this.initialized) { return; }
 
+    this.ngxAgoraService.AgoraRTC.Logger.setLogLevel(this.ngxAgoraService.AgoraRTC.Logger.NONE);
     this.userService.user$.subscribe((user: firebase.User) => {
       if (user) {
         this.uid = user.uid;
@@ -99,8 +100,6 @@ export class RtcService {
   }
 
   private initClientHandlers(): void {
-    this.client.on(ClientEvent.LocalStreamPublished, evt => console.log('publish local stream'));
-
     this.client.on(ClientEvent.Error, error => {
       console.log('client_event err:', error.reason);
 
